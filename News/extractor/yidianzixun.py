@@ -1,19 +1,44 @@
+# coding: utf-8
+
 from bs4 import NavigableString, Tag
 from News.extractor import NewsExtractor
+from News.monitor import monitor
 
 
 class YiDianZiXunExtractor(NewsExtractor):
 
     def extract(self):
+        if self.soup.find("div", id="yidian-content"):
+            return self._extract_inner()
+        elif self.soup.find("div", class_="content-bd"):
+            return self._extract_outer()
+        else:
+            return self._not_support_now()
+
+    @monitor(error=2)
+    def _extract_inner(self):
+        tag = self.soup.find("div", class_="TRS_Editor") or self.soup.find("div", id="yidian-content")
+        result = self.__extract_content(tag)
+        contents, count = self.g_returns(result)
+        return contents, count
+
+    @monitor(error=2)
+    def _extract_outer(self):
+        tag = self.soup.find("div", class_="content-bd")
+        result = self.__extract_content(tag)
+        contents, count = self.g_returns(result)
+        return contents, count
+
+    @monitor(error=1)
+    def _not_support_now(self):
+        return [], 0
+
+    @staticmethod
+    def __extract_content(tag):
         result = list()
-        content = self.soup.find("div", class_="TRS_Editor")
-        if not content:
-            content = self.soup.find("div", id="yidian-content")
-        if not content:
-            content = self.soup.find("div", class_="content-bd")
-        if not content:
-            return [], 0
-        for child in content.contents:
+        if not tag:
+            return result
+        for child in tag.contents:
             if isinstance(child, NavigableString):
                 string = unicode(child)
                 if string and string.strip():
@@ -34,8 +59,7 @@ class YiDianZiXunExtractor(NewsExtractor):
                         result.append({"text": child.get_text()})
             else:
                 pass
-        contents, count = self.g_returns(content)
-        return contents, count
+        return result
 
 
 

@@ -1,6 +1,5 @@
 # coding: utf-8
 
-
 SPIDER_NAME = "spider:news163"
 ARTICLE_URL_TEMPLATE = "http://j.news.163.com/hy/doc.s?" \
                        "info=2&type=10&hash=&docid={docid}"

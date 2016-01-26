@@ -19,6 +19,7 @@ class NewsItem(Item):
     district = Field()  # 区/县 str
     love = Field()  # 喜爱 int
     up = Field()    # 顶 int
+    down = Field()  # 踩 int
     image_number = Field()  # 图片数 int
 
     docid = Field()     # 网站内部唯一标识

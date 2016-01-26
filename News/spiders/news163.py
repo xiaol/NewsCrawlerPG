@@ -41,6 +41,7 @@ class News163(NewsSpider):
         news["district"] = position[2] if position[2] != "null" else None
         news["love"] = 0
         news["up"] = 0
+        news["down"] = 0
 
         news["original_url"] = article.get("doc_url", "")
         news["channel"] = ""
@@ -60,7 +61,7 @@ class News163(NewsSpider):
     def parse_news(self, response):
         news = response.meta["news"]
         data = load_json_data(response.body)
-        extractor = News163Extractor(data["content"], response.url)
+        extractor = News163Extractor(data["content"], response.url, news=news)
         content, image_number = extractor.extract()
         news["content"] = content
         news["image_number"] = image_number
