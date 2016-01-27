@@ -8,23 +8,23 @@ from News.monitor import monitor
 class YiDianZiXunExtractor(NewsExtractor):
 
     def extract(self):
-        if self.soup.find("div", id="yidian-content"):
+        if "content-bd" in self.html:
             return self._extract_inner()
-        elif self.soup.find("div", class_="content-bd"):
+        elif "yidian-content" in self.html:
             return self._extract_outer()
         else:
             return self._not_support_now()
 
     @monitor(error=2)
     def _extract_inner(self):
-        tag = self.soup.find("div", class_="TRS_Editor") or self.soup.find("div", id="yidian-content")
+        tag = self.soup.find("div", class_="content-bd")
         result = self.__extract_content(tag)
         contents, count = self.g_returns(result)
         return contents, count
 
     @monitor(error=2)
     def _extract_outer(self):
-        tag = self.soup.find("div", class_="content-bd")
+        tag = self.soup.find("div", class_="TRS_Editor") or self.soup.find("div", class_="yidian-content")
         result = self.__extract_content(tag)
         contents, count = self.g_returns(result)
         return contents, count

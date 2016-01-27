@@ -55,14 +55,20 @@ class YiDianZiXun(NewsSpider):
 
     def parse_news(self, response):
         news = response.meta["news"]
-        redirects = response.request.meta.get("redirect_urls")
-        if redirects:
-            return
-        extractor = YiDianZiXunExtractor(response.body, response.url, news=news)
-        content, image_number = extractor.extract()
-        news["content"] = content
-        news["image_number"] = image_number
-        yield news
+        if "window.location.replace" in response.body:
+            news["crawl_url"] = news["original_url"]
+            news["key"] = self.g_cache_key(news["crawl_url"])
+            yield self.g_news_request(news)
+        else:
+            redirects = response.request.meta.get("redirect_urls")
+            if redirects:
+                news["crawl_url"] = response.url
+                news["key"] = self.g_cache_key(news["crawl_url"])
+            extractor = YiDianZiXunExtractor(response.body, response.url, news=news)
+            content, image_number = extractor.extract()
+            news["content"] = content
+            news["image_number"] = image_number
+            yield news
 
     @staticmethod
     def _g_article_url(docid):

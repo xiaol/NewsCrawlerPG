@@ -2,6 +2,7 @@
 
 SPIDER_NAME = "spider:toutiao"
 DOMAIN = "http://toutiao.com"
+START_URL_PREFIX = "http://toutiao.com/api/article/recent/?"
 CHANNELS = {
     "育儿": "news_baby",
     "汽车": "news_car",

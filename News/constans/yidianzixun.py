@@ -2,6 +2,7 @@
 
 SPIDER_NAME = "spider:yidianzixun"
 ARTICLE_URL_TEMPLATE = "http://www.yidianzixun.com/home?page=article&id={docid}"
+START_URL_PREFIX = "http://www.yidianzixun.com/api/q/?"
 CHANNELS = {
     "汽车": "汽车",
     "时尚": "时尚",

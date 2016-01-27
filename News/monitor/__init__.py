@@ -9,8 +9,6 @@ POSTGRES = "postgresql://postgres:lee@localhost/test"
 Base = automap_base()
 engine = create_engine(POSTGRES)
 Base.prepare(engine, reflect=True)
-# News = Base.classes.newslist
-# Comments = Base.classes.newscomments
 Monitor = Base.classes.monitor
 session = Session(engine)
 

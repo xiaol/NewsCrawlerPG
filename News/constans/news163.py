@@ -8,8 +8,9 @@ COMMENT_URL_TEMPLATE = "http://comment.news.163.com/api/v1" \
                        "threads/{docid}/comments/newList?" \
                        "offset={offset}&limit=30"
 DOMAIN = "http://j.news.163.com"
+START_URL_PREFIX = "http://j.news.163.com/hy/newshot.s?"
 CHANNELS = {
-    "本地": 10,
+    # "本地": 10,
     "娱乐": 2,
     "体育": 3,
     "科技": 5,
@@ -39,6 +40,8 @@ CHANNELS = {
     "动漫": 29,
     "教育": 31,
 }
+
+LOCAL_CHANNEL = 10
 
 CITIES = "中卫,七台河,巫山,红河,三明,崇明,白城,池州,西沙,莆田,忠县,大连,定西," \
          "莱芜,和田,贵阳,钦州,赣州,大足,昭通,郑州,黑河,汉中,衡水,雅安,滨州,阳泉," \
