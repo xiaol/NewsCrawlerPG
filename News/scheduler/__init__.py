@@ -47,7 +47,7 @@ def g_toutiao_urls(channels, offset=0, end=20):
 
 
 def g_news163_urls(channels=None, offset=0, end=20, cities=""):
-    if channels is None: channels = []
+    if channels is None: channels = {}
     prefix = news163.START_URL_PREFIX
     params = {
         "newchannel": "news",
