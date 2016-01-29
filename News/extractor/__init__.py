@@ -1,12 +1,14 @@
 # coding: utf-8
-
+import re
 from bs4 import BeautifulSoup, Comment, Tag, NavigableString
 
 
 class NewsExtractor(object):
 
-    HARD_TAGS = ["<strong>", "</strong>", "<em>", "</em>", "<br>"]
+    HARD_TAGS = ["strong", "em", "a"]
     TAGS = ["script", "link"]
+    HARD_TAGS_P = re.compile("|".join(["<{tag}[^>]*>|</{tag}>".format(tag=tag)
+                                       for tag in HARD_TAGS]))
 
     def __init__(self, html, url=None, hard_tags=None, tags=None, news=None):
         self.html = html
@@ -21,18 +23,28 @@ class NewsExtractor(object):
         self.news = news
 
     def _hard_remove_tags(self):
-        for tag in self.hard_tags:
-            self.cleaned_html = self.cleaned_html.replace(tag, "")
+        """ remove tags in html, notice not remove the inner content """
+        if self.HARD_TAGS:
+            self.cleaned_html = re.sub(self.HARD_TAGS_P, "", self.html)
 
     def _remove_comments(self):
+        """ remove comments in html """
         comments = self.soup.find_all(text=lambda text: isinstance(text, Comment))
         [comment.extract() for comment in comments]
 
     def _remove_tags(self):
+        """ remove tags and inner content in html """
         [tag.extract() for tag in self.soup.find_all(self.tags)]
 
     @staticmethod
     def _remove_tag(tag, name, **kwargs):
+        """
+        remove all tags in Tag of BeautifulSoup
+        :param tag: Tag Object of BeautifulSoup
+        :param name: str, tag name
+        :param kwargs: parameters of find_all
+        :return: in place, no return
+        """
         [t.extract() for t in tag.find_all(name, **kwargs)]
 
     @staticmethod
