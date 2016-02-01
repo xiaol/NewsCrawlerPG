@@ -1,9 +1,12 @@
+# coding: utf-8
+
 from scrapy import Request
 from News.spiders import NewsSpider
 from News.utils.util import load_json_data
 from News.utils.util import str_from_timestamp
-from News.items import NewsItem
+from News.items import NewsItem, CommentItem
 from News.constans.news163 import SPIDER_NAME
+from News.constans.news163 import CRAWL_SOURCE
 from News.constans.news163 import ARTICLE_URL_TEMPLATE
 from News.constans.news163 import COMMENT_URL_TEMPLATE
 from News.constans.news163 import DOMAIN
@@ -18,11 +21,12 @@ class News163(NewsSpider):
     def parse(self, response):
         articles = load_json_data(response.body)
         for article in articles:
-            item = self.g_news_item(article)
+            item = self.g_news_item(article, response.request.url)
             if item is not None:
                 yield self.g_news_request(item)
+                yield self.g_comment_request(item["docid"], 0)
 
-    def g_news_item(self, article):
+    def g_news_item(self, article, start_url=""):
         news = NewsItem()
         news["docid"] = article["docID"]
         url_163 = article.get("url_163", None)
@@ -44,10 +48,12 @@ class News163(NewsSpider):
         news["down"] = 0
 
         news["original_url"] = article.get("doc_url", "")
-        news["channel"] = ""
-        news["category"] = ""
-        news["crawl_source"] = ""
+        news["channel"] = article.get("channel", "/").split("/")[0]
+        news["category"] = article.get("category", "")
+        news["crawl_source"] = CRAWL_SOURCE
         news["original_source"] = article.get("source", "")
+
+        news["start_url"] = start_url
         return news
 
     def g_news_request(self, item):
@@ -65,7 +71,10 @@ class News163(NewsSpider):
         content, image_number = extractor.extract()
         news["content"] = content
         news["image_number"] = image_number
-        yield news
+        if len(news["content"]) == 0:
+            return
+        else:
+            yield news
 
     @staticmethod
     def _g_crawl_url(path):
@@ -81,10 +90,32 @@ class News163(NewsSpider):
         data = load_json_data(response.body)
         count = data["newListSize"]
         if count == 0: return
-        comment_ids = data["commentids"]
+        comment_ids = data["commentIds"]
         comments = data["comments"]
+        for comment_id in comment_ids:
+            comment_id = comment_id.split(",")[-1]
+            if comment_id in comments:
+                item = self.g_comment_item(comments[comment_id], docid)
+                if item is not None:
+                    yield item
         if self.default_comment_count * page < count:
             yield self.g_comment_request(docid, page=page+1)
+
+    def g_comment_item(self, comment, docid):
+        item = CommentItem()
+        item["docid"] = docid
+        item["comment_id"] = comment["commentId"]
+        item["content"] = comment["content"]
+        user = comment["user"]
+        item["nickname"] = user.get("nickname", "")
+        item["profile"] = user.get("avatar", "")
+        item["love"] = comment["vote"]
+        item["create_time"] = comment["createTime"]
+        if item["content"].strip():
+            item["content"] = item["content"].strip().replace("<br>", "")
+            return item
+        else:
+            return None
 
     def g_comment_request(self, docid, page=0):
         offset = page * self.default_comment_count

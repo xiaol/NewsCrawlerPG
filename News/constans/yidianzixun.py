@@ -1,6 +1,6 @@
 # coding: utf-8
 
-SPIDER_NAME = "spider:yidianzixun"
+SPIDER_NAME = "spider:news:yidianzixun"
 ARTICLE_URL_TEMPLATE = "http://www.yidianzixun.com/home?page=article&id={docid}"
 START_URL_PREFIX = "http://www.yidianzixun.com/api/q/?"
 CHANNELS = {

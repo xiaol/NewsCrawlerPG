@@ -31,3 +31,16 @@ class NewsItem(Item):
     original_source = Field()   # 源地址 str
 
     key = Field()   # redis key, base64 for crawl_url
+    start_url = Field()  # start url, record to get channel info in pipeline
+
+
+class CommentItem(Item):
+    comment_id = Field()
+    content = Field()
+    nickname = Field()
+    love = Field()
+    create_time = Field()
+    profile = Field()
+    docid = Field()
+    pid = Field()
+

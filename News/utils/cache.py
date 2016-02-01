@@ -21,6 +21,10 @@ class Cache(object):
     def hmset(cls, key, maping):
         return cls.r.hmset(key, mapping=maping)
 
+    @classmethod
+    def hgetall(cls, key):
+        return cls.r.hgetall(key)
+
 
 
 

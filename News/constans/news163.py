@@ -1,6 +1,7 @@
 # coding: utf-8
 
-SPIDER_NAME = "spider:news163"
+SPIDER_NAME = "spider:news:news163"
+CRAWL_SOURCE = "网易新闻"
 ARTICLE_URL_TEMPLATE = "http://j.news.163.com/hy/doc.s?" \
                        "info=2&type=10&hash=&docid={docid}"
 COMMENT_URL_TEMPLATE = "http://comment.news.163.com/api/v1" \

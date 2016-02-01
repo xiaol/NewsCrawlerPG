@@ -1,6 +1,6 @@
 # coding: utf-8
 
-SPIDER_NAME = "spider:toutiao"
+SPIDER_NAME = "spider:news:toutiao"
 DOMAIN = "http://toutiao.com"
 START_URL_PREFIX = "http://toutiao.com/api/article/recent/?"
 CHANNELS = {

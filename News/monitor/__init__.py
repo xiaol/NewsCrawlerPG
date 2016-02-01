@@ -2,15 +2,8 @@
 
 from functools import wraps
 
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine
-POSTGRES = "postgresql://postgres:lee@localhost/test"
-Base = automap_base()
-engine = create_engine(POSTGRES)
-Base.prepare(engine, reflect=True)
-Monitor = Base.classes.monitor
-session = Session(engine)
+from News.database import Monitor
+from News.database import session
 
 
 def _record_error_log(item, error):
@@ -19,11 +12,14 @@ def _record_error_log(item, error):
         original_url=item["original_url"],
         crawl_source=item["crawl_source"],
         original_source=item["original_source"],
-        channel="news",
+        channel=item["channel"],
         error=error,
     )
-    session.add(m)
-    session.commit()
+    try:
+        session.add(m)
+        session.commit()
+    except Exception as e:
+        session.rollback()
 
 
 def monitor(error):

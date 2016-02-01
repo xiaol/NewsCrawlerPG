@@ -64,7 +64,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'News.pipelines.NewsPipeline': 300,
+   'News.debug_pipelines.DebugPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

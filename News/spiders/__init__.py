@@ -29,7 +29,7 @@ class NewsSpider(RedisSpider):
     def news_already_exists(key):
         boolean = Cache.exist(key)
         if boolean:
-            _logger.info("news already exists: %s" % key)
+            _logger.info("cache exists: %s" % key)
         return boolean
 
     @staticmethod
