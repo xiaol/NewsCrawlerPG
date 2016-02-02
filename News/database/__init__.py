@@ -3,7 +3,8 @@
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
-POSTGRES = "postgresql://postgres:lee@localhost/test"
+from News.settings import POSTGRES
+
 Base = automap_base()
 engine = create_engine(POSTGRES)
 Base.prepare(engine, reflect=True)

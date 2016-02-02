@@ -64,6 +64,12 @@ class NewsPipeline(object):
         obj["img_list"] = json.dumps([])
         obj["content"] = json.dumps(item["content"])
         obj["content_html"] = ""
+        if item.get("province"):
+            obj["province"] = item["province"]
+        if item.get("city"):
+            obj["city"] = item["city"]
+        if item.get("district"):
+            obj["district"] = item["district"]
 
         start_url = item["start_url"]
         if start_url in self.sources:

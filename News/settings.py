@@ -88,3 +88,9 @@ ITEM_PIPELINES = {
 
 LOG_LEVEL = "INFO"
 
+REDIS_URL = 'redis://localhost:6379'
+# REDIS_URL = 'redis://ccd827d637514872:LYcache2015@ccd827d637514872.m.cnhza.kvstore.aliyuncs.com:6379'
+
+POSTGRES = "postgresql://postgres:lee@localhost/test"
+# POSTGRES = "postgresql://postgres:ly@postgres&2015@120.27.163.25/BDP"
+
