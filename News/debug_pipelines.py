@@ -76,7 +76,7 @@ class DebugPipeline(object):
             session.add(news)
             session.commit()
         except:
-            print("exists: %s" % item["title"])
+            # print("exists: %s" % item["title"])
             session.rollback()
         else:
             print("insert news: %s" % item["title"])

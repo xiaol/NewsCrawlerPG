@@ -1,0 +1,6 @@
+.*
+!.gitignore
+.idea*
+nohup.out
+*.py[cod]
+

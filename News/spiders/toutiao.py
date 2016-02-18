@@ -7,6 +7,7 @@ from News.utils.util import str_from_timestamp
 from News.items import NewsItem
 from News.constans.toutiao import SPIDER_NAME
 from News.constans.toutiao import DOMAIN
+from News.constans.toutiao import CRAWL_SOURCE
 from News.extractor.toutiao import TouTiaoExtractor
 
 
@@ -42,7 +43,7 @@ class TouTiao(NewsSpider):
         news["original_url"] = article.get("url", "")
         news["channel"] = ""
         news["category"] = ""
-        news["crawl_source"] = ""
+        news["crawl_source"] = CRAWL_SOURCE
         news["original_source"] = article.get("source", "")
         return news
 

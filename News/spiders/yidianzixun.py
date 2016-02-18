@@ -6,6 +6,7 @@ from News.utils.util import load_json_data
 from News.items import NewsItem
 from News.constans.yidianzixun import SPIDER_NAME
 from News.constans.yidianzixun import ARTICLE_URL_TEMPLATE
+from News.constans.yidianzixun import CRAWL_SOURCE
 from News.extractor.yidianzixun import YiDianZiXunExtractor
 
 
@@ -41,7 +42,7 @@ class YiDianZiXun(NewsSpider):
         news["original_url"] = article.get("url", "")
         news["channel"] = ""
         news["category"] = ""
-        news["crawl_source"] = ""
+        news["crawl_source"] = CRAWL_SOURCE
         news["original_source"] = article.get("source", "")
         return news
 
