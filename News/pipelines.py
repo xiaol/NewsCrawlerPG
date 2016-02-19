@@ -81,6 +81,7 @@ class NewsPipeline(object):
             obj["channel_id"] = source["channelId"]
             obj["source_online"] = source["online"]
             Cache.hmset(item["key"], obj)
+            Cache.expire(item["key"], 604800)  # 60*60*24*7
         else:
             raise DropItem("no spider info, start_url:%s" % start_url)
 

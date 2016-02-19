@@ -28,6 +28,10 @@ class Cache(object):
     def hgetall(cls, key):
         return cls.r.hgetall(key)
 
+    @classmethod
+    def expire(cls, key, seconds):
+        return cls.r.expire(key, seconds)
+
 
 
 

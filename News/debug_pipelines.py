@@ -43,6 +43,7 @@ class DebugPipeline(object):
         obj["content"] = json.dumps(item["content"])
         obj["content_html"] = ""
         Cache.hmset(item["key"], obj)
+        Cache.expire(item["key"], 604800)  # 60*60*24*7
 
     @staticmethod
     def store_news(item):
