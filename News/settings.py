@@ -9,6 +9,8 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+DEBUG = True
+
 BOT_NAME = 'News'
 
 SPIDER_MODULES = ['News.spiders']
@@ -57,16 +59,9 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
+# EXTENSIONS = {
 #    'scrapy.telnet.TelnetConsole': None,
-#}
-
-# Configure item pipelines
-# See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    'News.debug_pipelines.DebugPipeline': 300,
-    # 'News.pipelines.NewsPipeline': 300,
-}
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -87,12 +82,21 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES=[]
 #HTTPCACHE_STORAGE='scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-LOG_LEVEL = "INFO"
+# Configure item pipelines
+# See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 
-REDIS_URL = 'redis://localhost:6379'
-# REDIS_URL = 'redis://ccd827d637514872:LYcache2015@ccd827d637514872.m.cnhza.kvstore.aliyuncs.com:6379'
+if DEBUG:
+    ITEM_PIPELINES = {
+        'News.debug_pipelines.DebugPipeline': 300,
+    }
+    LOG_LEVEL = "INFO"
+    REDIS_URL = 'redis://localhost:6379'
+    POSTGRES = "postgresql://postgres:lee@localhost/test"
+else:
+    ITEM_PIPELINES = {
+        'News.pipelines.NewsPipeline': 300,
+    }
+    LOG_LEVEL = "ERROR"
+    REDIS_URL = 'redis://ccd827d637514872:LYcache2015@ccd827d637514872.m.cnhza.kvstore.aliyuncs.com:6379'
+    POSTGRES = "postgresql://postgres:ly@postgres&2015@120.27.163.25/BDP"
 
-POSTGRES = "postgresql://postgres:lee@localhost/test"
-# POSTGRES = "postgresql://postgres:ly@postgres&2015@120.27.163.25/BDP"
-
-DEBUG = False
