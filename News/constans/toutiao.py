@@ -1,7 +1,7 @@
 # coding: utf-8
 
 SPIDER_NAME = "spider:news:toutiao"
-CRAWL_SOURCE = "今日头条"
+CRAWL_SOURCE = u"今日头条"
 DOMAIN = "http://toutiao.com"
 OUTER = ["jiemian.com", "mafengwo.cn"]
 START_URL_PREFIX = "http://toutiao.com/api/article/recent/?"

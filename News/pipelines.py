@@ -44,6 +44,7 @@ class NewsPipeline(object):
                 self.store_news(item)
         elif isinstance(item, CommentItem):
             pass
+            # self.store_comment(item)
         return item
 
     def cache_news(self, item):

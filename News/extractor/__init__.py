@@ -45,6 +45,7 @@ class NewsExtractor(object):
         :param kwargs: parameters of find_all
         :return: in place, no return
         """
+        if tag is None: return
         [t.extract() for t in tag.find_all(name, **kwargs)]
 
     @staticmethod

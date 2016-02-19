@@ -95,3 +95,4 @@ REDIS_URL = 'redis://localhost:6379'
 POSTGRES = "postgresql://postgres:lee@localhost/test"
 # POSTGRES = "postgresql://postgres:ly@postgres&2015@120.27.163.25/BDP"
 
+DEBUG = False

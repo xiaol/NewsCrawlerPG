@@ -1,7 +1,7 @@
 # coding: utf-8
 
 SPIDER_NAME = "spider:news:yidianzixun"
-CRAWL_SOURCE = "一点资讯"
+CRAWL_SOURCE = u"一点资讯"
 OUTER = ["jiemian.com"]
 ARTICLE_URL_TEMPLATE = "http://www.yidianzixun.com/home?page=article&id={docid}"
 START_URL_PREFIX = "http://www.yidianzixun.com/api/q/?"
