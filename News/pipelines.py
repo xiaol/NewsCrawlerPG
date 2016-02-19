@@ -4,7 +4,7 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
-
+import base64
 import json
 import logging
 
@@ -86,7 +86,8 @@ class NewsPipeline(object):
 
     @staticmethod
     def store_news(item):
-        url = NEWS_STORE_API.format(key=item["key"])
+        key = base64.encodestring(item["key"]).replace("=", "")
+        url = NEWS_STORE_API.format(key=key)
         r = requests.get(url)
         if r.status_code <= 300:
             _logger.debug("store %s success" % item["key"])
