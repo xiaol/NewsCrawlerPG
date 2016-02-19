@@ -39,6 +39,7 @@ class TouTiao(NewsSpider):
         news["love"] = article.get("favorite_count", 0)
         news["up"] = article.get("digg_count", 0)
         news["down"] = article.get("bury_count", 0)
+        news["image_list"] = self._g_image_list(article)
 
         news["original_url"] = article.get("url", "")
         news["channel"] = ""
@@ -70,6 +71,13 @@ class TouTiao(NewsSpider):
     @staticmethod
     def _g_crawl_url(path):
         return DOMAIN + path
+
+    @staticmethod
+    def _g_image_list(article):
+        urls = [item["url"] for item in article["image_list"] if "url" in item]
+        if not urls and article.get("image_url"):
+            urls.append(article["image_url"])
+        return urls
 
 
 

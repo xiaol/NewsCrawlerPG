@@ -30,6 +30,8 @@ class NewsItem(Item):
     crawl_source = Field()  # 抓取地址 str
     original_source = Field()   # 源地址 str
 
+    image_list = Field()    # 新闻 meta 图片列表， 只为向下兼容
+
     key = Field()   # redis key, base64 for crawl_url
     start_url = Field()  # start url, record to get channel info in pipeline
 

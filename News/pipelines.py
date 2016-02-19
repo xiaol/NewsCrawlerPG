@@ -62,7 +62,7 @@ class NewsPipeline(object):
         obj["pub_name"] = item["original_source"]
         obj["pub_time"] = item["publish_time"]
         obj["img_num"] = item["image_number"]
-        obj["img_list"] = json.dumps([])
+        obj["img_list"] = json.dumps(item["image_list"])
         obj["content"] = json.dumps(item["content"])
         obj["content_html"] = ""
         if item.get("province"):
@@ -91,7 +91,11 @@ class NewsPipeline(object):
         url = NEWS_STORE_API.format(key=key)
         r = requests.get(url)
         if r.status_code <= 300:
-            _logger.debug("store %s success" % item["key"])
+            content = json.loads(r.content)
+            if content["key"] == "succes":
+                _logger.debug("store %s success" % item["key"])
+            else:
+                _logger.error("store failed: %s" % content["key"])
         else:
             _logger.error("store %s failed code: %s" % (item["key"],
                                                         r.status_code))

@@ -46,6 +46,7 @@ class News163(NewsSpider):
         news["love"] = 0
         news["up"] = 0
         news["down"] = 0
+        news["image_list"] = self._g_image_list()
 
         news["original_url"] = article.get("doc_url", "")
         news["channel"] = article.get("channel", "/").split("/")[0]
@@ -129,6 +130,10 @@ class News163(NewsSpider):
     @staticmethod
     def _g_comments_url(docid, offset):
         return COMMENT_URL_TEMPLATE.format(docid=docid, offset=offset)
+
+    @staticmethod
+    def _g_image_list():
+        return list()
 
 
 

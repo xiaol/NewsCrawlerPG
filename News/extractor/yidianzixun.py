@@ -32,7 +32,6 @@ class YiDianZiXunExtractor(NewsExtractor):
         self._remove_tag(tag, "p", class_="copyright")
         self._remove_tag(tag, "div", class_="report")
         result = self._extract(tag)
-        # result = self.__extract_content(tag)
         contents, count = self.g_returns(result)
         return contents, count
 
@@ -43,46 +42,10 @@ class YiDianZiXunExtractor(NewsExtractor):
               or self.soup.find("div", class_="article-content")
         self._remove_tag(tag, "div", class_="video-area")
         result = self._extract(tag)
-        # result = self.__extract_content(tag)
         contents, count = self.g_returns(result)
         return contents, count
 
     @monitor(error=1)
     def _not_support_now(self):
         return [], 0
-
-    @staticmethod
-    def __extract_content(tag):
-        result = list()
-        if not tag:
-            return result
-        for child in tag.contents:
-            if isinstance(child, NavigableString):
-                string = unicode(child)
-                if string and string.strip():
-                    result.append({"text": string.strip()})
-            elif isinstance(child, Tag):
-                ignore = child.get("class", [])
-                if child.name == "img":
-                    src = child.get("src") or child.get("alt_src")
-                    result.append({"img": src})
-                elif child.img:
-                    src = child.img.get("src") or child.img.get("alt_src")
-                    result.append({"img": src})
-                else:
-                    classes = ["copyright", "report", "video-area"]
-                    for c in classes:
-                        if c in ignore: break
-                    else:
-                        result.append({"text": child.get_text()})
-            else:
-                pass
-        return result
-
-
-
-
-
-
-
 

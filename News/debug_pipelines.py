@@ -39,7 +39,7 @@ class DebugPipeline(object):
         obj["pub_name"] = item["original_source"]
         obj["pub_time"] = item["publish_time"]
         obj["img_num"] = item["image_number"]
-        obj["img_list"] = json.dumps([])
+        obj["img_list"] = json.dumps(item["image_list"])
         obj["content"] = json.dumps(item["content"])
         obj["content_html"] = ""
         Cache.hmset(item["key"], obj)

@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from urllib import urlencode
+
 from scrapy import Request
 from News.spiders import NewsSpider
 from News.utils.util import load_json_data
@@ -38,6 +40,7 @@ class YiDianZiXun(NewsSpider):
         news["love"] = article.get("like", 0)
         news["up"] = article.get("up", 0)
         news["down"] = 0
+        news["image_list"] = self._g_image_list(article)
 
         news["original_url"] = article.get("url", "")
         news["channel"] = ""
@@ -74,6 +77,27 @@ class YiDianZiXun(NewsSpider):
     @staticmethod
     def _g_article_url(docid):
         return ARTICLE_URL_TEMPLATE.format(docid=docid)
+
+    @classmethod
+    def _g_image_list(cls, article):
+        urls = list()
+        for image in article["image_urls"]:  # process image path
+            if image.startswith("http://static.yidianzixun.com"):
+                image_url = image
+            else:
+                image_url = cls._g_image_url(image, article["docid"])
+            urls.append(image_url)
+        return urls
+
+    @staticmethod
+    def _g_image_url(url, news_id):
+        _image = "http://i1.go2yd.com/image.php?"
+        params = {
+            "url": url,
+            "news_id": news_id,
+            "type": "thumbnail_192x108"
+        }
+        return _image + urlencode(params)
 
 
 
