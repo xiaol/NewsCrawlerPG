@@ -34,4 +34,4 @@ class NewsSpider(RedisSpider):
 
     @staticmethod
     def g_cache_key(string):
-        return "news:" + base64.encodestring(string).replace("=", "")
+        return "news:" + base64.urlsafe_b64encode(string).replace("=", "")

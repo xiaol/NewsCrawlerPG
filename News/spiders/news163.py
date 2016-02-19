@@ -24,7 +24,7 @@ class News163(NewsSpider):
             item = self.g_news_item(article, response.request.url)
             if item is not None:
                 yield self.g_news_request(item)
-                yield self.g_comment_request(item["docid"], 0)
+                # yield self.g_comment_request(item["docid"], 0)
 
     def g_news_item(self, article, start_url=""):
         news = NewsItem()
