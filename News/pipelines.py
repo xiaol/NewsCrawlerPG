@@ -63,7 +63,7 @@ class NewsPipeline(object):
         obj["pub_time"] = item["publish_time"]
         obj["img_num"] = item["image_number"]
         obj["img_list"] = json.dumps(item["image_list"])
-        obj["content"] = json.dumps(item["content"])
+        obj["content"] = json.dumps(self._change_text_txt(item["content"]))
         obj["content_html"] = ""
         if item.get("province"):
             obj["province"] = item["province"]
@@ -84,6 +84,17 @@ class NewsPipeline(object):
             Cache.expire(item["key"], 604800)  # 60*60*24*7
         else:
             raise DropItem("no spider info, start_url:%s" % start_url)
+
+    @staticmethod
+    def _change_text_txt(content):
+        changed = list()
+        for item in content:
+            for key, value in item.iteritems:
+                if key == "text":
+                    changed.append({"txt": value})
+                else:
+                    changed.append({key: value})
+        return changed
 
     @staticmethod
     def store_news(item):
