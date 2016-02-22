@@ -89,7 +89,7 @@ class NewsPipeline(object):
     def _change_text_txt(content):
         changed = list()
         for item in content:
-            for key, value in item.iteritems:
+            for key, value in item.iteritems():
                 if key == "text":
                     changed.append({"txt": value})
                 else:
