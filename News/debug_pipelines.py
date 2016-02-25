@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from datetime import datetime
+import pymongo
 import json
 from scrapy.exceptions import DropItem
 
@@ -10,40 +12,149 @@ News = Base.classes.news
 Comment = Base.classes.newscomments
 
 
-class DebugPipeline(object):
+class CompatiblePipeline(object):
+    """为先后兼容， 对数据格式进行一些处理"""
+
+    def process_item(self, item, spider):
+        if not isinstance(item, NewsItem):
+            return item
+        item["content"] = self._change_text_txt(item["content"])
+        return item
+
+    @staticmethod
+    def _change_text_txt(content):
+        changed = list()
+        for item in content:
+            for key, value in item.iteritems():
+                if key == "text":
+                    changed.append({"txt": value})
+                else:
+                    changed.append({key: value})
+        return changed
+
+
+class CleanPipeline(object):
+    """清洗数据， 丢弃不完整的数据"""
 
     def process_item(self, item, spider):
         if isinstance(item, NewsItem):
             if len(item["content"]) == 0:
-                raise DropItem("content empty:%s" % item["crawl_url"])
+                raise DropItem("content empty: %s" % item["crawl_url"])
             else:
-                self.cache_news(item)
-                self.store_news(item)
-        elif isinstance(item, CommentItem):
-            self.store_comment(item)
+                return item
+        else:
+            return item
+
+
+class CachePipeline(object):
+    """缓存新闻数据"""
+
+    def process_item(self, item, spider):
+        if not isinstance(item, NewsItem):
+            return item
+        obj = {
+            "key": item["key"],
+            "url": item["crawl_url"],
+            "docid": item["docid"],
+            "title": item["title"],
+            "keywords": ",".join(item["tags"]),
+            "synopsis": item["summary"],
+            "love": item["love"],
+            "up": item["up"],
+            "author": "",
+            "pub_url": item["original_url"],
+            "pub_name": item["original_source"],
+            "pub_time": item["publish_time"],
+            "img_num": item["image_number"],
+            "img_list": json.dumps(item["image_list"]),
+            "content": json.dumps(item["content"]),
+            "content_html": "",
+        }
+        if item.get("province"):
+            obj["province"] = item["province"]
+        if item.get("city"):
+            obj["city"] = item["city"]
+        if item.get("district"):
+            obj["district"] = item["district"]
+        Cache.hmset(item["key"], obj)
+        Cache.expire(item["key"], 604800)
         return item
 
+
+class PostgrePipeline(object):
+    """数据入 postgres 数据库"""
+
+    pass
+
+
+class MongoPipeline(object):
+    """数据入 mongodb 数据库"""
+
+    def __init__(self, mongo_uri, mongo_db, mongo_collection):
+        self.mongo_uri = mongo_uri
+        self.mongo_db = mongo_db
+        self.mongo_collection = mongo_collection
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            mongo_uri=crawler.settings.get("MONGO_URI"),
+            mongo_db=crawler.settings.get("MONGO_DATABASE"),
+            mongo_collection=crawler.settings.get("MONGO_COLLECTION")
+        )
+
+    def open_spider(self, spider):
+        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.db = self.client[self.mongo_db]
+        self.collection = self.db[self.mongo_collection]
+
+    def close_spider(self, spider):
+        self.client.close()
+
+    def process_item(self, item, spider):
+        if not isinstance(item, NewsItem):
+            return item
+        formated = self.__prepare_mongo_format(item)
+        self.collection.update({"title": formated["title"]},
+                               {"$setOnInsert": formated},
+                               upsert=True)
+
+    @classmethod
+    def __prepare_mongo_format(cls, item):
+        old = dict()
+        item["content"] = cls.__change_content_compatible(item["content"])
+        old["update_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        old["sourceSiteName"] = item["crawl_source"]
+        old["title"] = item["title"]
+        old["url"] = item["crawl_url"]
+        old["imgnum"] = item["image_number"]
+        old["source_url"] = item["original_url"]
+        old["content"] = item["content"]
+        old["channel_id"] = "16"
+        old["create_time"] = item["publish_time"]
+        old["source"] = item["original_source"]
+        old["channel"] = u"外媒观光团"
+        return old
+
     @staticmethod
-    def cache_news(item):
-        obj = dict()
-        obj["key"] = item["key"]
-        obj["url"] = item["crawl_url"]
-        obj["docid"] = item["docid"]
-        obj["title"] = item["title"]
-        obj["keywords"] = ",".join(item["tags"])
-        obj["synopsis"] = item["summary"]
-        obj["love"] = item["love"]
-        obj["up"] = item["up"]
-        obj["author"] = ""
-        obj["pub_url"] = item["original_url"]
-        obj["pub_name"] = item["original_source"]
-        obj["pub_time"] = item["publish_time"]
-        obj["img_num"] = item["image_number"]
-        obj["img_list"] = json.dumps(item["image_list"])
-        obj["content"] = json.dumps(item["content"])
-        obj["content_html"] = ""
-        Cache.hmset(item["key"], obj)
-        Cache.expire(item["key"], 604800)  # 60*60*24*7
+    def __change_content_compatible(content):
+        old = list()
+        for index, item in enumerate(content):
+            old.append({str(index): item})
+        return old
+
+
+class DebugPostgrePipeline(object):
+    """本地测试入 postgres 数据"""
+
+    def process_item(self, item, spider):
+        if isinstance(item, NewsItem):
+            self.store_news(item)
+        elif isinstance(item, CommentItem):
+            self.store_comment(item)
+        else:
+            raise DropItem("unknown item type: %s" % type(item))
+        return item
 
     @staticmethod
     def store_news(item):
@@ -77,7 +188,6 @@ class DebugPipeline(object):
             session.add(news)
             session.commit()
         except:
-            # print("exists: %s" % item["title"])
             session.rollback()
         else:
             print("insert news: %s" % item["title"])
@@ -99,5 +209,3 @@ class DebugPipeline(object):
         except Exception as e:
             print("error: %s" % e.message)
             session.rollback()
-
-

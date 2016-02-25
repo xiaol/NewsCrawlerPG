@@ -13,6 +13,17 @@ class RotateUserAgentMiddleware(UserAgentMiddleware):
             request.headers.setdefault("Cookie", cookie)
 
 
+class WechatUserAgentMiddleware(UserAgentMiddleware):
+
+    def process_request(self, request, spider):
+        browser = request.meta.get("browser")
+        if not browser:
+            # browser = random.choice(WEB_USER_AGENT)
+            browser = WEB_USER_AGENT[0]
+        request.headers.setdefault("User-Agent", browser)
+        request.meta["browser"] = browser
+
+
 
 
 

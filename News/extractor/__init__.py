@@ -7,15 +7,13 @@ class NewsExtractor(object):
 
     HARD_TAGS = ["strong", "em", "a"]
     TAGS = ["script", "link"]
-    HARD_TAGS_P = re.compile("|".join(["<{tag}[^>]*>|</{tag}>".format(tag=tag)
-                                       for tag in HARD_TAGS]))
 
     def __init__(self, html, url=None, hard_tags=None, tags=None, news=None):
         self.html = html
         self.cleaned_html = html
         self.url = url
         self.hard_tags = hard_tags if hard_tags is not None else self.HARD_TAGS
-        self.tags = tags if hard_tags is not None else self.TAGS
+        self.tags = tags if tags is not None else self.TAGS
         self._hard_remove_tags()
         self.soup = BeautifulSoup(self.cleaned_html, "lxml")
         self._remove_comments()
@@ -24,8 +22,10 @@ class NewsExtractor(object):
 
     def _hard_remove_tags(self):
         """ remove tags in html, notice not remove the inner content """
-        if self.HARD_TAGS:
-            self.cleaned_html = re.sub(self.HARD_TAGS_P, "", self.html)
+        if self.hard_tags:
+            p = re.compile("|".join(["<{tag}[^>]*>|</{tag}>".format(tag=tag)
+                                     for tag in self.hard_tags]))
+            self.cleaned_html = re.sub(p, "", self.html)
 
     def _remove_comments(self):
         """ remove comments in html """
@@ -60,8 +60,8 @@ class NewsExtractor(object):
                 contents.append(c)
         return contents, count
 
-    @staticmethod
-    def _extract(tag):
+    @classmethod
+    def _extract(cls, tag):
         result = list()
         if not tag: return result
         for child in tag.descendants:
@@ -71,12 +71,47 @@ class NewsExtractor(object):
                     result.append({"text": string.strip()})
             elif isinstance(child, Tag):
                 if child.name == "img":
-                    result.append(
-                            {"img": child.get("src") or child.get("alt-src")}
-                    )
+                    result.append({"img": cls.__get_img_src(child)})
             else:
                 pass
         return result
+
+    @classmethod
+    def _extract_regular(cls, tag, length=3):
+        result = list()
+        if not tag:
+            return result
+        children = []
+        for child in tag.children:
+            if isinstance(child, Tag):
+                children.append(child)
+        if len(children) <= length:
+            tag = children[0]
+        for child in tag.children:
+            if isinstance(child, NavigableString):
+                string = unicode(child)
+                if string and string.strip():
+                    result.append({"text": string.strip()})
+            elif isinstance(child, Tag):
+                if child.name == "img":
+                    result.append({"img": cls.__get_img_src(child)})
+                elif child.img:
+                    result.append({"img": cls.__get_img_src(child.img)})
+                else:
+                    result.append({"text": child.get_text().strip()})
+            else:
+                pass
+        return result
+
+    @staticmethod
+    def __get_img_src(tag):
+        return tag.get("src") or tag.get("alt-src") or tag.get("data-src")
+
+    @staticmethod
+    def _show(content):
+        for item in content:
+            for key, value in item.items():
+                print("%s: %s" % (key, value))
 
 
 

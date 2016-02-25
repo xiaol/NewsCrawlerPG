@@ -7,6 +7,7 @@
 import base64
 import json
 import logging
+from datetime import datetime
 
 import requests
 from scrapy.exceptions import DropItem
@@ -18,6 +19,22 @@ from News.utils.cache import Cache
 from News.items import NewsItem, CommentItem
 
 _logger = logging.getLogger(__name__)
+
+
+class CleanPipeline(object):
+    pass
+
+
+class CachePipeline(object):
+    pass
+
+
+class PostgrePipeline(object):
+    pass
+
+
+class MongoPipeline(object):
+    pass
 
 
 class NewsPipeline(object):
@@ -129,6 +146,62 @@ class NewsPipeline(object):
             _logger.warn("store %s failed code: %s" % (item["comment_id"],
                                                        r.status_code))
 
+
+import pymongo
+
+
+class MongoPipeline(object):
+
+    def __init__(self):
+        self.client = pymongo.MongoClient("mongodb://h44:27017,h213:27017,h241:27017/?replicaSet=myset")
+        self.db = self.client["news_ver2"]
+        self.collection = self.db["NewsItems"]
+
+    def process_item(self, item, spider):
+        if len(item["content"]) == 0:
+            raise DropItem("content empty: %s" % item["crawl_url"])
+        else:
+            old = self.prepare_old_news_format(item)
+            self.store_news(old)
+
+    def store_news(self, old):
+        inserted = self.collection.insert_one(old)
+        print inserted.inserted_id
+
+    def prepare_old_news_format(self, item):
+        old = dict()
+        item["content"] = self._change_text_txt(item["content"])
+        item["content"] = self._change_content_compatible(item["content"])
+        old["update_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        old["sourceSiteName"] = item["crawl_source"]
+        old["title"] = item["title"]
+        old["url"] = item["crawl_url"]
+        old["imgnum"] = item["image_number"]
+        old["source_url"] = item["original_url"]
+        old["content"] = item["content"]
+        old["channel_id"] = "16"
+        old["create_time"] = item["publish_time"]
+        old["source"] = item["original_source"]
+        old["channel"] = u"外媒观光团"
+        return old
+
+    @staticmethod
+    def _change_content_compatible(content):
+        old = list()
+        for index, item in enumerate(content):
+            old.append({str(index): item})
+        return old
+
+    @staticmethod
+    def _change_text_txt(content):
+        changed = list()
+        for item in content:
+            for key, value in item.iteritems():
+                if key == "text":
+                    changed.append({"txt": value})
+                else:
+                    changed.append({key: value})
+        return changed
 
 
 

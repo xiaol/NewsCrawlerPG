@@ -87,7 +87,7 @@ DOWNLOADER_MIDDLEWARES = {
 
 if DEBUG:
     ITEM_PIPELINES = {
-        'News.debug_pipelines.DebugPipeline': 300,
+        'News.debug_pipelines.DebugPostgrePipeline': 300,
     }
     LOG_LEVEL = "INFO"
     REDIS_URL = 'redis://localhost:6379'
