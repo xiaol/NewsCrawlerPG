@@ -1,106 +1,28 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import base64
-import json
-import logging
 from datetime import datetime
-
+import pymongo
+import json
 import requests
+import logging
 from scrapy.exceptions import DropItem
 
-from News.constans import CACHE_SOURCE_KEY
-from News.constans import NEWS_STORE_API
-from News.constans import COMMENT_STORE_API
-from News.utils.cache import Cache
 from News.items import NewsItem, CommentItem
+from News.utils.cache import Cache
+from News.constans import NEWS_STORE_API, CACHE_SOURCE_KEY, COMMENT_STORE_API
 
 _logger = logging.getLogger(__name__)
 
 
-class CleanPipeline(object):
-    pass
-
-
-class CachePipeline(object):
-    pass
-
-
-class PostgrePipeline(object):
-    pass
-
-
-class MongoPipeline(object):
-    pass
-
-
-class NewsPipeline(object):
-
-    def __init__(self):
-        cache_source_key = CACHE_SOURCE_KEY
-        self.sources = self.get_cache_sources(cache_source_key)
-
-    @staticmethod
-    def get_cache_sources(cache_source_key):
-        """ local cache source info in redis """
-        sources = Cache.hgetall(cache_source_key)
-        for k, v in sources.iteritems():
-            sources[k] = json.loads(v)
-        return sources
+class CompatiblePipeline(object):
+    """为先后兼容， 对数据格式进行一些处理"""
 
     def process_item(self, item, spider):
-        if isinstance(item, NewsItem):
-            _logger.info("title: %s" % item["title"])
-            if len(item["content"]) == 0:
-                raise DropItem("content empty: %s" % item["crawl_url"])
-            else:
-                self.cache_news(item)
-                self.store_news(item)
-        elif isinstance(item, CommentItem):
-            pass
-            # self.store_comment(item)
+        if not isinstance(item, NewsItem):
+            return item
+        item["content"] = self._change_text_txt(item["content"])
         return item
-
-    def cache_news(self, item):
-        obj = dict()
-        obj["key"] = item["key"]
-        obj["url"] = item["crawl_url"]
-        obj["docid"] = item["docid"]
-        obj["title"] = item["title"]
-        obj["keywords"] = ",".join(item["tags"])
-        obj["synopsis"] = item["summary"]
-        obj["love"] = item["love"]
-        obj["up"] = item["up"]
-        obj["author"] = ""
-        obj["pub_url"] = item["original_url"]
-        obj["pub_name"] = item["original_source"]
-        obj["pub_time"] = item["publish_time"]
-        obj["img_num"] = item["image_number"]
-        obj["img_list"] = json.dumps(item["image_list"])
-        obj["content"] = json.dumps(self._change_text_txt(item["content"]))
-        obj["content_html"] = ""
-        if item.get("province"):
-            obj["province"] = item["province"]
-        if item.get("city"):
-            obj["city"] = item["city"]
-        if item.get("district"):
-            obj["district"] = item["district"]
-
-        start_url = item["start_url"]
-        if start_url in self.sources:
-            source = self.sources[start_url]
-            obj["source_id"] = source["id"]
-            obj["source_name"] = source["sourceName"]
-            obj["channel_name"] = source["channelName"]
-            obj["channel_id"] = source["channelId"]
-            obj["source_online"] = source["online"]
-            Cache.hmset(item["key"], obj)
-            Cache.expire(item["key"], 604800)  # 60*60*24*7
-        else:
-            raise DropItem("no spider info, start_url:%s" % start_url)
 
     @staticmethod
     def _change_text_txt(content):
@@ -113,8 +35,100 @@ class NewsPipeline(object):
                     changed.append({key: value})
         return changed
 
+
+class CleanPipeline(object):
+    """清洗数据， 丢弃不完整的数据"""
+
+    def process_item(self, item, spider):
+        if isinstance(item, NewsItem):
+            if len(item["content"]) == 0:
+                raise DropItem("content empty: %s" % item["crawl_url"])
+            else:
+                return item
+        else:
+            return item
+
+
+class CachePipeline(object):
+    """缓存新闻数据"""
+
+    def process_item(self, item, spider):
+        if not isinstance(item, NewsItem):
+            return item
+        obj = {
+            "key": item["key"],
+            "url": item["crawl_url"],
+            "docid": item["docid"],
+            "title": item["title"],
+            "keywords": ",".join(item["tags"]),
+            "synopsis": item["summary"],
+            "love": item["love"],
+            "up": item["up"],
+            "author": "",
+            "pub_url": item["original_url"],
+            "pub_name": item["original_source"],
+            "pub_time": item["publish_time"],
+            "img_num": item["image_number"],
+            "img_list": json.dumps(item["image_list"]),
+            "content": json.dumps(item["content"]),
+            "content_html": "",
+        }
+        if item.get("province"):
+            obj["province"] = item["province"]
+        if item.get("city"):
+            obj["city"] = item["city"]
+        if item.get("district"):
+            obj["district"] = item["district"]
+        Cache.hmset(item["key"], obj)
+        Cache.expire(item["key"], 604800)
+        return item
+
+
+class StorePipeline(object):
+    """调用远端存储服务， 数据入数据库"""
+
+    def __init__(self):
+        key = CACHE_SOURCE_KEY
+        self.mapping = self.__get_channel_info(key)
+
+    def process_item(self, item, spider):
+        if isinstance(item, NewsItem):
+            self.__update_cache_news(item["key"], item["start_url"])
+            self.store_news(item)
+        elif isinstance(item, CommentItem):
+            self.store_comment(item)
+        else:
+            raise DropItem("unknown item type: %s" % type(item))
+        return item
+
+    def __update_cache_news(self, key_in_cache, key):
+        """更新缓存中新闻信息，添加 channel 等字段"""
+        obj = dict()
+        if key in self.mapping:
+            info = self.mapping[key]
+            obj["source_id"] = info["id"]
+            obj["source_name"] = info["sourceName"]
+            obj["channel_name"] = info["channelName"]
+            obj["channel_id"] = info["channelId"]
+            obj["source_online"] = info["online"]
+            Cache.hmset(key_in_cache, obj)
+        else:
+            raise DropItem("no channel info in cache, key: %s" % key)
+
+    @staticmethod
+    def __get_channel_info(key):
+        """从缓存中获取额外的信息"""
+        sources = Cache.hgetall(key)
+        for k, v in sources.iteritems():
+            sources[k] = json.loads(v)
+        return sources
+
     @staticmethod
     def store_news(item):
+        """调用远端的存储服务，存储缓存中的新闻。
+
+        注意： 传递给服务端的参数是缓存中的 key, 需要通过 base64 编码后传递
+        """
         key = base64.encodestring(item["key"]).replace("=", "")
         url = NEWS_STORE_API.format(key=key)
         r = requests.get(url)
@@ -130,6 +144,7 @@ class NewsPipeline(object):
 
     @staticmethod
     def store_comment(item):
+        """调用远端的存储服务，存储 post 过去的评论数据"""
         comment = dict()
         comment["comment_id"] = item["comment_id"]
         comment["content"] = item["content"]
@@ -147,33 +162,44 @@ class NewsPipeline(object):
                                                        r.status_code))
 
 
-import pymongo
-
-
 class MongoPipeline(object):
+    """数据入 mongodb 数据库"""
 
-    def __init__(self):
-        self.client = pymongo.MongoClient("mongodb://h44:27017,h213:27017,h241:27017/?replicaSet=myset")
-        self.db = self.client["news_ver2"]
-        self.collection = self.db["NewsItems"]
+    def __init__(self, mongo_uri, mongo_db, mongo_collection):
+        self.mongo_uri = mongo_uri
+        self.mongo_db = mongo_db
+        self.mongo_collection = mongo_collection
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            mongo_uri=crawler.settings.get("MONGO_URI"),
+            mongo_db=crawler.settings.get("MONGO_DATABASE"),
+            mongo_collection=crawler.settings.get("MONGO_COLLECTION")
+        )
+
+    def open_spider(self, spider):
+        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.db = self.client[self.mongo_db]
+        self.collection = self.db[self.mongo_collection]
+
+    def close_spider(self, spider):
+        self.client.close()
 
     def process_item(self, item, spider):
-        if len(item["content"]) == 0:
-            raise DropItem("content empty: %s" % item["crawl_url"])
-        else:
-            old = self.prepare_old_news_format(item)
-            self.store_news(old)
+        if not isinstance(item, NewsItem):
+            return item
+        formated = self.__prepare_mongo_format(item)
+        self.collection.update({"title": formated["title"]},
+                               {"$setOnInsert": formated},
+                               upsert=True)
 
-    def store_news(self, old):
-        inserted = self.collection.insert_one(old)
-        print inserted.inserted_id
-
-    def prepare_old_news_format(self, item):
+    @classmethod
+    def __prepare_mongo_format(cls, item):
         old = dict()
-        item["content"] = self._change_text_txt(item["content"])
-        item["content"] = self._change_content_compatible(item["content"])
+        item["content"] = cls.__change_content_compatible(item["content"])
         old["update_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        old["sourceSiteName"] = item["crawl_source"]
+        old["sourceSiteName"] = item["original_source"]
         old["title"] = item["title"]
         old["url"] = item["crawl_url"]
         old["imgnum"] = item["image_number"]
@@ -186,32 +212,9 @@ class MongoPipeline(object):
         return old
 
     @staticmethod
-    def _change_content_compatible(content):
+    def __change_content_compatible(content):
         old = list()
         for index, item in enumerate(content):
             old.append({str(index): item})
         return old
-
-    @staticmethod
-    def _change_text_txt(content):
-        changed = list()
-        for item in content:
-            for key, value in item.iteritems():
-                if key == "text":
-                    changed.append({"txt": value})
-                else:
-                    changed.append({key: value})
-        return changed
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -14,18 +14,18 @@ class Wechat(NewsSpider):
     name = SPIDER_NAME
     custom_settings = {
         "DOWNLOAD_DELAY": 5,
-        "DOWNLOADER_MIDDLEWARES":
-            {"scrapy.downloadermiddlewares.cookies.CookiesMiddleware": 700,
-             "scrapy.downloadermiddlewares.useragent.UserAgentMiddleware": None,
-             "News.middlewares.RotateUserAgentMiddleware": None,
-             "News.middlewares.WechatUserAgentMiddleware": 405},
-        "ITEM_PIPELINES": {"News.debug_pipelines.CleanPipeline": 300,
-                           "News.debug_pipelines.CompatiblePipeline": 301,
-                           "News.debug_pipelines.CachePipeline": 302,
-                           "News.debug_pipelines.DebugMongoPipeline": 303},
-        "MONGO_URI": "mongodb://localhost:27017",
-        "MONGO_DATABASE": "test",
-        "MONGO_COLLECTION": "news",
+        "DOWNLOADER_MIDDLEWARES": {
+            "scrapy.downloadermiddlewares.cookies.CookiesMiddleware": 700,
+            "scrapy.downloadermiddlewares.useragent.UserAgentMiddleware": None,
+            "News.middlewares.RotateUserAgentMiddleware": None,
+            "News.middlewares.WechatUserAgentMiddleware": 405,
+        },
+        "ITEM_PIPELINES": {
+            "News.pipelines.CleanPipeline": 300,
+            "News.pipelines.CompatiblePipeline": 301,
+            "News.pipelines.CachePipeline": 302,
+            "News.pipelines.MongoPipeline": 303,
+        },
     }
 
     def parse(self, response):

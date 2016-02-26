@@ -4,6 +4,7 @@ from urllib import urlencode
 from News.constans import yidianzixun
 from News.constans import toutiao
 from News.constans import news163
+from News.scheduler import wechat
 
 
 def g_queue_name(spider_name):
@@ -66,6 +67,9 @@ def g_news163_urls(channels=None, offset=0, end=20, cities=""):
         start_urls.append(url)
     return start_urls
 
+
+def g_wechat_url(name, oid):
+    return wechat.get_start_url(name, oid)
 
 
 
