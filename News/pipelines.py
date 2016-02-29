@@ -10,6 +10,8 @@ from scrapy.exceptions import DropItem
 
 from News.items import NewsItem, CommentItem
 from News.utils.cache import Cache
+from News.utils.util import get_query_from_url
+from News.constans import wechat
 from News.constans import NEWS_STORE_API, CACHE_SOURCE_KEY, COMMENT_STORE_API
 
 _logger = logging.getLogger(__name__)
@@ -189,13 +191,15 @@ class MongoPipeline(object):
     def process_item(self, item, spider):
         if not isinstance(item, NewsItem):
             return item
-        formated = self.__prepare_mongo_format(item)
+        formated = self.__prepare_mongo_format(item, spider)
         self.collection.update({"title": formated["title"]},
                                {"$setOnInsert": formated},
                                upsert=True)
+        _logger.info("store %s in mongodb" % formated["title"])
+        return item
 
     @classmethod
-    def __prepare_mongo_format(cls, item):
+    def __prepare_mongo_format(cls, item, spider):
         old = dict()
         item["content"] = cls.__change_content_compatible(item["content"])
         old["update_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -205,10 +209,15 @@ class MongoPipeline(object):
         old["imgnum"] = item["image_number"]
         old["source_url"] = item["original_url"]
         old["content"] = item["content"]
-        old["channel_id"] = "16"
         old["create_time"] = item["publish_time"]
         old["source"] = item["original_source"]
-        old["channel"] = u"外媒观光团"
+
+        openid = get_query_from_url(item["start_url"], "openid")
+        key = spider.name + ":" + openid
+        source = Cache.hgetall(key)
+        cid = source["channel_id"]
+        old["channel_id"] = cid
+        old["channel"] = wechat.ID_NAME_MAPPING[cid]
         return old
 
     @staticmethod

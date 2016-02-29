@@ -38,7 +38,7 @@ def parse(html):
 
 def get_start_url(name, oid):
     for page in range(1, 11):
-        results = query(name, page)
+        results = query(oid, page)
         for item in results:
             if item["name"] == name and item["oid"] == oid:
                 tail = item["href"][:4] + "js" + item["href"][4:] + "&page=1"

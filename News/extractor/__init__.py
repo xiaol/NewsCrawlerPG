@@ -79,14 +79,9 @@ class NewsExtractor(object):
     @classmethod
     def _extract_regular(cls, tag, length=3):
         result = list()
-        if not tag:
+        tag, l = cls._get_content_tag(tag)
+        if tag is None or l < length:
             return result
-        children = []
-        for child in tag.children:
-            if isinstance(child, Tag):
-                children.append(child)
-        if len(children) <= length:
-            tag = children[0]
         for child in tag.children:
             if isinstance(child, NavigableString):
                 string = unicode(child)
@@ -102,6 +97,25 @@ class NewsExtractor(object):
             else:
                 pass
         return result
+
+    @classmethod
+    def _get_content_tag(cls, tag):
+        mapping = dict()
+        cls.__find_content_tag(tag, mapping)
+        s_list = sorted(mapping.iteritems(), key=lambda k: k[1], reverse=True)
+        if len(s_list) == 0:
+            return None, 0
+        item = s_list[0]
+        tag = item[0]
+        length = item[1]
+        return tag, length
+
+    @classmethod
+    def __find_content_tag(cls, tag, mapping):
+        if isinstance(tag, Tag):
+            mapping[tag] = len(tag.contents)
+            for child in tag.children:
+                cls.__find_content_tag(child, mapping)
 
     @staticmethod
     def __get_img_src(tag):
