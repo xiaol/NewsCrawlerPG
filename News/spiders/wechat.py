@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import logging
 from scrapy import Request
 from News.spiders import NewsSpider
 from News.utils.util import load_json_data
@@ -7,6 +8,8 @@ from News.items import NewsItem
 from News.constans.wechat import SPIDER_NAME
 from News.constans.wechat import CRAWL_SOURCE
 from News.extractor.wechat import WechatExtractor
+
+_logger = logging.getLogger(__name__)
 
 
 class Wechat(NewsSpider):
@@ -30,6 +33,9 @@ class Wechat(NewsSpider):
 
     def parse(self, response):
         results = load_json_data(response.body)
+        if results is None:
+            _logger.error("spider has been banned for %s" % response.request.url)
+            return
         total = int(results["totalPages"])
         page = int(results["page"])
         articles = results["items"]
