@@ -82,6 +82,11 @@ class NewsExtractor(object):
         tag, l = cls._get_content_tag(tag)
         if tag is None or l < length:
             return result
+        cls._extract_tag_children(tag, result)
+        return result
+
+    @classmethod
+    def _extract_tag_children(cls, tag, result):
         for child in tag.children:
             if isinstance(child, NavigableString):
                 string = unicode(child)
@@ -91,12 +96,11 @@ class NewsExtractor(object):
                 if child.name == "img":
                     result.append({"img": cls.__get_img_src(child)})
                 elif child.img:
-                    result.append({"img": cls.__get_img_src(child.img)})
+                    cls._extract_tag_children(child, result)
                 else:
                     result.append({"text": child.get_text().strip()})
             else:
                 pass
-        return result
 
     @classmethod
     def _get_content_tag(cls, tag):
@@ -119,7 +123,12 @@ class NewsExtractor(object):
 
     @staticmethod
     def __get_img_src(tag):
-        return tag.get("src") or tag.get("alt-src") or tag.get("data-src")
+        img_url_name = ["src", "alt-src", "data-src"]
+        for name in img_url_name:
+            url = tag.get(name, "").strip()
+            if url.startswith("http"):
+                return url
+        return ""
 
     @staticmethod
     def _show(content):
