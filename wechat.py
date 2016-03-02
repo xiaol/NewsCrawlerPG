@@ -1,5 +1,8 @@
 # coding: utf-8
 
+import random
+import time
+
 from News.constans.wechat import SPIDER_NAME
 from News.constans.wechat import SOURCES
 from News.utils.cache import Cache
@@ -13,7 +16,7 @@ def start():
     if Cache.llen(c_key) != 0:
         print("The previous task is not finished, please wait some time!")
         return
-    for source in SOURCES:
+    for index, source in enumerate(SOURCES):
         url = g_wechat_url(name=source["name"], oid=source["oid"])
         if not url:
             print("Can't get wexin sogou start url: %s" % source["name"])
@@ -28,6 +31,10 @@ def start():
         print("name: %s, oid: %s" % (source["name"], source["oid"]))
         print("start_url: %s\n" % url)
         Cache.lpush(c_key, url)
+        if index % 8 == 0:
+            time.sleep(random.randint(60, 180))
+        else:
+            time.sleep(random.randint(50, 150)/10.0)
 
 if __name__ == '__main__':
     start()

@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import time
 import random
 import requests
 from bs4 import BeautifulSoup
@@ -39,8 +40,11 @@ def parse(html):
 def get_start_url(name, oid):
     for page in range(1, 11):
         results = query(oid, page)
+        if len(results) == 0:
+            results = query(name, page)
         for item in results:
             if item["name"] == name and item["oid"] == oid:
                 tail = item["href"][:4] + "js" + item["href"][4:] + "&page=1"
                 return START_URL_PREFIX + tail
+        time.sleep(random.randint(50, 150)/10.0)
     return ""

@@ -16,7 +16,7 @@ class Wechat(NewsSpider):
 
     name = SPIDER_NAME
     custom_settings = {
-        "DOWNLOAD_DELAY": 5,
+        "DOWNLOAD_DELAY": 10,
         "DOWNLOADER_MIDDLEWARES": {
             "scrapy.downloadermiddlewares.cookies.CookiesMiddleware": 700,
             "scrapy.downloadermiddlewares.useragent.UserAgentMiddleware": None,
