@@ -1,5 +1,7 @@
 # coding: utf-8
 import re
+from lxml import html
+from lxml.html.clean import Cleaner
 from bs4 import BeautifulSoup, Comment, Tag, NavigableString
 
 
@@ -137,9 +139,6 @@ class NewsExtractor(object):
                 print("%s: %s" % (key, value))
 
 
-from lxml import html
-from lxml.html.clean import Cleaner
-
 class BaseExtractor(object):
 
     def __init__(self, document):
@@ -177,22 +176,72 @@ class BaseExtractor(object):
         document = cleaner.clean_html(document)
         return html.tostring(document, encoding=encoding)
 
-    def extract(self, tag):
-        result = []
+    @classmethod
+    def __extract_content(cls, tag, result):
         for child in tag.children:
             if isinstance(child, NavigableString):
                 string = unicode(child)
                 if string and string.strip():
-                    result.append({"text": string.strip()})
+                    result.append({"text": "<p>" + string.strip() + "</p>"})
             elif isinstance(child, Tag):
                 if child.name == "img":
-                    result.append({"img": child.get("data-src")})
-                else:
-                    result.append({"text": str(child)})
-        return result, 0
+                    result.append({"img": cls.__get_img_src(child)})
+                elif child.img:
+                    cls.__extract_content(child, result)
+                elif child.get_text().strip():
+                    if child.name == "p":
+                        result.append({"text": str(child)})
+                    else:
+                        result.append({"text": "<p>" + str(child) + "</p>"})
+
+    def extract_title(self):
+        return None
+
+    def extract_post_date(self):
+        return None
+
+    def extract_post_user(self):
+        return None
+
+    def extract_content(self):
+        raise NotImplementedError
+
+    @classmethod
+    def _extract_content(cls, tag):
+        result = list()
+        cls.__extract_content(tag, result)
+        return cls.g_returns(result)
+
+    def extract(self):
+        title = self.extract_title()
+        post_date = self.extract_post_date()
+        post_user = self.extract_post_user()
+        contents, count = self.extract_content()
+        return title, post_date, post_user, contents, count
 
     @staticmethod
-    def _show(content):
+    def show(content):
         for item in content:
             for key, value in item.items():
                 print("%s: %s" % (key, value))
+
+    @staticmethod
+    def __get_img_src(tag):
+        img_url_name = ["src", "alt-src", "data-src"]
+        for name in img_url_name:
+            url = tag.get(name, "").strip()
+            if url.startswith("http"):
+                return url
+        return ""
+
+    @staticmethod
+    def g_returns(content):
+        count = 0
+        contents = list()
+        for c in content:
+            if "img" in c and c["img"]:
+                count += 1
+                contents.append(c)
+            elif "text" in c and c["text"] and c["text"].strip():
+                contents.append(c)
+        return contents, count
