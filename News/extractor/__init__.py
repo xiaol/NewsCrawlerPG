@@ -137,5 +137,62 @@ class NewsExtractor(object):
                 print("%s: %s" % (key, value))
 
 
+from lxml import html
+from lxml.html.clean import Cleaner
 
+class BaseExtractor(object):
 
+    def __init__(self, document):
+        allow_tags = ("b", "blod", "big", "em", "font", "h1", "h2", "h3", "h4",
+                      "h5", "h6", "i", "italic", "small", "strike", "sub", "sup",
+                      "a", "p", "strong", "div", "img", "tt", "u", "html",
+                      "meta", "body", "head")
+        cleaner = Cleaner(scripts=True,
+                          javascript=True,
+                          comments=True,
+                          style=True,
+                          links=True,
+                          meta=False,
+                          add_nofollow=False,
+                          page_structure=False,
+                          processing_instructions=True,
+                          embedded=False,
+                          frames=False,
+                          forms=False,
+                          annoying_tags=False,
+                          remove_tags=None,
+                          remove_unknown_tags=False,
+                          safe_attrs_only=False,
+                          allow_tags=allow_tags)
+        self.document = self.clean(document, cleaner)
+        self.soup = BeautifulSoup(self.document, "lxml")
+
+    @classmethod
+    def clean(cls, document, cleaner, encoding="utf-8"):
+        """ return cleaned document string """
+        parser = html.HTMLParser(encoding=encoding,
+                                 remove_blank_text=True,
+                                 remove_comments=True)
+        document = html.document_fromstring(document, parser=parser)
+        document = cleaner.clean_html(document)
+        return html.tostring(document, encoding=encoding)
+
+    def extract(self, tag):
+        result = []
+        for child in tag.children:
+            if isinstance(child, NavigableString):
+                string = unicode(child)
+                if string and string.strip():
+                    result.append({"text": string.strip()})
+            elif isinstance(child, Tag):
+                if child.name == "img":
+                    result.append({"img": child.get("data-src")})
+                else:
+                    result.append({"text": str(child)})
+        return result, 0
+
+    @staticmethod
+    def _show(content):
+        for item in content:
+            for key, value in item.items():
+                print("%s: %s" % (key, value))
