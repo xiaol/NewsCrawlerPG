@@ -31,7 +31,7 @@ def start():
         print("name: %s, oid: %s" % (source["name"], source["oid"]))
         print("start_url: %s\n" % url)
         Cache.lpush(c_key, url)
-        if index % 8 == 0:
+        if (index+1) % 8 == 0:
             time.sleep(random.randint(60, 180))
         else:
             time.sleep(random.randint(50, 150)/10.0)

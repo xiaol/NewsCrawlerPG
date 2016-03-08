@@ -2,6 +2,7 @@
 
 import sys
 from datetime import datetime
+import json
 import requests
 from News.extractor import BaseExtractor
 from News.extractor.news163 import News163Extractor, NewsExtractor
@@ -61,6 +62,29 @@ def test_base_extractor(string):
     print ("post date: %s" % post_date)
     print ("post user: %s" % post_user)
     print ("image count: %d" % count)
+    content = _change_text_txt(contents)
+    content = __change_content_compatible(content)
+    # print content
+    # with open("test.json", "wb+") as f:
+    #     json.dump(content, f)
+
+
+def _change_text_txt(content):
+    changed = list()
+    for item in content:
+        for key, value in item.iteritems():
+            if key == "text":
+                changed.append({"txt": value})
+            else:
+                changed.append({key: value})
+    return changed
+
+
+def __change_content_compatible(content):
+    old = list()
+    for index, item in enumerate(content):
+        old.append({str(index): item})
+    return old
 
 
 def main(url):
