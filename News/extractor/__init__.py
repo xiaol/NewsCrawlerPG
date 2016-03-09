@@ -182,17 +182,17 @@ class BaseExtractor(object):
             if isinstance(child, NavigableString):
                 string = unicode(child)
                 if string and string.strip():
-                    result.append({"text": "<p>" + string.strip() + "</p>"})
+                    result.append({"text": string.strip()})
             elif isinstance(child, Tag):
                 if child.name == "img":
                     result.append({"img": cls.__get_img_src(child)})
                 elif child.img:
                     cls.__extract_content(child, result)
                 elif child.get_text().strip():
+                    string = str(child)
                     if child.name == "p":
-                        result.append({"text": str(child)})
-                    else:
-                        result.append({"text": "<p>" + str(child) + "</p>"})
+                        string = string[3:-4]
+                    result.append({"text": string})
 
     def extract_title(self):
         return None
