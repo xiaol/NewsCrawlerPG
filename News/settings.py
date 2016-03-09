@@ -57,6 +57,8 @@ DOWNLOADER_MIDDLEWARES = {
     'News.middlewares.RotateUserAgentMiddleware': 405,
 }
 
+DOWNLOAD_HANDLERS = {'s3': None}
+
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
 # EXTENSIONS = {
