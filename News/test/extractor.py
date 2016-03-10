@@ -13,7 +13,7 @@ from News.extractor.news163 import News163Extractor, NewsExtractor
 def get_document(url):
     r = requests.get(url)
     if r.status_code == 200:
-        return r.content
+        return r.content.decode(r.encoding).encode("utf-8")
     else:
         print("get document error: %s" % r.status_code)
         return ""
@@ -45,26 +45,6 @@ def __change_content_compatible(content):
     return old
 
 
-def test_general_extractor(url):
-    string = get_document(url)
-    extractor = GeneralExtractor(string)
-    title, post_date, post_user, content = extractor()
-    extractor.show(content)
-    print("title: %s" % title)
-    print ("post date: %s" % post_date)
-    print ("post user: %s" % post_user)
-
-
-def test_wechat_general_extractor(url):
-    string = get_document(url)
-    extractor = WechatExtractor(string)
-    title, post_date, post_user, content = extractor()
-    extractor.show(content)
-    print("title: %s" % title)
-    print ("post date: %s" % post_date)
-    print ("post user: %s" % post_user)
-
-
 def test_extractor(k, url):
     string = get_document(url)
     if k == "ge":
@@ -77,8 +57,6 @@ def test_extractor(k, url):
         extractor = WechatExtractor(string)
     title, post_date, post_user, content = extractor()
     extractor.show(content)
-    print("title: %s" % title)
-    print ("post date: %s" % post_date)
-    print ("post user: %s" % post_user)
+    return title, post_date, post_user, content
 
 
