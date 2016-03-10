@@ -35,3 +35,7 @@ class NewsSpider(RedisSpider):
     @staticmethod
     def g_cache_key(string):
         return "news:" + base64.urlsafe_b64encode(string).replace("=", "")
+
+    @staticmethod
+    def get_img_number(content):
+        pass

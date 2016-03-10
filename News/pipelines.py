@@ -24,6 +24,7 @@ class CompatiblePipeline(object):
         if not isinstance(item, NewsItem):
             return item
         item["content"] = self._change_text_txt(item["content"])
+        item["image_number"] = self._get_image_number(item["content"])
         return item
 
     @staticmethod
@@ -36,6 +37,14 @@ class CompatiblePipeline(object):
                 else:
                     changed.append({key: value})
         return changed
+
+    @staticmethod
+    def _get_image_number(content):
+        n = 0
+        for c in content:
+            if "img" in c:
+                n += 1
+        return n
 
 
 class CleanPipeline(object):
@@ -227,3 +236,18 @@ class MongoPipeline(object):
             old.append({str(index): item})
         return old
 
+
+class PrintPipeline(object):
+
+    def process_item(self, item, spider):
+        if not isinstance(item, NewsItem):
+            return item
+        print("*" * 50)
+        print("title: %s" % item["title"])
+        print("date: %s" % item["publish_time"])
+        print("user: %s" % item["original_source"])
+        print("title: %s" % item["title"])
+        for i in item["content"]:
+            for key, value in i.items():
+                print("%s: %s" % (key, value))
+        print("\n")

@@ -28,6 +28,7 @@ class Wechat(NewsSpider):
             "News.pipelines.CompatiblePipeline": 301,
             "News.pipelines.CachePipeline": 302,
             "News.pipelines.MongoPipeline": 303,
+            # "News.pipelines.PrintPipeline": 304,
         },
     }
 
@@ -89,11 +90,13 @@ class Wechat(NewsSpider):
         if redirects:
             news["crawl_url"] = response.url
             news["key"] = self.g_cache_key(news["crawl_url"])
-        extractor = WechatExtractor(response.body, response.url,
-                                    hard_tags=[], news=news)
-        content, image_number = extractor.extract()
+        extractor = WechatExtractor(response.body)
+        title, post_date, post_user, content = extractor()
+        news["title"] = title
+        news["publish_time"] = post_date
+        news["original_source"] = post_user
+        news["original_url"] = news["crawl_url"]
         news["content"] = content
-        news["image_number"] = image_number
         yield news
 
     @staticmethod

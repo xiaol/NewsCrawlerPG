@@ -142,91 +142,61 @@ class NewsExtractor(object):
 class BaseExtractor(object):
 
     def __init__(self, document):
-        allow_tags = ("b", "blod", "big", "em", "font", "h1", "h2", "h3", "h4",
-                      "h5", "h6", "i", "italic", "small", "strike", "sub", "sup",
-                      "a", "p", "strong", "div", "img", "tt", "u", "html",
-                      "meta", "body", "head")
-        cleaner = Cleaner(scripts=True,
-                          javascript=True,
-                          comments=True,
-                          style=True,
-                          links=True,
-                          meta=False,
-                          add_nofollow=False,
-                          page_structure=False,
-                          processing_instructions=True,
-                          embedded=False,
-                          frames=False,
-                          forms=False,
-                          annoying_tags=False,
-                          remove_tags=None,
-                          remove_unknown_tags=False,
-                          safe_attrs_only=False,
-                          allow_tags=allow_tags)
-        self.document = self.clean(document, cleaner)
-        self.soup = BeautifulSoup(self.document, "lxml")
+        self.doc = document
+        self.html = self.clean(self.doc)
+        self.soup = BeautifulSoup(self.html, "lxml")
 
-    @classmethod
-    def clean(cls, document, cleaner, encoding="utf-8"):
-        """ return cleaned document string """
-        parser = html.HTMLParser(encoding=encoding,
-                                 remove_blank_text=True,
-                                 remove_comments=True)
-        document = html.document_fromstring(document, parser=parser)
-        document = cleaner.clean_html(document)
-        return html.tostring(document, encoding=encoding)
-
-    @classmethod
-    def __extract_content(cls, tag, result):
-        for child in tag.children:
-            if isinstance(child, NavigableString):
-                string = unicode(child)
-                if string and string.strip():
-                    result.append({"text": string.strip()})
-            elif isinstance(child, Tag):
-                if child.name == "img":
-                    result.append({"img": cls.__get_img_src(child)})
-                elif child.img:
-                    cls.__extract_content(child, result)
-                elif child.get_text().strip():
-                    string = str(child)
-                    if child.name == "p":
-                        string = string[3:-4]
-                    result.append({"text": string})
+    @staticmethod
+    def clean(doc):
+        return doc
 
     def extract_title(self):
-        return None
+        return ""
 
     def extract_post_date(self):
-        return None
+        return ""
 
     def extract_post_user(self):
-        return None
+        return ""
 
     def extract_content(self):
         raise NotImplementedError
 
-    @classmethod
-    def _extract_content(cls, tag):
-        result = list()
-        cls.__extract_content(tag, result)
-        return cls.g_returns(result)
-
-    def extract(self):
+    def __call__(self):
         title = self.extract_title()
         post_date = self.extract_post_date()
         post_user = self.extract_post_user()
-        contents, count = self.extract_content()
-        return title, post_date, post_user, contents, count
+        content = self.extract_content()
+        return title, post_date, post_user, content
+
+    def find_content_tag(self, *args, **kwargs):
+        if args or kwargs:
+            tag = self.soup.find(*args, **kwargs)
+        else:
+            tag = self.soup.body
+        mapping = dict()
+
+        def _find_content_tag(t):
+            if isinstance(t, NavigableString):
+                mapping[t] = 1
+            elif isinstance(t, Tag):
+                mapping[t] = len(t.contents)
+                for child in t.children:
+                    _find_content_tag(child)
+
+        _find_content_tag(tag)
+        sorted_mapping = sorted(mapping.iteritems(),
+                                key=lambda k: k[1],
+                                reverse=True)
+        return None if not sorted_mapping else sorted_mapping[0][0]
 
     @staticmethod
-    def show(content):
-        for item in content:
-            for key, value in item.items():
-                print("%s: %s" % (key, value))
+    def remove_tag_name(string, name):
+        p = re.compile("<{tag}[^>]*>|</{tag}>".format(tag=name))
+        return re.sub(p, "", string)
 
     @staticmethod
-    def __get_img_src(tag):
+    def get_img_src(tag):
         img_url_name = ["src", "alt-src", "data-src"]
         for name in img_url_name:
             url = tag.get(name, "").strip()
@@ -235,13 +205,101 @@ class BaseExtractor(object):
         return ""
 
     @staticmethod
-    def g_returns(content):
-        count = 0
-        contents = list()
-        for c in content:
-            if "img" in c and c["img"]:
-                count += 1
-                contents.append(c)
-            elif "text" in c and c["text"] and c["text"].strip():
-                contents.append(c)
-        return contents, count
+    def get_content_item(key, value):
+        keys = {"text": "text", "image": "img"}
+        assert key in keys
+        return {keys[key]: value.strip()}
+
+    @staticmethod
+    def show(content):
+        for item in content:
+            for key, value in item.items():
+                print("%s: %s" % (key, value))
+
+    def get_tag_text(self, *args, **kwargs):
+        tag = self.soup.find(*args, **kwargs)
+        return tag.get_text().strip() if tag else ""
+
+
+class GeneralExtractor(BaseExtractor):
+
+    @staticmethod
+    def clean(doc):
+        allow_tags = ("b", "blod", "big", "em", "font", "h1", "h2", "h3", "h4",
+                      "h5", "h6", "i", "italic", "small", "strike", "sub",
+                      "a", "p", "strong", "div", "img", "tt", "u", "html",
+                      "meta", "body", "head", "br", "sup")
+        encoding = "utf-8"
+        cleaner = Cleaner(scripts=True, javascript=True, comments=True,
+                          style=True, links=True, meta=False,
+                          add_nofollow=False, page_structure=False,
+                          processing_instructions=True, embedded=False,
+                          frames=False, forms=False, annoying_tags=False,
+                          remove_tags=None, remove_unknown_tags=False,
+                          safe_attrs_only=False, allow_tags=allow_tags)
+        parser = html.HTMLParser(encoding=encoding, remove_comments=True,
+                                 remove_blank_text=True)
+        document = html.document_fromstring(doc, parser=parser)
+        document = cleaner.clean_html(document)
+        return html.tostring(document, encoding=encoding)
+
+    def extract_content(self):
+        tag = self.find_content_tag()
+        content = list()
+
+        def _extract_content(t):
+            for child in t.children:
+                if isinstance(child, NavigableString):
+                    string = unicode(child).strip()
+                    if string:
+                        content.append(self.get_content_item("text", string))
+                elif isinstance(child, Tag):
+                    if child.name == "img":
+                        src = self.get_img_src(child)
+                        if src:
+                            content.append(self.get_content_item("image", src))
+                    elif child.name == "div" or child.img or child.br:
+                        _extract_content(child)
+                    elif child.get_text().strip():
+                        string = str(child)
+                        if child.name == "p":
+                            string = self.remove_tag_name(string, "p")
+                        content.append(self.get_content_item("text", string))
+                else:
+                    pass
+
+        _extract_content(tag)
+        return content
+
+
+class RegularExtractor(GeneralExtractor):
+
+    def extract_content(self):
+        tag = self.find_content_tag()
+        content = list()
+
+        def _extract_content(t):
+            for child in t.children:
+                if isinstance(child, NavigableString):
+                    string = unicode(child).strip()
+                    if string:
+                        content.append(self.get_content_item("text", string))
+                elif isinstance(child, Tag):
+                    if child.name == "img":
+                        src = self.get_img_src(child)
+                        if src:
+                            content.append(self.get_content_item("image", src))
+                    elif child.img:
+                        _extract_content(child)
+                    elif child.get_text().strip():
+                        string = str(child)
+                        if child.name == "p":
+                            string = self.remove_tag_name(string, "p")
+                        content.append(self.get_content_item("text", string))
+                    else:
+                        pass
+                else:
+                    pass
+        _extract_content(tag)
+        return content
+

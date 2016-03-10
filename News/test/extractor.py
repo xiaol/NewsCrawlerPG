@@ -4,7 +4,9 @@ import sys
 from datetime import datetime
 import json
 import requests
-from News.extractor import BaseExtractor
+from News.extractor import GeneralExtractor
+from News.extractor import RegularExtractor
+from News.extractor.wechat import WechatExtractor
 from News.extractor.news163 import News163Extractor, NewsExtractor
 
 
@@ -25,50 +27,6 @@ def test_news163_extractor():
     print count
 
 
-class WechatExtractor(BaseExtractor):
-
-    def extract_title(self):
-        tag = self.soup.find(id="activity-name")
-        if tag:
-            return tag.get_text().strip()
-        else:
-            return ""
-
-    def extract_post_date(self):
-        tag = self.soup.find(id="post-date")
-        now = datetime.now()
-        if tag:
-            return tag.get_text().strip() + " " + now.strftime("%H:%M:%S")
-        else:
-            return ""
-
-    def extract_post_user(self):
-        tag = self.soup.find(id="post-user")
-        if tag:
-            return tag.get_text().strip()
-        else:
-            return ""
-
-    def extract_content(self):
-        tag = self.soup.find("div", id="js_content")
-        return self._extract_content(tag=tag)
-
-
-def test_base_extractor(string):
-    extractor = WechatExtractor(string)
-    title, post_date, post_user, contents, count = extractor.extract()
-    extractor.show(contents)
-    print("title: %s" % title)
-    print ("post date: %s" % post_date)
-    print ("post user: %s" % post_user)
-    print ("image count: %d" % count)
-    content = _change_text_txt(contents)
-    content = __change_content_compatible(content)
-    # print content
-    # with open("test.json", "wb+") as f:
-    #     json.dump(content, f)
-
-
 def _change_text_txt(content):
     changed = list()
     for item in content:
@@ -87,12 +45,40 @@ def __change_content_compatible(content):
     return old
 
 
-def main(url):
+def test_general_extractor(url):
     string = get_document(url)
-    test_base_extractor(string)
+    extractor = GeneralExtractor(string)
+    title, post_date, post_user, content = extractor()
+    extractor.show(content)
+    print("title: %s" % title)
+    print ("post date: %s" % post_date)
+    print ("post user: %s" % post_user)
 
 
-if __name__ == '__main__':
-    main(sys.argv[1])
+def test_wechat_general_extractor(url):
+    string = get_document(url)
+    extractor = WechatExtractor(string)
+    title, post_date, post_user, content = extractor()
+    extractor.show(content)
+    print("title: %s" % title)
+    print ("post date: %s" % post_date)
+    print ("post user: %s" % post_user)
+
+
+def test_extractor(k, url):
+    string = get_document(url)
+    if k == "ge":
+        extractor = GeneralExtractor(string)
+    elif k == "re":
+        extractor = RegularExtractor(string)
+    elif k == "we":
+        extractor = WechatExtractor(string)
+    else:
+        extractor = WechatExtractor(string)
+    title, post_date, post_user, content = extractor()
+    extractor.show(content)
+    print("title: %s" % title)
+    print ("post date: %s" % post_date)
+    print ("post user: %s" % post_user)
 
 
