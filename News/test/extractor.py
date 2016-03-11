@@ -13,7 +13,7 @@ from News.extractor.news163 import News163Extractor, NewsExtractor
 def get_document(url):
     r = requests.get(url)
     if r.status_code == 200:
-        return r.content.decode(r.encoding).encode("utf-8")
+        return r.content#.decode(r.encoding).encode("utf-8")
     else:
         print("get document error: %s" % r.status_code)
         return ""
@@ -56,7 +56,6 @@ def test_extractor(k, url):
     else:
         extractor = WechatExtractor(string)
     title, post_date, post_user, content = extractor()
-    extractor.show(content)
     return title, post_date, post_user, content
 
 

@@ -4,7 +4,7 @@ import logging
 from scrapy import Request
 from News.spiders import NewsSpider
 from News.utils.util import load_json_data
-from News.items import NewsItem
+from News.items import NewsItem, get_default_news
 from News.constans.wechat import SPIDER_NAME
 from News.constans.wechat import CRAWL_SOURCE
 from News.extractor.wechat import WechatExtractor
@@ -48,33 +48,14 @@ class Wechat(NewsSpider):
                 yield request
 
     def g_news_item(self, article, start_url=""):
-        news = NewsItem()
-        news["docid"] = ""
         crawl_url = self._g_crawl_url(article)
         if not crawl_url: return None
-        news["crawl_url"] = crawl_url
-        news["key"] = self.g_cache_key(crawl_url)
-        if self.news_already_exists(news["key"]): return None
-        news["title"] = ""
-        news["tags"] = list()
-        news["summary"] = self._g_crawl_summary(article)
-        news["publish_time"] = ""
-        news["content"] = list()
-        news["province"] = None
-        news["city"] = None
-        news["district"] = None
-        news["love"] = 0
-        news["up"] = 0
-        news["down"] = 0
-        news["image_list"] = list()
-
-        news["original_url"] = ""
-        news["channel"] = ""
-        news["crawl_source"] = CRAWL_SOURCE
-        news["original_source"] = ""
-
-        news["start_url"] = start_url
-        return news
+        news = get_default_news(crawl_url=crawl_url,
+                                key=self.g_cache_key(crawl_url),
+                                crawl_source=CRAWL_SOURCE,
+                                start_url=start_url,
+                                summary=self._g_crawl_summary(article))
+        return None if self.news_already_exists(news["key"]) else news
 
     def g_news_request(self, item):
         url = item["crawl_url"]
@@ -90,7 +71,8 @@ class Wechat(NewsSpider):
         if redirects:
             news["crawl_url"] = response.url
             news["key"] = self.g_cache_key(news["crawl_url"])
-        extractor = WechatExtractor(response.body)
+        body = response.body_as_unicode().encode("utf-8")
+        extractor = WechatExtractor(body)
         title, post_date, post_user, content = extractor()
         news["title"] = title
         news["publish_time"] = post_date

@@ -36,6 +36,39 @@ class NewsItem(Item):
     start_url = Field()  # start url, record to get channel info in pipeline
 
 
+def get_default_news(title="", tags=None, summary="", publish_time="",
+                     content=None, province=None, city=None, district=None,
+                     love=0, up=0, down=0, image_number=0, docid="",
+                     channel="", category="", crawl_url="", original_url="",
+                     crawl_source="", original_source="", image_list=None,
+                     key="", start_url=""):
+    news = NewsItem()
+    news["title"] = title
+    if tags is None: news["tags"] = list()
+    news["summary"] = summary
+    news["publish_time"] = publish_time
+    if content is None:
+        news["content"] = list()
+    news["province"] = province
+    news["city"] = city
+    news["district"] = district
+    news["love"] = love
+    news["up"] = up
+    news["down"] = down
+    news["image_number"] = image_number
+    news["docid"] = docid
+    news["channel"] = channel
+    news["category"] = category
+    news["crawl_url"] = crawl_url
+    news["original_url"] = original_url
+    news["crawl_source"] = crawl_source
+    news["original_source"] = original_source
+    if image_list is None: news["image_list"] = list()
+    news["key"] = key
+    news["start_url"] = start_url
+    return news
+
+
 class CommentItem(Item):
     comment_id = Field()
     content = Field()
