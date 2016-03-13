@@ -146,13 +146,13 @@ class BaseExtractor(object):
 
     """
     # soup find title param
-    title_param = {"args": ["title"], "kwargs": dict()}
+    title_param = {"name": "title", "attrs": dict()}
     # soup find post date param
-    post_date_param = {"args": list(), "kwargs": dict()}
+    post_date_param = {"name": None, "attrs": dict()}
     # soup find post user param
-    post_user_param = {"args": list(), "kwargs": dict()}
+    post_user_param = {"name": None, "attrs": dict()}
     # soup find content param
-    content_param = {"args": list(), "kwargs": dict()}
+    content_param = {"name": None, "attrs": dict()}
 
     def __init__(self, document):
         """抽取类初始化
@@ -182,10 +182,10 @@ class BaseExtractor(object):
         :param param:dict, bs4 find method params
         :return: str
         """
-        args = param["args"]
-        kwargs = param["kwargs"]
-        if args or kwargs:
-            return self.get_tag_text(*args, **kwargs)
+        name = param["name"]
+        attrs = param["attrs"]
+        if name or attrs:
+            return self.get_tag_text(name=name, attrs=attrs)
         else:
             return ""
 
@@ -198,10 +198,10 @@ class BaseExtractor(object):
         :param param:dict, bs4 find method params
         :return: str
         """
-        args = param["args"]
-        kwargs = param["kwargs"]
-        if args or kwargs:
-            string = self.get_tag_text(*args, **kwargs)
+        name = param["name"]
+        attrs = param["attrs"]
+        if name or attrs:
+            string = self.get_tag_text(name, attrs=attrs)
         else:
             string = ""
         return self.clean_post_date(string)
@@ -224,10 +224,10 @@ class BaseExtractor(object):
         :param param:dict, bs4 find method params
         :return: str
         """
-        args = param["args"]
-        kwargs = param["kwargs"]
-        if args or kwargs:
-            return self.get_tag_text(*args, **kwargs)
+        name = param["name"]
+        attrs = param["attrs"]
+        if name or attrs:
+            return self.get_tag_text(name, attrs=attrs)
         else:
             return ""
 
@@ -250,9 +250,9 @@ class BaseExtractor(object):
         :param param:dict, bs4 find method params
         :return: list
         """
-        args = param["args"]
-        kwargs = param["kwargs"]
-        tag = self.find_content_tag(*args, **kwargs)
+        name = param["name"]
+        attrs = param["attrs"]
+        tag = self.find_content_tag(name, attrs=attrs)
         content = list()
         if tag: self.extract_content(tag, content)
         return content
@@ -286,17 +286,17 @@ class BaseExtractor(object):
         content = self._extract_content(content_param)
         return title, post_date, post_user, content
 
-    def find_content_tag(self, *args, **kwargs):
+    def find_content_tag(self, name, attrs):
         """获取包含内容的 Tag 节点
 
         子类可重写该函数，实现精确的内容块定位。默认使用打分方式，定位文章主要内容的 Tag
 
-        :param args:list, bs4 find param
-        :param kwargs:dict, bs4 find param
+        :param name:list, bs4 find name param
+        :param attrs:dict, bs4 find param
         :return:bs4.Tag, 返回包含内容的 Tag 节点
         """
-        if args or kwargs:
-            return self.soup.find(*args, **kwargs)
+        if name or attrs:
+            return self.soup.find(name, attrs=attrs)
         if not self.soup.body:
             return None
         tag = self.soup.body
@@ -386,14 +386,16 @@ class BaseExtractor(object):
             for key, value in item.items():
                 print("%s: %s" % (key, value))
 
-    def get_tag_text(self, *args, **kwargs):
+    def get_tag_text(self, name, attrs):
         """获取一个用　bs4 find 定位的 Tag 里的内容
 
-        :param args:list, bs4 find params
-        :param kwargs:dict, bs4 find params
+        :param name: list, bs4 find name params
+        :param attrs: dict, bs4 find params
         :return:str
         """
-        tag = self.soup.find(*args, **kwargs)
+        tag = self.soup.find(name, attrs=attrs)
+        if name == "meta":
+            return tag.get("content", "") if tag else ""
         return tag.get_text().strip() if tag else ""
 
 
