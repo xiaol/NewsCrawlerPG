@@ -2,7 +2,7 @@
 
 from scrapy import Request
 from News.spiders import NewsSpider
-from News.utils.util import load_json_data
+from News.utils.util import load_json_data, g_cache_key, news_already_exists
 from News.utils.util import str_from_timestamp
 from News.items import NewsItem
 from News.constans.toutiao import SPIDER_NAME
@@ -28,8 +28,8 @@ class TouTiao(NewsSpider):
         if article.get("has_video"): return None
         news["docid"] = article["source_url"]
         news["crawl_url"] = self._g_crawl_url(news["docid"])
-        news["key"] = self.g_cache_key(news["crawl_url"])
-        if self.news_already_exists(news["key"]): return None
+        news["key"] = g_cache_key(news["crawl_url"])
+        if news_already_exists(news["key"]): return None
         news["title"] = article["title"]
         news["tags"] = article.get("keywords", "").split(",")
         news["summary"] = article.get("abstract", "")
@@ -61,7 +61,7 @@ class TouTiao(NewsSpider):
         redirects = response.request.meta.get("redirect_urls")
         if redirects:
             news["crawl_url"] = response.url
-            news["key"] = self.g_cache_key(news["crawl_url"])
+            news["key"] = g_cache_key(news["crawl_url"])
         extractor = TouTiaoExtractor(response.body, response.url, news=news)
         content, image_number = extractor.extract()
         news["content"] = content

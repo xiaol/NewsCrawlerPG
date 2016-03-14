@@ -3,7 +3,7 @@
 import logging
 from scrapy import Request
 from News.spiders import NewsSpider
-from News.utils.util import load_json_data
+from News.utils.util import load_json_data, g_cache_key, news_already_exists
 from News.items import NewsItem, get_default_news
 from News.constans.wechat import SPIDER_NAME
 from News.constans.wechat import CRAWL_SOURCE
@@ -51,11 +51,11 @@ class Wechat(NewsSpider):
         crawl_url = self._g_crawl_url(article)
         if not crawl_url: return None
         news = get_default_news(crawl_url=crawl_url,
-                                key=self.g_cache_key(crawl_url),
+                                key=g_cache_key(crawl_url),
                                 crawl_source=CRAWL_SOURCE,
                                 start_url=start_url,
                                 summary=self._g_crawl_summary(article))
-        return None if self.news_already_exists(news["key"]) else news
+        return None if news_already_exists(news["key"]) else news
 
     def g_news_request(self, item):
         url = item["crawl_url"]
@@ -70,10 +70,10 @@ class Wechat(NewsSpider):
         redirects = response.request.meta.get("redirect_urls")
         if redirects:
             news["crawl_url"] = response.url
-            news["key"] = self.g_cache_key(news["crawl_url"])
+            news["key"] = g_cache_key(news["crawl_url"])
         body = response.body_as_unicode().encode("utf-8")
         extractor = WechatExtractor(body)
-        title, post_date, post_user, content = extractor()
+        title, post_date, post_user, summary, content = extractor()
         news["title"] = title
         news["publish_time"] = post_date
         news["original_source"] = post_user

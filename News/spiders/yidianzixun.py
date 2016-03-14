@@ -4,7 +4,7 @@ from urllib import urlencode
 
 from scrapy import Request
 from News.spiders import NewsSpider
-from News.utils.util import load_json_data
+from News.utils.util import load_json_data, g_cache_key, news_already_exists
 from News.items import NewsItem
 from News.constans.yidianzixun import SPIDER_NAME
 from News.constans.yidianzixun import ARTICLE_URL_TEMPLATE
@@ -29,8 +29,8 @@ class YiDianZiXun(NewsSpider):
         if article["ctype"] != "news": return None  # fixme: only support news now
         news["docid"] = article["docid"]
         news["crawl_url"] = self._g_article_url(news["docid"])
-        news["key"] = self.g_cache_key(news["crawl_url"])
-        if self.news_already_exists(news["key"]): return None
+        news["key"] = g_cache_key(news["crawl_url"])
+        if news_already_exists(news["key"]): return None
         news["title"] = article["title"]
         news["tags"] = list()
         news["summary"] = article.get("summary", "")
@@ -61,13 +61,13 @@ class YiDianZiXun(NewsSpider):
         news = response.meta["news"]
         if "window.location.replace" in response.body:
             news["crawl_url"] = news["original_url"]
-            news["key"] = self.g_cache_key(news["crawl_url"])
+            news["key"] = g_cache_key(news["crawl_url"])
             yield self.g_news_request(news)
         else:
             redirects = response.request.meta.get("redirect_urls")
             if redirects:
                 news["crawl_url"] = response.url
-                news["key"] = self.g_cache_key(news["crawl_url"])
+                news["key"] = g_cache_key(news["crawl_url"])
             extractor = YiDianZiXunExtractor(response.body, response.url, news=news)
             content, image_number = extractor.extract()
             news["content"] = content

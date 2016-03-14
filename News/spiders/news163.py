@@ -2,7 +2,7 @@
 
 from scrapy import Request
 from News.spiders import NewsSpider
-from News.utils.util import load_json_data
+from News.utils.util import load_json_data, news_already_exists, g_cache_key
 from News.utils.util import str_from_timestamp
 from News.items import NewsItem, CommentItem
 from News.constans.news163 import SPIDER_NAME
@@ -32,8 +32,8 @@ class News163(NewsSpider):
         url_163 = article.get("url_163", None)
         if url_163 is None: return None
         news["crawl_url"] = self._g_crawl_url(url_163)
-        news["key"] = self.g_cache_key(news["crawl_url"])
-        if self.news_already_exists(news["key"]): return None
+        news["key"] = g_cache_key(news["crawl_url"])
+        if news_already_exists(news["key"]): return None
         news["title"] = article["title"]
         news["tags"] = list()
         news["summary"] = article["summary"]

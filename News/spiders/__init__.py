@@ -28,17 +28,6 @@ class NewsSpider(RedisSpider):
         raise NotImplementedError
 
     @staticmethod
-    def news_already_exists(key):
-        boolean = Cache.exist(key)
-        if boolean:
-            _logger.info("cache exists: %s" % key)
-        return boolean
-
-    @staticmethod
-    def g_cache_key(string):
-        return "news:" + base64.urlsafe_b64encode(string).replace("=", "")
-
-    @staticmethod
     def get_img_number(content):
         pass
 

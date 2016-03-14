@@ -1,5 +1,6 @@
 # coding: utf-8
 import re
+from datetime import datetime
 from lxml import html
 from lxml.html.clean import Cleaner
 from bs4 import BeautifulSoup, Comment, Tag, NavigableString
@@ -153,6 +154,8 @@ class BaseExtractor(object):
     post_user_param = {"name": None, "attrs": dict()}
     # soup find content param
     content_param = {"name": None, "attrs": dict()}
+    # soup find content param
+    summary_param = {"name": "meta", "attrs": {"name": "description"}}
 
     def __init__(self, document):
         """抽取类初始化
@@ -184,10 +187,31 @@ class BaseExtractor(object):
         """
         name = param["name"]
         attrs = param["attrs"]
-        if name or attrs:
-            return self.get_tag_text(name=name, attrs=attrs)
-        else:
-            return ""
+        string = self.get_tag_text(name, attrs=attrs) if name or attrs else ""
+        return self.clean_title(string)
+
+    def clean_title(self, string):
+        """清洗新闻标题
+
+        子类可重写该方法实现需要的标题清洗，默认移除字符 '|' 后的内容
+
+        :param string:str, 需要清洗的标题字符串
+        :return: str
+        """
+        words = string.split("|")
+        return words[0]
+
+    def extract_summary(self, param):
+        """新闻概要抽取
+
+        子类可重写该方法实现精确抽取新闻概要信息
+
+        :param param:dict, bs4 find method params
+        :return: str
+        """
+        name = param["name"]
+        attrs = param["attrs"]
+        return self.get_tag_text(name, attrs=attrs) if name or attrs else ""
 
     def extract_post_date(self, param):
         """新闻发布时间抽取
@@ -200,21 +224,32 @@ class BaseExtractor(object):
         """
         name = param["name"]
         attrs = param["attrs"]
-        if name or attrs:
-            string = self.get_tag_text(name, attrs=attrs)
-        else:
-            string = ""
+        string = self.get_tag_text(name, attrs=attrs) if name or attrs else ""
         return self.clean_post_date(string)
 
     def clean_post_date(self, string):
         """清洗新闻发布时间
 
-        子类可重写该方法实现需要的时间清洗，默认不进行任何清洗
+        子类可重写该方法实现需要的时间清洗，默认进行简单清洗
 
         :param string:str, 需要清洗的时间字符串
         :return: str
         """
-        return string
+        if not string: return ""
+        p_date = r"20\d{2}-\d{2}-\d{2}"
+        p_time = r"\d{2}\:\d{2}:\d{2}"
+        date_match = re.search(p_date, string)
+        time_match = re.search(p_time, string)
+        if date_match:
+            date_string = date_match.group(0)
+            if time_match:
+                time_string = time_match.group(0)
+            else:
+                now = datetime.now()
+                time_string = now.strftime("%H:%M:%S")
+            return date_string + " " + time_string
+        else:
+            return ""
 
     def extract_post_user(self, param):
         """新闻来源抽取
@@ -261,6 +296,7 @@ class BaseExtractor(object):
                  title_param=None,
                  post_date_param=None,
                  post_user_param=None,
+                 summary_param=None,
                  content_param=None):
         """抽取入口
 
@@ -280,11 +316,14 @@ class BaseExtractor(object):
             post_user_param = self.post_user_param
         if content_param is None:
             content_param = self.content_param
+        if summary_param is None:
+            summary_param = self.summary_param
         title = self.extract_title(title_param)
         post_date = self.extract_post_date(post_date_param)
         post_user = self.extract_post_user(post_user_param)
+        summary = self.extract_summary(summary_param)
         content = self._extract_content(content_param)
-        return title, post_date, post_user, content
+        return title, post_date, post_user, summary, content
 
     def find_content_tag(self, name, attrs):
         """获取包含内容的 Tag 节点
@@ -320,7 +359,7 @@ class BaseExtractor(object):
         :param tag: bs4.Tag, 要打分的 Tag
         :param mapping: dict, 整个树的打分值
         """
-        content_tag_names = ["div", "body", "html"]
+        content_tag_names = ["div", "body", "html", "article"]
         if not isinstance(tag, Tag): return
         if tag.name not in content_tag_names: return
         score = 0.0
@@ -406,7 +445,7 @@ class GeneralExtractor(BaseExtractor):
         allow_tags = ("b", "blod", "big", "em", "font", "h1", "h2", "h3", "h4",
                       "h5", "h6", "i", "italic", "small", "strike", "sub",
                       "a", "p", "strong", "div", "img", "tt", "u", "html",
-                      "meta", "body", "head", "br", "sup", "title")
+                      "meta", "body", "head", "br", "sup", "title", "article")
         encoding = "utf-8"
         cleaner = Cleaner(scripts=True, javascript=True, comments=True,
                           style=True, links=True, meta=False,
