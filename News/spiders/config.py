@@ -20,7 +20,7 @@ configs = [
         "channel_id": "",
         "crawl_source": "新浪新闻",
         "description": "新浪新闻抓取配置文件",
-        "online": False,
+        "online": True,
     },
     {
         "allowed_domains": ["www.waou.com.mo"],
@@ -40,7 +40,7 @@ configs = [
         "db": "mongodb",
         "channel_id": "",
         "crawl_source": "新华澳报",
-        "description": "新华澳报抓取配置文件",
+        "description": "新华澳报抓取配置文件，外媒频道",
         "online": True,
     },
 

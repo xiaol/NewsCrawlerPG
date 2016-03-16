@@ -477,6 +477,8 @@ class GeneralExtractor(BaseExtractor):
                     string = str(child)
                     if child.name == "p":
                         string = self.remove_tag_name(string, "p")
+                    elif child.name == "article":
+                        string = self.remove_tag_name(string, "article")
                     content.append(self.get_content_item("text", string))
             else:
                 pass

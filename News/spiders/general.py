@@ -52,6 +52,16 @@ def news_spider_factory(start_urls, allowed_domains, rule, title_param,
         rules.append(Rule(LinkExtractor(allow=tuple(rule["follow_allow"]), deny=tuple(rule["follow_deny"])), follow=True))
     if rule["parse_allow"] or rule["parse_allow"]:
         rules.append(Rule(LinkExtractor(allow=tuple(rule["parse_allow"]), deny=tuple(rule["parse_deny"])), callback="parse_item"))
+    custom_settings = {
+        "DOWNLOAD_DELAY": 1,
+        "ITEM_PIPELINES": {
+            "News.pipelines.CleanPipeline": 300,
+            "News.pipelines.CompatiblePipeline": 301,
+            "News.pipelines.CachePipeline": 302,
+            # "News.pipelines.MongoPipeline": 303,
+            "News.pipelines.PrintPipeline": 304,
+        },
+    }
     class_attr = dict(
         name=spider_name,
         allowed_domains=allowed_domains,
@@ -66,6 +76,7 @@ def news_spider_factory(start_urls, allowed_domains, rule, title_param,
         db=db,
         channel_id=channel_id,
         crawl_source=crawl_source,
+        custom_settings=custom_settings,
     )
     return type(class_name, (CrawlSpider, ), class_attr)
 
