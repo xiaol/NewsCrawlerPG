@@ -193,13 +193,14 @@ class BaseExtractor(object):
     def clean_title(self, string):
         """清洗新闻标题
 
-        子类可重写该方法实现需要的标题清洗，默认移除字符 '|' 后的内容
+        子类可重写该方法实现需要的标题清洗，默认不做任何清洗
 
         :param string:str, 需要清洗的标题字符串
         :return: str
         """
-        words = string.split("|")
-        return words[0]
+        # words = string.split("|")
+        # return words[0]
+        return string
 
     def extract_summary(self, param):
         """新闻概要抽取
@@ -386,11 +387,17 @@ class BaseExtractor(object):
     def remove_tag_name(string, name):
         """从字符串中移除名字为 name 的标签名
 
+        若 name 为 list 或 tuple, 则移除包含这些名字的标签
+
         :param string:str
-        :param name:str, 标签名
+        :param name:str, list or tuple, 标签名
         :return:str, 移除后的字符串
         """
-        p = re.compile("<{tag}[^>]*>|</{tag}>".format(tag=name))
+        if isinstance(name, (list, tuple)):
+            p_string = "|".join(["<{tag}[^>]*>|</{tag}>".format(tag=tag) for tag in name])
+        else:
+            p_string = "<{tag}[^>]*>|</{tag}>".format(tag=name)
+        p = re.compile(p_string)
         return re.sub(p, "", string)
 
     @staticmethod
@@ -400,7 +407,7 @@ class BaseExtractor(object):
         :param tag:bs4.Tag, 要获取链接的 img Tag
         :return:str, 图片的链接地址
         """
-        img_url_name = ["src", "alt-src", "data-src"]
+        img_url_name = ["src", "alt-src", "alt_src", "data-src"]
         for name in img_url_name:
             url = tag.get(name, "").strip()
             if url.startswith("http"):
@@ -440,6 +447,9 @@ class BaseExtractor(object):
 
 class GeneralExtractor(BaseExtractor):
 
+    # remove tags in content
+    remove_tag_name_list = ["p", "article"]
+
     @staticmethod
     def clean(doc):
         allow_tags = ("b", "blod", "big", "em", "font", "h1", "h2", "h3", "h4",
@@ -465,6 +475,7 @@ class GeneralExtractor(BaseExtractor):
             if isinstance(child, NavigableString):
                 string = unicode(child).strip()
                 if string:
+                    string = "<p>" + string + "</p>"
                     content.append(self.get_content_item("text", string))
             elif isinstance(child, Tag):
                 if child.name == "img":
@@ -475,13 +486,20 @@ class GeneralExtractor(BaseExtractor):
                     self.extract_content(child, content)
                 elif child.get_text().strip():
                     string = str(child)
-                    if child.name == "p":
-                        string = self.remove_tag_name(string, "p")
-                    elif child.name == "article":
-                        string = self.remove_tag_name(string, "article")
+                    if child.name not in self.remove_tag_name_list:
+                        string = "<p>" + string + "</p>"
                     content.append(self.get_content_item("text", string))
             else:
                 pass
+        self.clean_content(content)
+
+    def clean_content(self, content):
+        for index, item in enumerate(content):
+            for key, value in item.items():
+                if key == "text":
+                    content[index][key] = self.remove_tag_name(
+                        value, self.remove_tag_name_list
+                    )
 
 
 class RegularExtractor(GeneralExtractor):
@@ -491,6 +509,7 @@ class RegularExtractor(GeneralExtractor):
             if isinstance(child, NavigableString):
                 string = unicode(child).strip()
                 if string:
+                    string = "<p>" + string + "</p>"
                     content.append(self.get_content_item("text", string))
             elif isinstance(child, Tag):
                 if child.name == "img":
@@ -501,11 +520,28 @@ class RegularExtractor(GeneralExtractor):
                     self.extract_content(child, content)
                 elif child.get_text().strip():
                     string = str(child)
-                    if child.name == "p":
-                        string = self.remove_tag_name(string, "p")
+                    if child.name != "p":
+                        string = "<p>" + string + "</p>"
                     content.append(self.get_content_item("text", string))
                 else:
                     pass
             else:
                 pass
+
+
+class YiDianZiXunExtractor(GeneralExtractor):
+    title_param = {"name": "h2", "attrs": dict()}
+    post_date_param = {"name": None, "attrs": dict()}
+    post_user_param = {"name": "a", "attrs": dict(id="source-name")}
+    summary_param = {"name": None, "attrs": dict()}
+    content_param = {"name": None, "attrs": dict()}
+
+
+class TouTiaoExtractor(GeneralExtractor):
+    title_param = {"name": "h1", "attrs": dict()}
+    post_date_param = {"name": None, "attrs": dict()}
+    post_user_param = {"name": None, "attrs": dict()}
+    summary_param = {"name": None, "attrs": dict()}
+    content_param = {"name": None, "attrs": dict()}
+
 

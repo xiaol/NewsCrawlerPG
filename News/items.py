@@ -44,11 +44,10 @@ def get_default_news(title="", tags=None, summary="", publish_time="",
                      key="", start_url=""):
     news = NewsItem()
     news["title"] = title
-    if tags is None: news["tags"] = list()
+    news["tags"] = list() if tags is None else tags
     news["summary"] = summary
     news["publish_time"] = publish_time
-    if content is None:
-        news["content"] = list()
+    news["content"] = list() if content is None else content
     news["province"] = province
     news["city"] = city
     news["district"] = district
@@ -63,7 +62,7 @@ def get_default_news(title="", tags=None, summary="", publish_time="",
     news["original_url"] = original_url
     news["crawl_source"] = crawl_source
     news["original_source"] = original_source
-    if image_list is None: news["image_list"] = list()
+    news["image_list"] = list() if image_list is None else image_list
     news["key"] = key
     news["start_url"] = start_url
     return news

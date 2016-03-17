@@ -10,6 +10,7 @@ from News.extractor import GeneralExtractor
 from News.extractor import RegularExtractor
 from News.extractor.wechat import WechatExtractor
 from News.extractor.news163 import News163Extractor, NewsExtractor
+from News.extractor import YiDianZiXunExtractor
 
 
 def get_document(url):
@@ -58,8 +59,10 @@ def test_extractor(k, url):
         extractor = RegularExtractor(string)
     elif k == "we":
         extractor = WechatExtractor(string)
+    elif k == "yd":
+        extractor = YiDianZiXunExtractor(string)
     else:
-        extractor = WechatExtractor(string)
+        extractor = RegularExtractor(string)
     title, post_date, post_user, summary, content = extractor()
     return title, post_date, post_user, summary, content
 
