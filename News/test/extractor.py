@@ -54,15 +54,15 @@ def __change_content_compatible(content):
 def test_extractor(k, url):
     string = get_document(url)
     if k == "ge":
-        extractor = GeneralExtractor(string)
+        extractor = GeneralExtractor(string, url)
     elif k == "re":
-        extractor = RegularExtractor(string)
+        extractor = RegularExtractor(string, url)
     elif k == "we":
-        extractor = WechatExtractor(string)
+        extractor = WechatExtractor(string, url)
     elif k == "yd":
-        extractor = YiDianZiXunExtractor(string)
+        extractor = YiDianZiXunExtractor(string, url)
     else:
-        extractor = RegularExtractor(string)
+        extractor = RegularExtractor(string, url)
     title, post_date, post_user, summary, content = extractor()
     return title, post_date, post_user, summary, content
 

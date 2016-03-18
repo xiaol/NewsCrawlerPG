@@ -1,6 +1,7 @@
 # coding: utf-8
 import re
 from datetime import datetime
+from urlparse import urljoin
 from lxml import html
 from lxml.html.clean import Cleaner
 from bs4 import BeautifulSoup, Comment, Tag, NavigableString
@@ -157,7 +158,7 @@ class BaseExtractor(object):
     # soup find content param
     summary_param = {"name": "meta", "attrs": {"name": "description"}}
 
-    def __init__(self, document):
+    def __init__(self, document, url=None):
         """抽取类初始化
 
         :param document: str, 新闻原始html页面
@@ -165,6 +166,7 @@ class BaseExtractor(object):
         self.doc = document
         self.html = self.clean(self.doc)
         self.soup = BeautifulSoup(self.html, "lxml", from_encoding="utf-8")
+        self.base_url = url
 
     @staticmethod
     def clean(doc):
@@ -400,18 +402,30 @@ class BaseExtractor(object):
         p = re.compile(p_string)
         return re.sub(p, "", string)
 
-    @staticmethod
-    def get_img_src(tag):
+    def get_img_src(self, tag):
         """获取 img Tag 的 src 属性
+
+        若初始化类中传入 url 参数，则返回 img 的绝对路径
 
         :param tag:bs4.Tag, 要获取链接的 img Tag
         :return:str, 图片的链接地址
         """
         img_url_name = ["src", "alt-src", "alt_src", "data-src"]
+        urls = []
+        img_types = [".jpg", ".png", ".webp", ".gif", ".jpeg"]
         for name in img_url_name:
             url = tag.get(name, "").strip()
             if url.startswith("http"):
                 return url
+            else:
+                urls.append(url)
+        for url in urls:
+            lower = url.lower()
+            for t in img_types:
+                if lower.endswith(t):
+                    return url if self.base_url is None else urljoin(self.base_url, url)
+            if lower.startswith("/") or lower.startswith("//"):
+                return url if self.base_url is None else urljoin(self.base_url, url)
         return ""
 
     @staticmethod
