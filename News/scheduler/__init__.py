@@ -1,6 +1,8 @@
 # coding: utf-8
 
+import json
 from urllib import urlencode
+from News.constans import CHANNELS_MAP
 from News.constans import yidianzixun
 from News.constans import toutiao
 from News.constans import news163
@@ -9,6 +11,15 @@ from News.scheduler import wechat
 
 def g_queue_name(spider_name):
     return ":".join([spider_name, "start_urls"])
+
+
+def g_start_request(url, value):
+        info = CHANNELS_MAP[value["channel"]]
+        meta = dict()
+        meta.update(info)
+        meta.update(value)
+        request = {"url": url, "meta": meta}
+        return json.dumps(request)
 
 
 def g_yidianzixun_urls(channels, offset=0, end=20):
@@ -24,10 +35,11 @@ def g_yidianzixun_urls(channels, offset=0, end=20):
         "cend": end,
     }
     start_urls = list()
-    for k, v in channels.iteritems():
-        params["display"] = v
+    for key, value in channels.iteritems():
+        params["display"] = key
         url = prefix + urlencode(params, True)
-        start_urls.append(url)
+        request = g_start_request(url, value)
+        start_urls.append(request)
     return start_urls
 
 
@@ -40,15 +52,15 @@ def g_toutiao_urls(channels, offset=0, end=20):
         "utm_source": "toutiao",
     }
     start_urls = list()
-    for k, v in channels.iteritems():
-        params["category"] = v
+    for key, value in channels.items():
+        params["category"] = key
         url = prefix + urlencode(params, True)
-        start_urls.append(url)
+        request = g_start_request(url, value)
+        start_urls.append(json.dumps(request))
     return start_urls
 
 
-def g_news163_urls(channels=None, offset=0, end=20, cities=""):
-    if channels is None: channels = {}
+def g_news163_urls(channels, offset=0, end=20):
     prefix = news163.START_URL_PREFIX
     params = {
         "newchannel": "news",
@@ -56,15 +68,28 @@ def g_news163_urls(channels=None, offset=0, end=20, cities=""):
         "limit": end,
     }
     start_urls = list()
-    for k, v in channels.iteritems():
-        params["channel"] = v
+    for key, value in channels.items():
+        params["channel"] = key
         url = prefix + urlencode(params, True)
-        start_urls.append(url)
+        request = g_start_request(url, value)
+        start_urls.append(request)
+    return start_urls
+
+
+def g_news163_local_urls(cities, offset=0, end=20):
+    prefix = news163.START_URL_PREFIX
+    params = {
+        "newchannel": "news",
+        "offset": offset,
+        "limit": end,
+    }
+    start_urls = list()
     for city in cities.split(","):
         params["channel"] = news163.LOCAL_CHANNEL
         params["city"] = city
         url = prefix + urlencode(params, True)
-        start_urls.append(url)
+        request = g_start_request(url, value=news163.LOCAL_CHANNEL_VALUE)
+        start_urls.append(request)
     return start_urls
 
 

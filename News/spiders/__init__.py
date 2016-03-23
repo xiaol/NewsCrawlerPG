@@ -2,7 +2,7 @@
 #
 # Please refer to the documentation for information on how to create and manage
 # your spiders.
-from scrapy_redis.spiders import RedisSpider
+from News.distributed import RedisSpider
 
 
 class NewsSpider(RedisSpider):

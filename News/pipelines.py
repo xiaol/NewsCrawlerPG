@@ -247,6 +247,7 @@ class PrintPipeline(object):
         print("date: %s" % item["publish_time"])
         print("user: %s" % item["original_source"])
         print("title: %s" % item["title"])
+        print("channel: %s" % item.get("meta_channel_name", ""))
         for i in item["content"]:
             for key, value in i.items():
                 print("%s: %s" % (key, value))

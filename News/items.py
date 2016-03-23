@@ -35,13 +35,18 @@ class NewsItem(Item):
     key = Field()   # redis key, base64 for crawl_url
     start_url = Field()  # start url, record to get channel info in pipeline
 
+    meta_channel_id = Field()
+    meta_channel_name = Field()
+    meta_channel_online = Field()
+
 
 def get_default_news(title="", tags=None, summary="", publish_time="",
                      content=None, province=None, city=None, district=None,
                      love=0, up=0, down=0, image_number=0, docid="",
                      channel="", category="", crawl_url="", original_url="",
                      crawl_source="", original_source="", image_list=None,
-                     key="", start_url=""):
+                     key="", start_url="", meta_channel_id=None,
+                     meta_channel_name=None, meta_channel_online=None):
     news = NewsItem()
     news["title"] = title
     news["tags"] = list() if tags is None else tags
@@ -65,6 +70,9 @@ def get_default_news(title="", tags=None, summary="", publish_time="",
     news["image_list"] = list() if image_list is None else image_list
     news["key"] = key
     news["start_url"] = start_url
+    news["meta_channel_id"] = meta_channel_id
+    news["meta_channel_name"] = meta_channel_name
+    news["meta_channel_online"] = meta_channel_online
     return news
 
 

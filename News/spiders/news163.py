@@ -19,14 +19,15 @@ class News163(NewsSpider):
     default_comment_count = 30
 
     def parse(self, response):
+        meta = response.meta.get("start_meta")
         articles = load_json_data(response.body)
         for article in articles:
-            item = self.g_news_item(article, response.request.url)
+            item = self.g_news_item(article, response.request.url, meta)
             if item is not None:
                 yield self.g_news_request(item)
                 # yield self.g_comment_request(item["docid"], 0)
 
-    def g_news_item(self, article, start_url=""):
+    def g_news_item(self, article, start_url="", meta=None):
         news = NewsItem()
         news["docid"] = article["docID"]
         url_163 = article.get("url_163", None)
@@ -55,6 +56,10 @@ class News163(NewsSpider):
         news["original_source"] = article.get("source", "")
 
         news["start_url"] = start_url
+        if meta is not None:
+            news["meta_channel_id"] = meta["channel"]
+            news["meta_channel_name"] = meta["name"]
+            news["meta_channel_online"] = meta["online"]
         return news
 
     def g_news_request(self, item):

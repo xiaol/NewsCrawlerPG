@@ -92,7 +92,8 @@ if DEBUG:
         "News.pipelines.CleanPipeline": 300,
         "News.pipelines.CompatiblePipeline": 301,
         "News.pipelines.CachePipeline": 302,
-        'News.test.pipelines.PostgrePipeline': 303,
+        "News.pipelines.PrintPipeline": 303,
+        # 'News.test.pipelines.PostgrePipeline': 303,
     }
     LOG_LEVEL = "INFO"
     REDIS_URL = 'redis://localhost:6379'
