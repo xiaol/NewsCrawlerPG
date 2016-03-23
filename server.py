@@ -1,6 +1,6 @@
 # coding: utf-8
 
-
+import os
 import tornado.ioloop
 import tornado.web
 
@@ -8,6 +8,9 @@ from News.test.extractor import test_extractor
 
 
 class ExtractorHandler(tornado.web.RequestHandler):
+
+    def get(self):
+        self.render("index.html")
 
     def post(self):
         key = self.get_argument("key")
@@ -24,9 +27,13 @@ class ExtractorHandler(tornado.web.RequestHandler):
 
 
 def make_app():
+    settings = {
+        "template_path": "web",
+        "static_path": os.path.join(os.path.dirname(__file__), "web"),
+    }
     return tornado.web.Application([
         (r"/", ExtractorHandler),
-    ])
+    ], **settings)
 
 if __name__ == "__main__":
     app = make_app()
