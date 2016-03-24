@@ -33,6 +33,22 @@ CHANNELS_MAP = {
     26: {"name": u"美女", "online": 1},
     27: {"name": u"杂志", "online": 0},
     28: {"name": u"本地", "online": 0},
+    "0": {"name": u"今日焦点", "online": 1},    # 热点
+    "1": {"name": u"热门专题", "online": 1},    # 精选
+    "2": {"name": u"重口味", "online": 1},     # 重口味
+    "3": {"name": u"贵圈乱不乱", "online": 1},   # 娱乐
+    "4": {"name": u"反正我信了", "online": 1},   # 搞笑
+    "5": {"name": "Take ground gas", "online": 1},  # 社会
+    "6": {"name": u"直男常备", "online": 1},    # 体育
+    "8": {"name": u"股往金来", "online": 1},    # 财经
+    "9": {"name": u"科学嗨起来", "online": 1},   # 科技
+    "10": {"name": u"高逼格get√", "online": 1},    # 时尚
+    "11": {"name": u"追剧看片schedule", "online": 1},   # 影视
+    "12": {"name": u"音痴恐惧症", "online": 1},  # 音乐
+    "13": {"name": u"萌师强化班", "online": 1},  # 二次元
+    "14": {"name": u"X星人沦陷区", "online": 1},  # 萌宠
+    "15": {"name": u"谷歌今日焦点", "online": 1},  # 推荐
+    "16": {"name": u"外媒观光团", "online": 1},  # 外媒
 }
 
 

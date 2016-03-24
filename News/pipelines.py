@@ -10,8 +10,6 @@ from scrapy.exceptions import DropItem
 
 from News.items import NewsItem, CommentItem
 from News.utils.cache import Cache
-from News.utils.util import get_query_from_url
-from News.constans import wechat
 from News.constans import NEWS_STORE_API, CACHE_SOURCE_KEY, COMMENT_STORE_API
 
 _logger = logging.getLogger(__name__)
@@ -221,12 +219,8 @@ class MongoPipeline(object):
         old["create_time"] = item["publish_time"]
         old["source"] = item["original_source"]
 
-        openid = get_query_from_url(item["start_url"], "openid")
-        key = spider.name + ":" + openid
-        source = Cache.hgetall(key)
-        cid = source["channel_id"]
-        old["channel_id"] = cid
-        old["channel"] = wechat.ID_NAME_MAPPING[cid]
+        old["channel_id"] = item["meta_channel_id"]
+        old["channel"] = item["meta_channel_name"]
         return old
 
     @staticmethod

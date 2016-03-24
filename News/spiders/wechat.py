@@ -4,7 +4,7 @@ import logging
 from scrapy import Request
 from News.spiders import NewsSpider
 from News.utils.util import load_json_data, g_cache_key, news_already_exists
-from News.items import NewsItem, get_default_news
+from News.items import get_default_news
 from News.constans.wechat import SPIDER_NAME
 from News.constans.wechat import CRAWL_SOURCE
 from News.extractor.wechat import WechatExtractor
@@ -33,6 +33,7 @@ class Wechat(NewsSpider):
     }
 
     def parse(self, response):
+        meta = response.meta.get("start_meta")
         results = load_json_data(response.body)
         if results is None:
             _logger.error("spider has been banned for %s" % response.request.url)
@@ -41,20 +42,26 @@ class Wechat(NewsSpider):
         page = int(results["page"])
         articles = results["items"]
         for article in articles:
-            item = self.g_news_item(article, response.request.url)
+            item = self.g_news_item(article, response.request.url, meta)
             if item is not None:
                 request = self.g_news_request(item)
                 request.meta["browser"] = response.meta["browser"]
                 yield request
 
-    def g_news_item(self, article, start_url=""):
+    def g_news_item(self, article, start_url="", meta=None):
         crawl_url = self._g_crawl_url(article)
         if not crawl_url: return None
-        news = get_default_news(crawl_url=crawl_url,
-                                key=g_cache_key(crawl_url),
-                                crawl_source=CRAWL_SOURCE,
-                                start_url=start_url,
-                                summary=self._g_crawl_summary(article))
+        news = get_default_news(
+            crawl_url=crawl_url,
+            key=g_cache_key(crawl_url),
+            crawl_source=CRAWL_SOURCE,
+            start_url=start_url,
+            summary=self._g_crawl_summary(article)
+        )
+        if meta is not None:
+            news["meta_channel_id"] = meta["channel"]
+            news["meta_channel_name"] = meta["name"]
+            news["meta_channel_online"] = meta["online"]
         return None if news_already_exists(news["key"]) else news
 
     def g_news_request(self, item):

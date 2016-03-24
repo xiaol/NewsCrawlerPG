@@ -19,7 +19,10 @@ def get_document(url):
                "host": netloc}
     r = requests.get(url, headers=headers)
     if r.status_code == 200:
-        return r.content#.decode(r.encoding).encode("utf-8")
+        encoding = r.apparent_encoding
+        if encoding.lower() == "gb2312":
+            encoding = "GB18030"
+        return r.content.decode(encoding).encode("utf-8")
     else:
         print("get document error: %s" % r.status_code)
         return ""

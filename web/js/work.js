@@ -6,6 +6,7 @@ $(document).ready(function() {
 });
 
 submit = function(){
+    $("#news").html("");
     data = {key:$("#keys").val(), url:$("#url").val()};
     post_url = "/";
     $.post(

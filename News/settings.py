@@ -98,6 +98,9 @@ if DEBUG:
     LOG_LEVEL = "INFO"
     REDIS_URL = 'redis://localhost:6379'
     POSTGRES = "postgresql://postgres:lee@localhost/test"
+    MONGO_URI = "mongodb://localhost:27017"
+    MONGO_DATABASE = "test"
+    MONGO_COLLECTION = "news"
 else:
     ITEM_PIPELINES = {
         "News.pipelines.CleanPipeline": 300,
@@ -108,11 +111,7 @@ else:
     LOG_LEVEL = "ERROR"
     REDIS_URL = 'redis://ccd827d637514872:LYcache2015@ccd827d637514872.m.cnhza.kvstore.aliyuncs.com:6379'
     # POSTGRES = "postgresql://postgres:ly@postgres&2015@120.27.163.25/BDP"
-
-# MONGO_URI = "mongodb://localhost:27017"
-# MONGO_DATABASE = "test"
-# MONGO_COLLECTION = "news"
-MONGO_URI = "mongodb://h44:27017,h213:27017,h241:27017/?replicaSet=myset"
-MONGO_DATABASE = "news_ver2"
-MONGO_COLLECTION = "NewsItems"
+    MONGO_URI = "mongodb://h44:27017,h213:27017,h241:27017/?replicaSet=myset"
+    MONGO_DATABASE = "news_ver2"
+    MONGO_COLLECTION = "NewsItems"
 

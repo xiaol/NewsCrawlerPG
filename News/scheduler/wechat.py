@@ -47,4 +47,4 @@ def get_start_url(name, oid):
                 tail = item["href"][:4] + "js" + item["href"][4:] + "&page=1"
                 return START_URL_PREFIX + tail
         time.sleep(random.randint(50, 150)/10.0)
-    return ""
+    return None
