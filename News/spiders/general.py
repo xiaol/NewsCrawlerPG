@@ -1,5 +1,12 @@
 # coding: utf-8
 
+""" 新闻通用爬虫生成器
+
+    从通用爬虫配置文件种读入相应配置信息，动态生产爬虫类
+    适用于非 ajax 加载的新闻站点，整站进入一个频道，或者站中的每个频道都对应一个爬虫。
+
+"""
+
 from scrapy.spiders import Rule, CrawlSpider
 from scrapy.linkextractors import LinkExtractor
 
