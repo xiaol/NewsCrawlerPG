@@ -18,18 +18,10 @@ __email__ = "lee1300394324@gmail.com"
 __date__ = "2016-03-28 17:28"
 
 
-class Adamag(Spider):
+class Adamag(NewsSpider):
 
     name = SPIDER_NAME
     start_urls = ["http://www.adaymag.com/worldpost/fun/"]
-
-    def parse(self, response):
-        meta = response.meta.get("start_meta")
-        articles = self.g_news_meta_list(response)
-        for article in articles:
-            item = self.g_news_item(article, response.request.url, meta)
-            if item is not None:
-                yield self.g_news_request(item)
 
     def g_news_meta_list(self, response):
         divs = response.xpath("//div[@class='td_mod_wrap td_mod8 ']")
@@ -76,14 +68,6 @@ class Adamag(Spider):
             news["meta_channel_name"] = meta["name"]
             news["meta_channel_online"] = meta["online"]
         return news
-
-    def g_news_request(self, item):
-        url = item["crawl_url"]
-        return Request(
-            url=url,
-            callback=self.parse_news,
-            meta={"news": item}
-        )
 
     def parse_news(self, response):
         news = response.meta["news"]

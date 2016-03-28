@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import logging
 from scrapy import Request
 from News.spiders import NewsSpider
 from News.utils.util import load_json_data, news_already_exists, g_cache_key
@@ -12,20 +13,21 @@ from News.constans.news163 import COMMENT_URL_TEMPLATE
 from News.constans.news163 import DOMAIN
 from News.extractor.news163 import News163Extractor
 
+_logger = logging.getLogger(__name__)
+
 
 class News163(NewsSpider):
 
     name = SPIDER_NAME
     default_comment_count = 30
 
-    def parse(self, response):
-        meta = response.meta.get("start_meta")
+    def g_news_meta_list(self, response):
         articles = load_json_data(response.body)
-        for article in articles:
-            item = self.g_news_item(article, response.request.url, meta)
-            if item is not None:
-                yield self.g_news_request(item)
-                # yield self.g_comment_request(item["docid"], 0)
+        if articles is None:
+            _logger.error("spider has been banned for %s" % response.request.url)
+            return []
+        else:
+            return articles
 
     def g_news_item(self, article, start_url="", meta=None):
         news = NewsItem()

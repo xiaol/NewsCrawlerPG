@@ -32,21 +32,13 @@ class Wechat(NewsSpider):
         },
     }
 
-    def parse(self, response):
-        meta = response.meta.get("start_meta")
+    def g_news_meta_list(self, response):
         results = load_json_data(response.body)
         if results is None:
             _logger.error("spider has been banned for %s" % response.request.url)
-            return
-        total = int(results["totalPages"])
-        page = int(results["page"])
-        articles = results["items"]
-        for article in articles:
-            item = self.g_news_item(article, response.request.url, meta)
-            if item is not None:
-                request = self.g_news_request(item)
-                request.meta["browser"] = response.meta["browser"]
-                yield request
+            return []
+        else:
+            return results["items"]
 
     def g_news_item(self, article, start_url="", meta=None):
         crawl_url = self._g_crawl_url(article)
@@ -63,14 +55,6 @@ class Wechat(NewsSpider):
             news["meta_channel_name"] = meta["name"]
             news["meta_channel_online"] = meta["online"]
         return None if news_already_exists(news["key"]) else news
-
-    def g_news_request(self, item):
-        url = item["crawl_url"]
-        return Request(
-            url=url,
-            callback=self.parse_news,
-            meta={"news": item}
-        )
 
     def parse_news(self, response):
         news = response.meta["news"]

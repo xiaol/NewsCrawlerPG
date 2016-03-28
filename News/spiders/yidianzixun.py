@@ -16,14 +16,9 @@ class YiDianZiXun(NewsSpider):
 
     name = SPIDER_NAME
 
-    def parse(self, response):
-        meta = response.meta.get("start_meta")
+    def g_news_meta_list(self, response):
         data = load_json_data(response.body)
-        articles = data.get("result", [])
-        for article in articles:
-            item = self.g_news_item(article, response.request.url, meta)
-            if item is not None:
-                yield self.g_news_request(item)
+        return data.get("result", [])
 
     def g_news_item(self, article, start_url="", meta=None):
         if article["ctype"] != "news":
@@ -53,14 +48,6 @@ class YiDianZiXun(NewsSpider):
             news["meta_channel_name"] = meta["name"]
             news["meta_channel_online"] = meta["online"]
         return news
-
-    def g_news_request(self, item):
-        url = item["crawl_url"]
-        return Request(
-            url=url,
-            callback=self.parse_news,
-            meta={"news": item}
-        )
 
     def parse_news(self, response):
         news = response.meta["news"]
