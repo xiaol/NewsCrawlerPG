@@ -10,8 +10,8 @@ __date__ = "2016-03-28 16:50"
 
 
 SPIDER_NAME = "spider:news:www_adaymag_com"
-CRAWL_SOURCE = ""
-DOMAIN = ""
+CRAWL_SOURCE = "A Day Magazine"
+DOMAIN = "www.adaymag.com"
 
 CATEGORIES = {
     "WORLDPOST": {

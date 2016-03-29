@@ -4,12 +4,12 @@
 # your spiders.
 import abc
 import six
-from scrapy import Request
+from scrapy import Request, Spider
 from News.distributed import RedisSpider
 
 
 @six.add_metaclass(abc.ABCMeta)
-class NewsSpider(RedisSpider):
+class NewsSpider(Spider):
 
     def parse(self, response):
         """

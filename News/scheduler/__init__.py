@@ -6,6 +6,8 @@ from News.constans import CHANNELS_MAP
 from News.constans import yidianzixun
 from News.constans import toutiao
 from News.constans import news163
+from News.constans import www_adaymag_com
+from News.constans import i_cri_cn
 from News.scheduler import wechat
 
 
@@ -107,5 +109,18 @@ def g_wechat_urls(sources):
             yield g_start_request(url, value)
 
 
+def g_category_urls(sources):
+    for key, value in sources.items():
+        if value[1] is not None:
+            url = value[0]
+            v = {"channel": value[1]}
+            yield g_start_request(url, v)
 
 
+def g_category_two_urls(sources):
+    for key, value in sources.items():
+        for k, v in value.items():
+            if v[1] is not None:
+                url = v[0]
+                value = {"channel": v[1]}
+                yield g_start_request(url, value)

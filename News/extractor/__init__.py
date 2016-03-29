@@ -238,21 +238,38 @@ class BaseExtractor(object):
         :param string:str, 需要清洗的时间字符串
         :return: str
         """
-        if not string: return ""
-        p_date = r"20\d{2}-\d{2}-\d{2}"
-        p_time = r"\d{2}\:\d{2}:\d{2}"
+        p_date = r"(20\d{2})?[/.-]?(\d{2})[/.-]?(\d{2})"
+        p_time = r"(\d{2}):(\d{2})(:(\d{2}))?"
         date_match = re.search(p_date, string)
         time_match = re.search(p_time, string)
-        if date_match:
-            date_string = date_match.group(0)
-            if time_match:
-                time_string = time_match.group(0)
-            else:
-                now = datetime.now()
-                time_string = now.strftime("%H:%M:%S")
-            return date_string + " " + time_string
+        now = datetime.now()
+        year_now = now.strftime("%Y")
+        hour_now = now.strftime("%H")
+        minute_now = now.strftime("%M")
+        second_now = now.strftime("%S")
+        date_time_string = ""
+        if date_match is None:
+            return date_time_string
         else:
-            return ""
+            date_groups = date_match.groups()
+        if time_match is None:
+            time_groups = (hour_now, minute_now, ":"+second_now, second_now)
+        else:
+            time_groups = time_match.groups()
+        year = date_groups[0]
+        month = date_groups[1]
+        day = date_groups[2]
+        hour = time_groups[0]
+        minute = time_groups[1]
+        second = time_groups[3]
+        if year is None:
+            year = year_now
+        if second is None:
+            second = second_now
+        date_string = "-".join([year, month, day])
+        time_string = ":".join([hour, minute, second])
+        date_time_string = date_string + " " + time_string
+        return date_time_string
 
     def extract_post_user(self, param):
         """新闻来源抽取
@@ -469,7 +486,7 @@ class GeneralExtractor(BaseExtractor):
         allow_tags = ("b", "blod", "big", "em", "font", "h1", "h2", "h3", "h4",
                       "h5", "h6", "i", "italic", "small", "strike", "sub",
                       "a", "p", "strong", "div", "img", "tt", "u", "html",
-                      "meta", "body", "head", "br", "sup", "title", "article")
+                      "meta", "body", "head", "br", "sup", "title", "article", "span")
         encoding = "utf-8"
         cleaner = Cleaner(scripts=True, javascript=True, comments=True,
                           style=True, links=True, meta=False,
@@ -557,5 +574,6 @@ class TouTiaoExtractor(GeneralExtractor):
     post_user_param = {"name": None, "attrs": dict()}
     summary_param = {"name": None, "attrs": dict()}
     content_param = {"name": None, "attrs": dict()}
+
 
 
