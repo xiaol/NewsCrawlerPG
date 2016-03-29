@@ -51,6 +51,9 @@ url: http://materielle.cn/index.aspx?Class_id=1
 url: http://moviesoon.com/news/
 待增加: http://moviesoon.com/news/ 影像日报
 
+### 中国新闻网
+url: http://www.chinanews.com/
+
 ### 缓存说明
 
 #### spider name
