@@ -13,6 +13,25 @@ SPIDER_NAME = "spider:news:pansci_asia"
 CRAWL_SOURCE = u"PanSci 范科学"
 DOMAIN = "pansci.asia"
 
+ITEMS_XPATH = "//div[@class='list_category row']"
+TITLE_XPATH = ".//div/a/@title"
+URL_XPATH = ".//div/h3/a/@href"
+SUMMARY_XPATH = ".//div/p/text()"
+THUMB_XPATH = ".//div/a/img/@src"
+
+# TITLE_PARAM = {"name": None, "attrs": {}}
+POST_DATE_PARAM = {"name": "div", "attrs": {"class": "the_date"}}
+# POST_USER_PARAM = {"name": None, "attrs": {}}
+# SUMMARY_PARAM = {"name": "p", "attrs": {"class": "art-guidecont"}}
+# CONTENT_PARAM = {"name": "div", "attrs": {"class": "artile-bodycont clearfix"}}
+
+# EXTRACTOR_CLS = "News.extractor."
+
+# CUSTOM_SETTINGS = {
+#
+# }
+
+
 CATEGORIES = {
     u"内容分类": {
         u"人体解析": ("http://pansci.asia/archives/category/type/humanbeing", None),

@@ -13,6 +13,25 @@ SPIDER_NAME = "spider:news:jandan_net"
 CRAWL_SOURCE = u"煎蛋"
 DOMAIN = "jandan.net"
 
+ITEMS_XPATH = "//div[@id='content']//div[@class='post']"
+TITLE_XPATH = "./h2[@class='title2']/a/text()"
+URL_XPATH = "./h2[@class='title2']/a/@href"
+# SUMMARY_XPATH = ".//span[class='hList-context']/text()"
+THUMB_XPATH = "./div[@class='thumbs_b']/a/img/@data-original"
+
+# TITLE_PARAM = {"name": None, "attrs": {}}
+POST_DATE_PARAM = {"name": "div", "attrs": {"class": "time_s"}}
+# POST_USER_PARAM = {"name": None, "attrs": {}}
+SUMMARY_PARAM = {"name": "p", "attrs": {"class": "art-guidecont"}}
+CONTENT_PARAM = {"name": "div", "attrs": {"class": "artile-bodycont clearfix"}}
+
+# EXTRACTOR_CLS = "News.extractor."
+
+# CUSTOM_SETTINGS = {
+#
+# }
+
+
 CATEGORIES = {
     u"科学": {
         u"走进科学": ("http://jandan.net/tag/%E8%B5%B0%E8%BF%9B%E7%A7%91%E5%AD%A6", None),

@@ -54,6 +54,17 @@ url: http://moviesoon.com/news/
 ### 中国新闻网
 url: http://www.chinanews.com/
 
+### 中国摄影出版社
+url: http://www.cpph.com/
+废弃: http://www.cpph.com/category/news/share
+
+### 凤凰网
+url: http://www.ifeng.com/
+
+### GQ男士网
+url: http://www.gq.com.cn/
+
+
 ### 缓存说明
 
 #### spider name

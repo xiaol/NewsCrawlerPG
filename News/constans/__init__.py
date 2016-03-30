@@ -51,5 +51,13 @@ CHANNELS_MAP = {
     "16": {"name": u"外媒观光团", "online": 1},  # 外媒
 }
 
-
-
+SPIDER_CONFIG_NAMES = [
+    "News.constans.www_gq_com_cn",
+    "News.constans.i_cri_cn",
+    "News.constans.jandan_net",
+    "News.constans.moviesoon_com",
+    "News.constans.pansci_asia",
+    "News.constans.www_adaymag_com",
+    "News.constans.www_chinanews_com",
+    "News.constans.www_ifeng_com",
+]

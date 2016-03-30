@@ -13,6 +13,25 @@ SPIDER_NAME = "spider:news:i_cri_cn"
 CRAWL_SOURCE = u"国际在线"
 DOMAIN = "cri.cn"
 
+ITEMS_XPATH = "//div[@class='list-box']/ul/li"
+TITLE_XPATH = ".//div[@class='title']/a/text()"
+URL_XPATH = ".//div[@class='title']/a/@href"
+# SUMMARY_XPATH = ".//span[class='hList-context']/text()"
+THUMB_XPATH = ".//div[@class='pic']/a/img/@src"
+
+# TITLE_PARAM = {"name": None, "attrs": {}}
+POST_DATE_PARAM = {"name": "span", "attrs": {"id": "acreatedtime"}}
+# POST_USER_PARAM = {"name": None, "attrs": {}}
+# SUMMARY_PARAM = {"name": "p", "attrs": {"class": "art-guidecont"}}
+# CONTENT_PARAM = {"name": "div", "attrs": {"class": "artile-bodycont clearfix"}}
+
+# EXTRACTOR_CLS = "News.extractor."
+
+# CUSTOM_SETTINGS = {
+#
+# }
+
+
 CATEGORIES = {
     u"国际": ("http://i.cri.cn/world", None),
     u"国内": ("http://i.cri.cn/china", None),

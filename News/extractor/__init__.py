@@ -238,7 +238,7 @@ class BaseExtractor(object):
         :param string:str, 需要清洗的时间字符串
         :return: str
         """
-        p_date = u"(20\d{2})?[/.-\u5e74](\d{2})[/.-\u6708](\d{2})"
+        p_date = u"(20\d{2})?[/.-\u5e74](\d{1,2})[/.-\u6708](\d{1,2})"
         p_time = r"(\d{2}):(\d{2})(:(\d{2}))?"
         date_match = re.search(p_date, string)
         time_match = re.search(p_time, string)

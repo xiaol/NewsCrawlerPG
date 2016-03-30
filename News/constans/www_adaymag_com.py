@@ -13,6 +13,25 @@ SPIDER_NAME = "spider:news:www_adaymag_com"
 CRAWL_SOURCE = "A Day Magazine"
 DOMAIN = "www.adaymag.com"
 
+ITEMS_XPATH = "//div[@class='td_mod_wrap td_mod8 ']"
+TITLE_XPATH = ".//div[@class='item-details']//h3//text()"
+URL_XPATH = ".//div[@class='item-details//h3/a/@href']"
+SUMMARY_XPATH = ".//div[@class='item-details']//div[@class='td-post-text-excerpt']//text()"
+THUMB_XPATH = ".//div[@class='thumb-wrap']//img/@src"
+
+# TITLE_PARAM = {"name": None, "attrs": {}}
+# POST_DATE_PARAM = {"name": "span", "attrs": {"id": "acreatedtime"}}
+# POST_USER_PARAM = {"name": None, "attrs": {}}
+# SUMMARY_PARAM = {"name": "p", "attrs": {"class": "art-guidecont"}}
+# CONTENT_PARAM = {"name": "div", "attrs": {"class": "artile-bodycont clearfix"}}
+
+# EXTRACTOR_CLS = "News.extractor."
+
+# CUSTOM_SETTINGS = {
+#
+# }
+
+
 CATEGORIES = {
     "WORLDPOST": {
         u"趣闻": ("http://www.adaymag.com/worldpost/fun/", None),
