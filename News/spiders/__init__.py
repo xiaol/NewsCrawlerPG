@@ -10,14 +10,14 @@ import logging
 from scrapy import Request, Spider
 from News.distributed import RedisSpider
 from News.items import get_default_news
-from News.utils.util import g_cache_key, news_already_exists
+from News.utils.util import g_cache_key, news_already_exists, load_json_data
 from News.extractor import GeneralExtractor
 
 _logger = logging.getLogger(__name__)
 
 
 @six.add_metaclass(abc.ABCMeta)
-class NewsSpider(RedisSpider):
+class NewsSpider(Spider):
 
     def parse(self, response):
         """
@@ -59,6 +59,16 @@ class ConfigNewsSpider(NewsSpider):
     """
 
     def g_news_meta_list(self, response):
+        if hasattr(self, "ajax"):
+            if self.ajax:
+                return self.g_ajax_news_meta_list(response)
+            else:
+                return self.g_normal_news_meta_list(response)
+        else:
+            return self.g_normal_news_meta_list(response)
+
+    def g_normal_news_meta_list(self, response):
+        base = response.url
         items = response.xpath(self.items_xpath)
         _logger.info("items len: %s" % len(items))
         articles = list()
@@ -73,14 +83,37 @@ class ConfigNewsSpider(NewsSpider):
             if hasattr(self, "thumb_xpath"):
                 thumb = item.xpath(self.thumb_xpath).extract()
                 if thumb:
-                    article["thumb"] = urljoin(response.request.url, thumb[0])
+                    article["thumb"] = urljoin(base, thumb[0])
             if title and url:
                 article["title"] = title[0]
-                article["url"] = url[0]
+                article["url"] = urljoin(base, url[0])
                 articles.append(article)
             else:
-                _logger.warn("title: %s, url: %s" % ("".join(article["title"]), "".join(article["url"])))
+                _logger.warn("title: %s, url: %s" % ("".join(title), "".join(url)))
         return articles
+
+    def g_ajax_news_meta_list(self, response):
+        body = load_json_data(response.body_as_unicode())
+        items = self.get_dict_value(body, self.items_xpath)
+        _logger.info("item len: %s" % len(items))
+        articles = list()
+        for item in items:
+            article = dict()
+            article["title"] = self.get_dict_value(item, self.title_xpath)
+            article["url"] = self.get_dict_value(item, self.url_xpath)
+            if hasattr(self, "summary_xpath"):
+                article["summary"] = self.get_dict_value(item, self.summary_xpath)
+            if hasattr(self, "thumb_xpath"):
+                article["thumb"] = self.get_dict_value(item, self.thumb_xpath)
+            articles.append(article)
+        return articles
+
+    @staticmethod
+    def get_dict_value(d, path):
+        value = d
+        for key in path.split("|"):
+            value = value[key]
+        return value
 
     def g_news_item(self, article, start_url="", meta=None):
         crawl_url = article["url"]

@@ -64,6 +64,30 @@ url: http://www.ifeng.com/
 ### GQ男士网
 url: http://www.gq.com.cn/
 
+### 和讯财经
+url: http://www.hexun.com/
+
+### 韩剧资料馆
+url: http://www.hjzlg.com/
+
+### 环球网
+url: http://m.huanqiu.com/
+
+### 爱范儿
+url: http://www.ifanr.com/
+
+### 爱虎趣
+url: http://www.ihuqu.com/
+废弃：http://www.ihuqu.com/animals/
+网站无法访问
+
+### 简书
+url: http://www.jianshu.com/
+废弃：更新频率太慢，如果需要后期再添加
+
+### 节操精选
+url: http://jiecao.fm/news/
+
 
 ### 缓存说明
 

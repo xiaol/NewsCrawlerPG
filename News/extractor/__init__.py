@@ -230,7 +230,8 @@ class BaseExtractor(object):
         string = self.get_tag_text(name, attrs=attrs) if name or attrs else ""
         return self.clean_post_date(string)
 
-    def clean_post_date(self, string):
+    @staticmethod
+    def clean_post_date(string):
         """清洗新闻发布时间
 
         子类可重写该方法实现需要的时间清洗，默认进行简单清洗
@@ -238,7 +239,11 @@ class BaseExtractor(object):
         :param string:str, 需要清洗的时间字符串
         :return: str
         """
-        p_date = u"(20\d{2})?[/.-\u5e74](\d{1,2})[/.-\u6708](\d{1,2})"
+        p_not_clean = r"20\d{2}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"
+        match_no_clean = re.search(p_not_clean, string)
+        if match_no_clean is not None:
+            return match_no_clean.group(0)
+        p_date = u"(20\d{2})?[/.-\u5e74](\d{2})[/.-\u6708](\d{2})"
         p_time = r"(\d{2}):(\d{2})(:(\d{2}))?"
         date_match = re.search(p_date, string)
         time_match = re.search(p_time, string)

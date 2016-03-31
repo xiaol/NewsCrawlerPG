@@ -60,4 +60,9 @@ SPIDER_CONFIG_NAMES = [
     "News.constans.www_adaymag_com",
     "News.constans.www_chinanews_com",
     "News.constans.www_ifeng_com",
+    "News.constans.www_hexun_com",
+    "News.constans.www_hjzlg_com",
+    "News.constans.m_huanqiu_com",
+    "News.constans.www_ifanr_com",
+    "News.constans.jiecao_fm",
 ]

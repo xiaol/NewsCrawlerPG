@@ -20,9 +20,12 @@ def config_news_factory(config):
         items_xpath=config.ITEMS_XPATH,
         title_xpath=config.TITLE_XPATH,
         url_xpath=config.URL_XPATH,
-        start_urls=["http://www.gq.com.cn/fun/radar/"],
         __module__=__name__,
     )
+    if hasattr(config, "START_URLS"):
+        class_attr["start_urls"] = config.START_URLS
+    if hasattr(config, "AJAX"):
+        class_attr["ajax"] = config.AJAX
     if hasattr(config, "SUMMARY_XPATH"):
         class_attr["summary_xpath"] = config.SUMMARY_XPATH
     if hasattr(config, "THUMB_XPATH"):

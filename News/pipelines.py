@@ -238,6 +238,7 @@ class PrintPipeline(object):
             return item
         print("*" * 50)
         print("title: %s" % item["title"])
+        print("url: %s" % item["crawl_url"])
         print("date: %s" % item["publish_time"])
         print("user: %s" % item["original_source"])
         print("channel: %s" % item.get("meta_channel_name", ""))
