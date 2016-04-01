@@ -88,6 +88,40 @@ url: http://www.jianshu.com/
 ### 节操精选
 url: http://jiecao.fm/news/
 
+### 金融界
+url: http://www.jrj.com.cn
+
+### 酷狗
+url: http://yule.kugou.com/alllist/
+废弃: http://yule.kugou.com/alllist/ 很少更新
+
+### M新闻
+url: http://news.missevan.cn/
+
+### 南方周末
+url: http://www.infzm.com/news.shtml
+废弃: http://www.infzm.com/news.shtml 更新较慢，后期再加
+
+### 品读
+url: http://www.pento.cn/
+废弃: 官方通知，2015-12-1 日起停止服务
+
+### 人民网
+url: http://www.people.com.cn/
+
+### 品玩
+url: http://www.pingwest.com/
+
+### 涂鸦王国
+url: http://www.poocg.com/
+废弃: http://www.poocg.com/works/new
+
+### 前瞻网
+url: http://www.qianzhan.com/
+目前解析有点儿问题，需要调整
+
+### 设计癖
+url: http://www.shejipi.com/
 
 ### 缓存说明
 

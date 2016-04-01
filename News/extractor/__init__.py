@@ -239,20 +239,37 @@ class BaseExtractor(object):
         :param string:str, 需要清洗的时间字符串
         :return: str
         """
-        p_not_clean = r"20\d{2}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"
-        match_no_clean = re.search(p_not_clean, string)
-        if match_no_clean is not None:
-            return match_no_clean.group(0)
-        p_date = u"(20\d{2})?[/.-\u5e74](\d{2})[/.-\u6708](\d{2})"
+        date_time_string = ""
+        p_date_list = [
+            r"((20\d{2})[/.-])?(\d{2})[/.-](\d{2})",
+            r"((20\d{2})?年)?(\d{2})月(\d{2})",
+            u"((20\d{2})?\u5e74)?(\d{2})\u6708(\d{2})",
+
+            r"((20\d{2})[/.-])?(\d{1})[/.-](\d{2})",
+            r"((20\d{2})?年)?(\d{1})月(\d{2})",
+            u"((20\d{2})?\u5e74)?(\d{1})\u6708(\d{2})",
+
+            r"((20\d{2})[/.-])?(\d{2})[/.-](\d{1})",
+            r"((20\d{2})?年)?(\d{2})月(\d{1})",
+            u"((20\d{2})?\u5e74)?(\d{2})\u6708(\d{1})",
+
+            r"((20\d{2})[/.-])?(\d{1})[/.-](\d{1})",
+            r"((20\d{2})?年)?(\d{1})月(\d{1})",
+            u"((20\d{2})?\u5e74)?(\d{1})\u6708(\d{1})",
+        ]
+        for p_date in p_date_list:
+            date_match = re.search(p_date, string)
+            if date_match is not None:
+                break
+        else:
+            return date_time_string
         p_time = r"(\d{2}):(\d{2})(:(\d{2}))?"
-        date_match = re.search(p_date, string)
         time_match = re.search(p_time, string)
         now = datetime.now()
         year_now = now.strftime("%Y")
         hour_now = now.strftime("%H")
         minute_now = now.strftime("%M")
         second_now = now.strftime("%S")
-        date_time_string = ""
         if date_match is None:
             return date_time_string
         else:
@@ -261,9 +278,13 @@ class BaseExtractor(object):
             time_groups = (hour_now, minute_now, ":"+second_now, second_now)
         else:
             time_groups = time_match.groups()
-        year = date_groups[0]
-        month = date_groups[1]
-        day = date_groups[2]
+        year = date_groups[1]
+        month = date_groups[2]
+        if len(month) == 1:
+            month = "0" + month
+        day = date_groups[3]
+        if len(day) == 1:
+            day = "0" + day
         hour = time_groups[0]
         minute = time_groups[1]
         second = time_groups[3]
