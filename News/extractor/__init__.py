@@ -505,14 +505,15 @@ class BaseExtractor(object):
 class GeneralExtractor(BaseExtractor):
 
     # remove tags in content
-    remove_tag_name_list = ["p", "article"]
+    remove_tag_name_list = ["p", "article", "span"]
 
     @staticmethod
     def clean(doc):
         allow_tags = ("b", "blod", "big", "em", "font", "h1", "h2", "h3", "h4",
                       "h5", "h6", "i", "italic", "small", "strike", "sub",
                       "a", "p", "strong", "div", "img", "tt", "u", "html",
-                      "meta", "body", "head", "br", "sup", "title", "article", "span")
+                      "meta", "body", "head", "br", "sup", "title", "article",
+                      "span")
         encoding = "utf-8"
         cleaner = Cleaner(scripts=True, javascript=True, comments=True,
                           style=True, links=True, meta=False,

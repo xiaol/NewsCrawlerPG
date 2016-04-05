@@ -71,4 +71,5 @@ SPIDER_CONFIG_NAMES = [
     "News.constans.www_pingwest_com",
     "News.constans.www_qianzhan_com",
     "News.constans.www_shejipi_com",
+    "News.constans.sina_com_cn",
 ]
