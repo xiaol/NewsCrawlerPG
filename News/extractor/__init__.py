@@ -5,6 +5,7 @@ from urlparse import urljoin
 from lxml import html
 from lxml.html.clean import Cleaner
 from bs4 import BeautifulSoup, Comment, Tag, NavigableString
+from News.cleaner import BaseCleaner, NewsCleaner
 
 
 class NewsExtractor(object):
@@ -158,26 +159,66 @@ class BaseExtractor(object):
     # soup find content param
     summary_param = {"name": "meta", "attrs": {"name": "description"}}
 
+    encoding = 'utf-8'
+    base_cleaner = BaseCleaner()
+    news_cleaner = NewsCleaner()
+
     def __init__(self, document, url=None):
         """抽取类初始化
 
         :param document: str, 新闻原始html页面
         """
-        self.doc = document
-        self.html = self.clean(self.doc)
-        self.soup = BeautifulSoup(self.html, "lxml", from_encoding="utf-8")
+        self.document = document
+        self.base_cleaned_html = self.clean_document(self.document)
+        self.base_soup = BeautifulSoup(self.base_cleaned_html, "lxml", from_encoding=self.encoding)
+        self.content_cleaned_html = self.clean_document_for_content(self.base_cleaned_html)
+        self.soup = BeautifulSoup(self.content_cleaned_html, "lxml", from_encoding=self.encoding)
         self.base_url = url
 
-    @staticmethod
-    def clean(doc):
-        """html 页面清洗方法
-
-        子类可重写该方法实现自己的清理逻辑
-
-        :param doc: str, html 页面
-        :return: str, 干净的 html 页面
+    @classmethod
+    def clean_document(cls, document, cleaner=None):
         """
-        return doc
+        clean html document use cleaner, remove some tags that not needed
+        :param document: html document string
+        :type document: str
+        :param cleaner: cleaner object
+        :type cleaner: Cleaner Object | None
+        :return: cleaned document string
+        :rtype: str
+        """
+        if cleaner is None:
+            cleaner = BaseCleaner()
+        assert isinstance(cleaner, Cleaner)
+        return cls.lxml_clean(document, cleaner)
+
+    @classmethod
+    def clean_document_for_content(cls, document, cleaner=None):
+        """
+        clean html document for extract content use cleaner,
+        only allow some base tags
+        :param document: html document string
+        :type document: str
+        :param cleaner: cleaner object
+        :type cleaner: Cleaner Object | None
+        :return: cleaned document string
+        :rtype: str
+        """
+        if cleaner is None:
+            cleaner = NewsCleaner()
+        assert isinstance(cleaner, Cleaner)
+        return cls.lxml_clean(document, cleaner)
+
+    @staticmethod
+    def lxml_clean(document, clearer, encoding='utf-8'):
+        parser = html.HTMLParser(
+            encoding=encoding,
+            remove_comments=True,
+            remove_blank_text=True,
+            remove_pis=True,
+        )
+        root = html.document_fromstring(document, parser=parser)
+        root = clearer.clean_html(root)
+        return html.tostring(root, encoding=encoding)
 
     def extract_title(self, param):
         """新闻标题抽取
@@ -496,7 +537,7 @@ class BaseExtractor(object):
         :param attrs: dict, bs4 find params
         :return:str
         """
-        tag = self.soup.find(name, attrs=attrs)
+        tag = self.base_soup.find(name, attrs=attrs)
         if name == "meta":
             return tag.get("content", "") if tag else ""
         return tag.get_text().strip() if tag else ""
