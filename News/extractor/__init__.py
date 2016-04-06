@@ -142,6 +142,75 @@ class NewsExtractor(object):
                 print("%s: %s" % (key, value))
 
 
+def score_dom_tree(root, mapping):
+    content_tag_names = ["div", "article", "body", "html"]
+    if not isinstance(root, (Tag, BeautifulSoup)):
+        return
+    if root.name not in content_tag_names:
+        return
+    score = 0.0
+    for child in root.children:
+        if isinstance(child, NavigableString):
+            string = unicode(child).strip()
+            if len(string) >= 5:
+                score += 1 + len(string)/40 * 5
+            elif child.name == "p":
+                score += len(child.get_text())/20 * 5
+            elif child.name == "a":
+                score += 0.2
+            elif child.name == "div":
+                score += 0.2
+    mapping[root] = int(score)
+    for child in root.children:
+        score_dom_tree(child, mapping)
+
+
+def score_dom_tree_new(root, mapping):
+    if not isinstance(root, (Tag, BeautifulSoup)):
+        return
+    mapping[root] = 0.0
+    length = len([tag for tag in root.contents if isinstance(tag, Tag)])
+    if length > 0:
+        for child in root.children:
+            if isinstance(child, Tag):
+                score_dom_tree_new(child, mapping)
+                mapping[root] += mapping[child]
+            elif isinstance(child, NavigableString):
+                string = unicode(child).strip()
+                mapping[root] += len(string)/40 * 2
+    else:
+        if root.name == "p":
+            mapping[root] = 2.0
+            string = root.get_text().strip()
+            mapping[root] += len(string)/40 * 5
+        elif root.name == "img":
+            if root.find_parent("a"):
+                mapping[root] = 0.0
+            else:
+                mapping[root] = 5.0
+        else:
+            mapping[root] = 0.0
+
+
+def find_content_tag(root):
+    if root is None:
+        return root
+    mapping = dict()
+    score_dom_tree_new(root, mapping)
+    score = mapping[root]
+    tag = root
+    min_score = score
+    for child in root.find_all(["div", "article"]):
+        c_score = mapping[child]
+        if c_score >= 0.6 * score:
+            if c_score < min_score:
+                min_score = c_score
+                tag = child
+    # mapping = sorted(mapping.items(), key=lambda k: k[1], reverse=True)
+    # return None if not mapping else mapping[0][0]
+    return tag
+
+
 class BaseExtractor(object):
     """文章抽取基础类
 
@@ -159,26 +228,24 @@ class BaseExtractor(object):
     # soup find content param
     summary_param = {"name": "meta", "attrs": {"name": "description"}}
 
-    encoding = 'utf-8'
-    base_cleaner = BaseCleaner()
-    news_cleaner = NewsCleaner()
-
-    def __init__(self, document, url=None):
+    def __init__(self, document, url=None, encoding="utf-8"):
         """抽取类初始化
 
         :param document: str, 新闻原始html页面
         """
         self.document = document
-        self.base_cleaned_html = self.clean_document(self.document)
+        self.encoding = encoding
+        self.base_cleaned_html = self.base_clean(self.document)
         self.base_soup = BeautifulSoup(self.base_cleaned_html, "lxml", from_encoding=self.encoding)
-        self.content_cleaned_html = self.clean_document_for_content(self.base_cleaned_html)
-        self.soup = BeautifulSoup(self.content_cleaned_html, "lxml", from_encoding=self.encoding)
+        self.news_cleaned_html = self.news_clean(self.base_cleaned_html)
+        self.soup = BeautifulSoup(self.news_cleaned_html, "lxml", from_encoding=self.encoding)
         self.base_url = url
 
     @classmethod
-    def clean_document(cls, document, cleaner=None):
+    def base_clean(cls, document, cleaner=None):
         """
-        clean html document use cleaner, remove some tags that not needed
+        clean html document use cleaner default BaseCleaner, remove some tags
+        that not needed
         :param document: html document string
         :type document: str
         :param cleaner: cleaner object
@@ -188,14 +255,14 @@ class BaseExtractor(object):
         """
         if cleaner is None:
             cleaner = BaseCleaner()
-        assert isinstance(cleaner, Cleaner)
         return cls.lxml_clean(document, cleaner)
 
     @classmethod
-    def clean_document_for_content(cls, document, cleaner=None):
+    def news_clean(cls, document, cleaner=None):
         """
-        clean html document for extract content use cleaner,
-        only allow some base tags
+        clean html document for score DOM tree and extract content
+        use cleaner default NewsCleaner, only allow some tags that
+        news needed
         :param document: html document string
         :type document: str
         :param cleaner: cleaner object
@@ -205,11 +272,11 @@ class BaseExtractor(object):
         """
         if cleaner is None:
             cleaner = NewsCleaner()
-        assert isinstance(cleaner, Cleaner)
         return cls.lxml_clean(document, cleaner)
 
     @staticmethod
-    def lxml_clean(document, clearer, encoding='utf-8'):
+    def lxml_clean(document, cleaner, encoding='utf-8'):
+        assert isinstance(cleaner, Cleaner)
         parser = html.HTMLParser(
             encoding=encoding,
             remove_comments=True,
@@ -217,23 +284,61 @@ class BaseExtractor(object):
             remove_pis=True,
         )
         root = html.document_fromstring(document, parser=parser)
-        root = clearer.clean_html(root)
+        root = cleaner.clean_html(root)
         return html.tostring(root, encoding=encoding)
 
-    def extract_title(self, param):
-        """新闻标题抽取
+    @staticmethod
+    def exact_find_tag(root, param):
+        method = param["method"]
+        params = param["params"]
+        nth = param.get("nth", 0)
+        if method == "find_all":
+            tags = root.find_all(**params)
+            return tags[nth] if len(tags) > nth else None
+        elif method == "select":
+            tags = root.select(**params)
+            return tags[nth] if len(tags) > nth else None
+        else:
+            raise ValueError("param['method'] only support find_all and select")
 
-        子类可重写该方法实现精确抽取新闻标题
+    @staticmethod
+    def extract_tag_text(tag):
+        if tag is None:
+            return ""
+        assert isinstance(tag, Tag)
+        if tag.name == "meta":
+            return tag.get("content", "")
+        return tag.get_text().strip()
 
-        :param param:dict, bs4 find method params
-        :return: str
+    @classmethod
+    def exact_extract_tag(cls, root, param):
+        tag = cls.exact_find_tag(root, param)
+        string = cls.extract_tag_text(tag)
+        return string
+
+    def exact_extract_title(self, param):
+        """根据param参数精确抽取新闻标题
+
+        :param param: 自定义格式参数，支持 find_all, select 方法
+        :type param: dict
+        :return: 新闻标题
+        :rtype: str
         """
-        name = param["name"]
-        attrs = param["attrs"]
-        string = self.get_tag_text(name, attrs=attrs) if name or attrs else ""
+        return self.exact_extract_tag(self.base_soup, param)
+
+    def default_extract_title(self):
+        param = {"method": "find_all", "params": {"name": "title"}, "nth": 0}
+        return self.exact_extract_title(param)
+
+    def extract_title(self, param=None):
+        if param is None:
+            string = self.default_extract_title()
+        else:
+            string = self.exact_extract_title(param)
         return self.clean_title(string)
 
-    def clean_title(self, string):
+    @staticmethod
+    def clean_title(string):
         """清洗新闻标题
 
         子类可重写该方法实现需要的标题清洗，默认不做任何清洗
@@ -245,30 +350,61 @@ class BaseExtractor(object):
         # return words[0]
         return string
 
-    def extract_summary(self, param):
+    def exact_extract_summary(self, param):
+        """根据param参数精确抽取新闻摘要
+
+        :param param: 自定义格式参数，支持 find_all, select 方法
+        :type param: dict
+        :return: 新闻标题
+        :rtype: str
+        """
+        return self.exact_extract_tag(self.base_soup, param)
+
+    def default_extract_summary(self):
+        param = {
+            "method": "find_all",
+            "params": {"name": "meta", "attrs": {"name": "description"}},
+            "nth": 0,
+        }
+        return self.exact_extract_summary(param)
+
+    def extract_summary(self, param=None):
         """新闻概要抽取
 
-        子类可重写该方法实现精确抽取新闻概要信息
-
         :param param:dict, bs4 find method params
         :return: str
         """
-        name = param["name"]
-        attrs = param["attrs"]
-        return self.get_tag_text(name, attrs=attrs) if name or attrs else ""
+        if param is None:
+            string = self.default_extract_summary()
+        else:
+            string = self.exact_extract_summary(param)
+        return self.clean_summary(string)
 
-    def extract_post_date(self, param):
+    @staticmethod
+    def clean_summary(string):
+        return string
+
+    def exact_extract_post_date(self, param):
+        return self.exact_extract_tag(self.base_soup, param)
+
+    def default_extract_post_date(self):
+        param = {
+            "method": "find_all",
+            "params": {"name": None, "attrs": dict()},
+            "nth": 0,
+        }
+        return self.exact_extract_post_date(param)
+
+    def extract_post_date(self, param=None):
         """新闻发布时间抽取
 
-        子类可重写该方法实现精确抽取新闻发布时间。在返回抽取时间之前会调用 clean_post_date　来
-        清洗时间。
-
         :param param:dict, bs4 find method params
         :return: str
         """
-        name = param["name"]
-        attrs = param["attrs"]
-        string = self.get_tag_text(name, attrs=attrs) if name or attrs else ""
+        if param is None:
+            string = self.default_extract_post_date()
+        else:
+            string = self.exact_extract_post_date(param)
         return self.clean_post_date(string)
 
     @staticmethod
@@ -338,136 +474,168 @@ class BaseExtractor(object):
         date_time_string = date_string + " " + time_string
         return date_time_string
 
-    def extract_post_user(self, param):
-        """新闻来源抽取
+    def exact_extract_post_source(self, param):
+        return self.exact_extract_tag(self.base_soup, param)
 
-        子类可重写该方法实现精确抽取新闻来源
+    def default_extract_post_source(self):
+        param = {
+            "method": "find_all",
+            "params": {"name": None, "attrs": dict()},
+            "nth": 0,
+        }
+        return self.exact_extract_post_source(param)
+
+    def extract_post_source(self, param=None):
+        """新闻来源抽取
 
         :param param:dict, bs4 find method params
         :return: str
         """
-        name = param["name"]
-        attrs = param["attrs"]
-        if name or attrs:
-            return self.get_tag_text(name, attrs=attrs)
+        if param is None:
+            string = self.default_extract_post_source()
         else:
-            return ""
+            string = self.exact_extract_post_source(param)
+        return self.clean_post_source(string)
 
-    def extract_content(self, tag, content):
-        """新闻内容抽取
+    @staticmethod
+    def clean_post_source(string):
+        return string
 
-        新闻内容的抽取函数，子类必须重写该方法来实现自己的抽取逻辑
+    @classmethod
+    def content_tag_clean(cls, root, clean_param_list):
+        for param in clean_param_list:
+            tag = cls.exact_find_tag(root, param)
+            if tag is not None:
+                tag.extract()
 
-        :param tag:bs4.Tag, 包含内容块的 Tag 节点
-        :param content: list, 返回内容存储在该 list 中
-        """
-        raise NotImplementedError
+    @staticmethod
+    def find_default_content_tag(root):
+        return find_content_tag(root)
 
-    def _extract_content(self, param):
-        """新闻内容抽取
-
-        调用 extract_content 函数来实现新闻内容的抽取，子类可通过重写 extract_content 方
-        法来实现自己的抽取逻辑
-
-        :param param:dict, bs4 find method params
-        :return: list
-        """
-        name = param["name"]
-        attrs = param["attrs"]
-        tag = self.find_content_tag(name, attrs=attrs)
+    def extract_content(self, param=None, clean_param_list=None):
         content = list()
-        if tag: self.extract_content(tag, content)
+        if param is None:
+            tag = self.find_default_content_tag(self.soup)
+        else:
+            tag = self.exact_find_tag(self.soup, param)
+        if tag is None:
+            return content
+        if clean_param_list is not None:
+            self.content_tag_clean(tag, clean_param_list)
+        self.parse_content_tag(tag, content)
         return content
 
-    def __call__(self,
-                 title_param=None,
-                 post_date_param=None,
-                 post_user_param=None,
-                 summary_param=None,
-                 content_param=None):
+    def parse_content_tag(self, tag, content):
+        raise NotImplementedError
+
+    # def extract_content(self, tag, content):
+    #     """新闻内容抽取
+    #
+    #     新闻内容的抽取函数，子类必须重写该方法来实现自己的抽取逻辑
+    #
+    #     :param tag:bs4.Tag, 包含内容块的 Tag 节点
+    #     :param content: list, 返回内容存储在该 list 中
+    #     """
+    #     raise NotImplementedError
+    #
+    # def _extract_content(self, param):
+    #     """新闻内容抽取
+    #
+    #     调用 extract_content 函数来实现新闻内容的抽取，子类可通过重写 extract_content 方
+    #     法来实现自己的抽取逻辑
+    #
+    #     :param param:dict, bs4 find method params
+    #     :return: list
+    #     """
+    #     name = param["name"]
+    #     attrs = param["attrs"]
+    #     tag = self.find_content_tag(name, attrs=attrs)
+    #     content = list()
+    #     if tag: self.extract_content(tag, content)
+    #     return content
+
+    def __call__(
+            self,
+            title_param=None,
+            post_date_param=None,
+            post_source_param=None,
+            summary_param=None,
+            content_param=None,
+            clean_param_list=None,
+    ):
         """抽取入口
 
         优先采用传入参数，若无，则使用类的相应成员变量
 
         :param title_param:dict, {"args": list(), "kwargs": dict()}
         :param post_date_param:dict,
-        :param post_user_param:dict,
+        :param post_source_param:dict,
         :param content_param:dict,
         :return:title, post_date, post_user, content
         """
-        if title_param is None:
-            title_param = self.title_param
-        if post_date_param is None:
-            post_date_param = self.post_date_param
-        if post_user_param is None:
-            post_user_param = self.post_user_param
-        if content_param is None:
-            content_param = self.content_param
-        if summary_param is None:
-            summary_param = self.summary_param
         title = self.extract_title(title_param)
         post_date = self.extract_post_date(post_date_param)
-        post_user = self.extract_post_user(post_user_param)
+        post_source = self.extract_post_source(post_source_param)
         summary = self.extract_summary(summary_param)
-        content = self._extract_content(content_param)
-        return title, post_date, post_user, summary, content
+        content = self.extract_content(content_param, clean_param_list)
+        return title, post_date, post_source, summary, content
 
-    def find_content_tag(self, name, attrs):
-        """获取包含内容的 Tag 节点
+    # def find_content_tag(self, name, attrs):
+    #     """获取包含内容的 Tag 节点
+    #
+    #     子类可重写该函数，实现精确的内容块定位。默认使用打分方式，定位文章主要内容的 Tag
+    #
+    #     :param name:list, bs4 find name param
+    #     :param attrs:dict, bs4 find param
+    #     :return:bs4.Tag, 返回包含内容的 Tag 节点
+    #     """
+    #     if name or attrs:
+    #         return self.soup.find(name, attrs=attrs)
+    #     if not self.soup.body:
+    #         return None
+    #     tag = self.soup.body
+    #     mapping = dict()
+    #     self.score_tags(tag, mapping)
+    #     sorted_mapping = sorted(mapping.items(), key=lambda k: k[1], reverse=True)
+    #     # for item in sorted_mapping:
+    #     #     tag = item[0]
+    #     #     score = item[1]
+    #     #     print("tag name: %s" % tag.name)
+    #     #     print("tag id: %s" % tag.get("id", ""))
+    #     #     # print("tag class: %s" % tag.get("class", ""))
+    #     #     print("score: %d" % score)
+    #     #     print tag.get("class")
+    #     return None if not sorted_mapping else sorted_mapping[0][0]
 
-        子类可重写该函数，实现精确的内容块定位。默认使用打分方式，定位文章主要内容的 Tag
-
-        :param name:list, bs4 find name param
-        :param attrs:dict, bs4 find param
-        :return:bs4.Tag, 返回包含内容的 Tag 节点
-        """
-        if name or attrs:
-            return self.soup.find(name, attrs=attrs)
-        if not self.soup.body:
-            return None
-        tag = self.soup.body
-        mapping = dict()
-        self.score_tags(tag, mapping)
-        sorted_mapping = sorted(mapping.items(), key=lambda k: k[1], reverse=True)
-        # for item in sorted_mapping:
-        #     tag = item[0]
-        #     score = item[1]
-        #     print("tag name: %s" % tag.name)
-        #     print("tag id: %s" % tag.get("id", ""))
-        #     # print("tag class: %s" % tag.get("class", ""))
-        #     print("score: %d" % score)
-        #     print tag.get("class")
-        return None if not sorted_mapping else sorted_mapping[0][0]
-
-    @classmethod
-    def score_tags(cls, tag, mapping):
-        """为 tag 树打分
-
-        :param tag: bs4.Tag, 要打分的 Tag
-        :param mapping: dict, 整个树的打分值
-        """
-        content_tag_names = ["div", "body", "html", "article"]
-        if not isinstance(tag, Tag): return
-        if tag.name not in content_tag_names: return
-        score = 0.0
-        for child in tag.children:
-            if isinstance(child, NavigableString):
-                string = unicode(child).strip()
-                if len(string) >= 5:
-                    score += 1 + len(string)/40 * 5
-            elif child.name == "p":
-                score += len(child.get_text())/20 * 5
-            elif child.name == "a":
-                score += 0.2
-            elif child.name == "img":
-                score += 0.5
-            elif child.name == "div":
-                score += 0.2
-            # else:
-            #     score += 1
-        mapping[tag] = int(score)
-        for child in tag.children:
-            cls.score_tags(child, mapping)
+    # @classmethod
+    # def score_tags(cls, tag, mapping):
+    #     """为 tag 树打分
+    #
+    #     :param tag: bs4.Tag, 要打分的 Tag
+    #     :param mapping: dict, 整个树的打分值
+    #     """
+    #     content_tag_names = ["div", "body", "html", "article"]
+    #     if not isinstance(tag, Tag): return
+    #     if tag.name not in content_tag_names: return
+    #     score = 0.0
+    #     for child in tag.children:
+    #         if isinstance(child, NavigableString):
+    #             string = unicode(child).strip()
+    #             if len(string) >= 5:
+    #                 score += 1 + len(string)/40 * 5
+    #         elif child.name == "p":
+    #             score += len(child.get_text())/20 * 5
+    #         elif child.name == "a":
+    #             score += 0.2
+    #         elif child.name == "img":
+    #             score += 0.5
+    #         elif child.name == "div":
+    #             score += 0.2
+    #         # else:
+    #         #     score += 1
+    #     mapping[tag] = int(score)
+    #     for child in tag.children:
+    #         cls.score_tags(child, mapping)
 
     @staticmethod
     def remove_tag_name(string, name):
@@ -569,7 +737,7 @@ class GeneralExtractor(BaseExtractor):
         document = cleaner.clean_html(document)
         return html.tostring(document, encoding=encoding)
 
-    def extract_content(self, tag, content):
+    def parse_content_tag(self, tag, content):
         for child in tag.children:
             if isinstance(child, NavigableString):
                 string = unicode(child).strip()
@@ -582,7 +750,7 @@ class GeneralExtractor(BaseExtractor):
                     if src:
                         content.append(self.get_content_item("image", src))
                 elif child.name == "div" or child.img or child.br:
-                    self.extract_content(child, content)
+                    self.parse_content_tag(child, content)
                 elif child.get_text().strip():
                     string = str(child)
                     if child.name not in self.remove_tag_name_list:
@@ -603,7 +771,7 @@ class GeneralExtractor(BaseExtractor):
 
 class RegularExtractor(GeneralExtractor):
 
-    def extract_content(self, tag, content):
+    def parse_content_tag(self, tag, content):
         for child in tag.children:
             if isinstance(child, NavigableString):
                 string = unicode(child).strip()
@@ -616,7 +784,7 @@ class RegularExtractor(GeneralExtractor):
                     if src:
                         content.append(self.get_content_item("image", src))
                 elif child.img:
-                    self.extract_content(child, content)
+                    self.parse_content_tag(child, content)
                 elif child.get_text().strip():
                     string = str(child)
                     if child.name != "p":

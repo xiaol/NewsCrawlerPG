@@ -719,3 +719,25 @@ spider:news:name 如: spider:news:news163
 
 #### wechat openid and channel info
 news:wechat:openid 如: news:wechat:oIWsFt_60J20VTUbAEOviZNWlmcQ
+
+# 新闻类网站模式说明
+
+- 列表页为ajax请求，详情页为html(常见)
+- 列表页为html请求，详情页为html(常见)
+- 列表页为ajax请求，详情页为ajax请求(少见)
+- 页面比较混杂，需通过配置跟踪链接
+
+# 新闻内容解析服务说明
+
+- 链接转为绝对地址(urlparse.urljoin)
+- 清洗策略
+	1. 基础清洗，去掉script, link 等无用内容，清洗后的内容可供标题，时间，作者，摘要抽取
+	2. 抽取清洗，为打分确定内容容器标签，移除无用标签，只保留特定的一些标签，清洗后的内容供打分使用
+	3. 内容清洗，移除内容中的垃圾信息，如广告，版权声明等(需配置)，清洗后的内容供内容抽取
+- 确定支持的标签定位方法: bs4 find_all select
+
+## 标签定位参数格式说明
+```python
+{"method": "find_all", "params": {"name": None, "attrs"={}, recursive=True, limit=None, "id"="test", "href"="http://www.test.com/", "class_"="content body"}, "nth": 0}
+{"method": "select", "params": {"selector": "css string", limit=None}, "nth": 0}
+```

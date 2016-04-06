@@ -238,7 +238,7 @@ class ConfigNewsSpider(NewsSpider):
         title, post_date, post_user, summary, content = extractor(
             title_param=title_param,
             post_date_param=post_date_param,
-            post_user_param=post_user_param,
+            post_source_param=post_user_param,
             summary_param=summary_param,
             content_param=content_param,
         )
