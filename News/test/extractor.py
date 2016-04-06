@@ -7,9 +7,7 @@ from urlparse import urlparse
 import requests
 from News.constans.useragent import WEB_USER_AGENT
 from News.extractor import GeneralExtractor
-from News.extractor import RegularExtractor
-from News.extractor.wechat import WechatExtractor
-from News.extractor.news163 import News163Extractor, NewsExtractor
+from News.extractor import WechatExtractor
 from News.extractor import YiDianZiXunExtractor
 
 
@@ -50,14 +48,12 @@ def test_extractor(k, url):
     string = get_document(url)
     if k == "ge":
         extractor = GeneralExtractor(string, url)
-    elif k == "re":
-        extractor = RegularExtractor(string, url)
     elif k == "we":
         extractor = WechatExtractor(string, url)
     elif k == "yd":
         extractor = YiDianZiXunExtractor(string, url)
     else:
-        extractor = RegularExtractor(string, url)
+        extractor = GeneralExtractor(string, url)
     title, post_date, post_user, summary, content = extractor()
     return title, post_date, post_user, summary, content
 

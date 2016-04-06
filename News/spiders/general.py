@@ -13,7 +13,7 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy import cmdline
 
 from News.items import get_default_news
-from News.extractor import GeneralExtractor
+from News.extractor import GeneralExtractor, show
 from News.utils.util import g_cache_key
 from News.spiders.config import configs
 
@@ -43,7 +43,7 @@ def parse_item(self, response):
     print("post date: %s" % post_date)
     print("post user: %s" % post_user)
     print("summary: %s" % summary)
-    extractor.show(content)
+    show(content)
     print("\n\n")
 
 

@@ -21,11 +21,18 @@ URL_XPATH = "./header/h1/a/@href"
 # SUMMARY_XPATH = ""
 THUMB_XPATH = "./div/a/img/@src"
 
-TITLE_PARAM = {"name": "h1", "attrs": {"class": "entry-title"}}
-POST_DATE_PARAM = {"name": "span", "attrs": {"class": "date"}}
-# POST_USER_PARAM = {"name": "", "attrs": {}}
-# SUMMARY_PARAM = {"name": "", "attrs": {}}
-CONTENT_PARAM = {"name": "div", "attrs": {"class": "entry-content"}}
+TITLE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "h1", "attrs": {"class": "entry-title"}},
+}
+POST_DATE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "span", "attrs": {"class": "date"}},
+}
+CONTENT_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"class": "entry-content"}},
+}
 
 # EXTRACTOR_CLS = "News.extractor."
 

@@ -156,7 +156,7 @@ class TestCleanPostDate(unittest.TestCase):
         cleaned = GeneralExtractor.clean_post_date(string)
         self.assertIn(expect, cleaned)
 
-    def test_one_digit_month_day_datetime_year(self):
+    def test_one_digit_month_day_datetime_year_two_month(self):
         string = "12-1"
         expect = self.year_now + "-" + "12-01"
         cleaned = GeneralExtractor.clean_post_date(string)

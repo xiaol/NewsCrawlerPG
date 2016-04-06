@@ -20,11 +20,26 @@ URL_XPATH = "./div[@class='lanmu_line_title']/a/@href"
 # SUMMARY_XPATH = ""
 # THUMB_XPATH = ""
 
-TITLE_PARAM = {"name": "h1", "attrs": {}}
-POST_DATE_PARAM = {"name": "meta", "attrs": {"name": "publishdate"}}
-POST_USER_PARAM = {"name": "meta", "attrs": {"name": "author"}}
-SUMMARY_PARAM = {"name": "meta", "attrs": {"name": "description"}}
-CONTENT_PARAM = {"name": "div", "attrs": {"id": "text"}}
+TITLE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "h1", "attrs": {}},
+}
+POST_DATE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "meta", "attrs": {"name": "publishdate"}},
+}
+POST_SOURCE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "meta", "attrs": {"name": "author"}},
+}
+SUMMARY_PARAM = {
+    "method": "find_all",
+    "params": {"name": "meta", "attrs": {"name": "description"}},
+}
+CONTENT_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"id": "text"}},
+}
 
 # EXTRACTOR_CLS = "News.extractor."
 

@@ -20,11 +20,14 @@ URL_XPATH = "entityurl"
 # SUMMARY_XPATH = ""
 # THUMB_XPATH = ""
 
-# TITLE_PARAM = {"name": None, attrs={}}
-POST_DATE_PARAM = {"name": "span", "attrs": {"id": "pubtime_baidu"}}
-# POST_USER_PARAM = {"name": None, attrs={}}
-# SUMMARY_PARAM = {"name": None, attrs={}}
-CONTENT_PARAM = {"name": "div", "attrs": {"id": "artibody"}}
+POST_DATE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "span", "attrs": {"id": "pubtime_baidu"}},
+}
+CONTENT_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"id": "artibody"}},
+}
 
 # EXTRACTOR_CLS = "News.extractor."
 

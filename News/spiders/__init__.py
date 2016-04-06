@@ -92,7 +92,7 @@ class ConfigNewsSpider(NewsSpider):
         thumb_xpath
         title_param
         post_date_param
-        post_user_param
+        post_source_param
         summary_param
         content_param
         extractor_cls
@@ -227,7 +227,7 @@ class ConfigNewsSpider(NewsSpider):
         body = response.body_as_unicode().encode("utf-8")
         title_param = self.title_param if hasattr(self, "title_param") else None
         post_date_param = self.post_date_param if hasattr(self, "post_date_param") else None
-        post_user_param = self.post_user_param if hasattr(self, "post_user_param") else None
+        post_source_param = self.post_source_param if hasattr(self, "post_source_param") else None
         summary_param = self.summary_param if hasattr(self, "summary_param") else None
         content_param = self.content_param if hasattr(self, "content_param") else None
         if hasattr(self, "extractor_cls"):
@@ -238,7 +238,7 @@ class ConfigNewsSpider(NewsSpider):
         title, post_date, post_user, summary, content = extractor(
             title_param=title_param,
             post_date_param=post_date_param,
-            post_source_param=post_user_param,
+            post_source_param=post_source_param,
             summary_param=summary_param,
             content_param=content_param,
         )

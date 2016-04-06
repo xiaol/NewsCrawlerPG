@@ -19,11 +19,18 @@ URL_XPATH = "./a/@href"
 SUMMARY_XPATH = ".//span[class='hList-context']/text()"
 THUMB_XPATH = "./a/img/@src"
 
-# TITLE_PARAM = {"name": None, "attrs": {}}
-POST_DATE_PARAM = {"name": "p", "attrs": {"class": "author-box clearfix"}}
-# POST_USER_PARAM = {"name": None, "attrs": {}}
-SUMMARY_PARAM = {"name": "p", "attrs": {"class": "art-guidecont"}}
-CONTENT_PARAM = {"name": "div", "attrs": {"class": "artile-bodycont clearfix"}}
+POST_DATE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "p", "attrs": {"class": "author-box clearfix"}},
+}
+SUMMARY_PARAM = {
+    "method": "find_all",
+    "params": {"name": "p", "attrs": {"class": "art-guidecont"}},
+}
+CONTENT_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"class": "artile-bodycont clearfix"}},
+}
 
 # EXTRACTOR_CLS = "News.extractor."
 

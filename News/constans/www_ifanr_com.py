@@ -21,11 +21,18 @@ URL_XPATH = ".//h2/a/@href"
 SUMMARY_XPATH = "./p/text()"
 # THUMB_XPATH = "./a/@href"
 
-TITLE_PARAM = {"name": "h1", "attrs": {"class": "entry-name"}}
-POST_DATE_PARAM = {"name": "meta", "attrs": {"name": "weibo: article:create_at"}}
-# POST_USER_PARAM = {"name": "", "attrs": {}}
-# SUMMARY_PARAM = {"name": "", "attrs": {}}
-CONTENT_PARAM = {"name": "div", "attrs": {"itemprop": "articleBody"}}
+TITLE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "h1", "attrs": {"class": "entry-name"}},
+}
+POST_DATE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "meta", "attrs": {"name": "weibo: article:create_at"}},
+}
+CONTENT_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"itemprop": "articleBody"}},
+}
 
 # EXTRACTOR_CLS = "News.extractor."
 

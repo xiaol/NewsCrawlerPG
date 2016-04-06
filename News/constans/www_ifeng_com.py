@@ -19,11 +19,10 @@ URL_XPATH = "./h3/a/@href | ./h2/a/@href"
 SUMMARY_XPATH = ".//p/text()"
 # THUMB_XPATH = "./p/img/@src"
 
-# TITLE_PARAM = {"name": None, "attrs": {}}
-POST_DATE_PARAM = {"name": "p", "attrs": {"class": "p_time"}}
-# POST_USER_PARAM = {"name": None, "attrs": {}}
-# SUMMARY_PARAM = {"name": "p", "attrs": {"class": "art-guidecont"}}
-# CONTENT_PARAM = {"name": "div", "attrs": {"class": "artile-bodycont clearfix"}}
+POST_DATE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "p", "attrs": {"class": "p_time"}},
+}
 
 # EXTRACTOR_CLS = "News.extractor."
 

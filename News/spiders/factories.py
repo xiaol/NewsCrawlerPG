@@ -34,8 +34,8 @@ def config_news_factory(config):
         class_attr["title_param"] = config.TITLE_PARAM
     if hasattr(config, "POST_DATE_PARAM"):
         class_attr["post_date_param"] = config.POST_DATE_PARAM
-    if hasattr(config, "POST_USER_PARAM"):
-        class_attr["post_user_param"] = config.POST_USER_PARAM
+    if hasattr(config, "POST_SOURCE_PARAM"):
+        class_attr["post_source_param"] = config.POST_SOURCE_PARAM
     if hasattr(config, "SUMMARY_PARAM"):
         class_attr["summary_param"] = config.SUMMARY_PARAM
     if hasattr(config, "CONTENT_PARAM"):
