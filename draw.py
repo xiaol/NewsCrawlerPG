@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import json
 import networkx as nx
 import matplotlib.pyplot as plt
 from bs4 import Tag
@@ -52,23 +53,25 @@ def draw_tree(string):
     extractor = GeneralExtractor(string)
     root = extractor.soup.body
     mapping = dict()
-    for child in root.descendants:
-        if isinstance(child, Tag):
-            mapping[child] = 0.0
     score_dom_tree_new(root, mapping)
     g.add_node(root)
     labels[root] = _g_label(root, mapping)
     _draw_node(root, g, labels, mapping)
     pos = hierarchy_pos(g, root)
-    node_size = max(map(len, labels.values())) * 300
+    node_size = 8000 # max(map(len, labels.values())) * 300
     nx.draw(g, pos=pos, with_labels=False, node_size=node_size)
     nx.draw_networkx_labels(g, pos, labels=labels)
     plt.show()
 
 
 def _draw_node(root, g, labels, mapping):
+    content_tag_names = ["div", "article", "p", "img"]
     for child in root.children:
-        if not isinstance(child, Tag) or mapping[child] < 0.1:
+        if not isinstance(child, Tag) or child.name not in content_tag_names:
+            continue
+        elif child.name == "img" and child.find_parent("p"):
+            continue
+        elif mapping[child] < 0.1:
             continue
         g.add_node(child)
         labels[child] = _g_label(child, mapping)
@@ -78,7 +81,10 @@ def _draw_node(root, g, labels, mapping):
 
 
 def _g_label(tag, mapping):
-    return tag.name + ":" + str(int(mapping[tag]))
+    string = tag.get("id", None)
+    if string is None:
+        string = " ".join(tag.get("class", []))
+    return tag.name + ":" + str(int(mapping[tag])) + ":" + string
 
 
 if __name__ == '__main__':
@@ -99,7 +105,7 @@ if __name__ == '__main__':
             </body>
         </html>
     """
-    string = get_document("http://mp.weixin.qq.com/s?__biz=MzA3OTU3NjEwOA==&mid=404091998&idx=7&sn=3c4e6718e7bf93f28df04904b33f5830&3rd=MzA3MDU4NTYzMw==&scene=6#rd")
+    string = get_document("http://m.ce.cn/ttt/201604/07/t20160407_10200741.shtml?tt_group_id=6270560206134001921")
     draw_tree(string)
 
 

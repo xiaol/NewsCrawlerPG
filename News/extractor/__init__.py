@@ -232,80 +232,41 @@ def score_dom_tree_new(root, mapping):
     if not isinstance(root, (Tag, BeautifulSoup)):
         return
     mapping[root] = 0.0
+    root_child_length = len(root.contents)
+    root_p_length = len(root.find_all("p", recursive=False))
+    weight = 1 if root_p_length > 0 else root_p_length
     for child in root.children:
         if isinstance(child, Tag):
-            if child.name == "p":
+            mapping[child] = mapping.get(child, 0.0)
+            if child.name == "img":
+                if child.find_parent("a"):
+                    pass
+                else:
+                    mapping[child] += 3.0
+            elif child.name == "p":
                 if child.img:
-                    mapping[child] += 5.0
+                    mapping[child] += 10.0
                 l = len(child.get_text().strip())
-                if l <= 10:
-                    mapping[child] += 1.0
-                elif 10 < l <= 20:
-                    mapping[child] += 1.5
-                elif 20 < l <= 40:
-                    mapping[child] += 2.0
-                elif 40 < l <= 80:
-                    mapping[child] += l / 40.0 * 5
-                else:
-                    mapping[child] += l / 40.0 * 8
-            elif child.name == "img":
-                if not child.find_parent("a"):
-                    mapping[child] += 5.0
-            elif child.name in ["div", "article"]:
-                score_dom_tree_new(child, mapping)
+                mapping[child] += l/40 * 6 * weight
             else:
-                if not child.find_parent("a"):
-                    mapping[child] += len(child.get_text().strip())/20 * 4
-                else:
-                    mapping[child] = 0
+                score_dom_tree_new(child, mapping)
             mapping[root] += mapping[child]
         elif isinstance(child, NavigableString):
-            string = unicode(child).strip()
-            mapping[root] += len(string)/40 * 5
+            parent = child.parent
+            if child.find_parent(name="a"):
+                mapping[parent] += len(unicode(child).strip())/40 * 3
         else:
-            mapping[child] = 0
-
-
-    # length = len([tag for tag in root.contents if isinstance(tag, Tag)])
-    # if length > 0:
-    #     for child in root.children:
-    #         if isinstance(child, Tag):
-    #             score_dom_tree_new(child, mapping)
-    #             mapping[root] += mapping[child]
-    #         elif isinstance(child, NavigableString):
-    #             if not child.find_parent("a"):
-    #                 string = unicode(child).strip()
-    #                 mapping[root] += len(string)/40 * 5
-    # else:
-    #     if root.name == "p":
-    #         string = root.get_text().strip()
-    #         l = len(string)
-    #         if l <= 10:
-    #             mapping[root] += 1.0
-    #         elif 10 < l <= 20:
-    #             mapping[root] += 1.5
-    #         elif 20 < l <= 40:
-    #             mapping[root] += 2.0
-    #         elif 40 < l <= 80:
-    #             mapping[root] += l/40.0 * 5
-    #         else:
-    #             mapping[root] += l/40.0 * 8
-    #     elif root.name == "img":
-    #         if root.find_parent("a"):
-    #             mapping[root] = 0.0
-    #         else:
-    #             mapping[root] = 3.0
-    #     else:
-    #         mapping[root] = 0.0
+            pass
 
 
 def choose_content_tag(root, mapping):
     score = mapping[root]
     tag = root
     min_score = score
-    for child in root.find_all(["div", "article"]):
+    content_tags = root.find_all(name=["div", "article"])
+    for child in content_tags:
         c_score = mapping[child]
-        if 0.6 * score <= c_score < min_score:
+        if 0.6 * score < c_score <= min_score:
             min_score = c_score
             tag = child
     return None if tag.name == "body" else tag
