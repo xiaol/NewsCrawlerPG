@@ -20,7 +20,9 @@ def get_document(url):
         encoding = r.apparent_encoding
         if encoding.lower() == "gb2312":
             encoding = "GB18030"
-        return r.content.decode(encoding).encode("utf-8")
+            return r.content.decode(encoding).encode("utf-8")
+        else:
+            return r.content
     else:
         print("get document error: %s" % r.status_code)
         return ""

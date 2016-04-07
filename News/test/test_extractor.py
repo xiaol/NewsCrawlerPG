@@ -151,7 +151,7 @@ if __name__ == '__main__':
         </body>
     </html>
 """
-    string = get_document("http://www.open-open.com/news/view/16b6c3b")
+    string = get_document("http://news.sina.com.cn/c/nd/2016-04-06/doc-ifxrcizs6891671.shtml")
     allow_tags = ("b", "blod", "big", "em", "font", "h1", "h2", "h3", "h4",
                   "h5", "h6", "i", "italic", "small", "strike", "sub",
                   "a", "p", "strong", "div", "img", "tt", "u", "html",

@@ -10,13 +10,19 @@ from scrapy.exceptions import DropItem
 
 from News.items import NewsItem, CommentItem
 from News.utils.cache import Cache
+from News.utils.util import clean_date_time
 from News.constans import NEWS_STORE_API, CACHE_SOURCE_KEY, COMMENT_STORE_API
 
 _logger = logging.getLogger(__name__)
 
 
 class CompatiblePipeline(object):
-    """为先后兼容， 对数据格式进行一些处理"""
+    """为先后兼容， 对数据格式进行一些处理
+
+    - 修改内容中 text 为 txt
+    - 为 item 添加 image_number
+
+    """
 
     def process_item(self, item, spider):
         if not isinstance(item, NewsItem):
@@ -46,14 +52,20 @@ class CompatiblePipeline(object):
 
 
 class CleanPipeline(object):
-    """清洗数据， 丢弃不完整的数据"""
+    """清洗内容为空或时间格式不正确的新闻, 统一时间格式
+    """
 
     def process_item(self, item, spider):
         if isinstance(item, NewsItem):
             if len(item["content"]) == 0:
                 raise DropItem("content empty: %s" % item["crawl_url"])
             else:
-                return item
+                dt = clean_date_time(item["publish_time"])
+                if len(dt) == 0:
+                    raise DropItem("extractor datetime error %s" % item["publish_time"])
+                else:
+                    item["publish_time"] = dt
+                    return item
         else:
             return item
 

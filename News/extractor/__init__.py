@@ -6,6 +6,7 @@ from lxml import html
 from lxml.html.clean import Cleaner
 from bs4 import BeautifulSoup, Comment, Tag, NavigableString
 from News.cleaner import BaseCleaner, NewsCleaner
+from News.utils.util import clean_date_time
 
 
 class NewsExtractor(object):
@@ -231,27 +232,83 @@ def score_dom_tree_new(root, mapping):
     if not isinstance(root, (Tag, BeautifulSoup)):
         return
     mapping[root] = 0.0
-    length = len([tag for tag in root.contents if isinstance(tag, Tag)])
-    if length > 0:
-        for child in root.children:
-            if isinstance(child, Tag):
+    for child in root.children:
+        if isinstance(child, Tag):
+            if child.name == "p":
+                if child.img:
+                    mapping[child] += 5.0
+                l = len(child.get_text().strip())
+                if l <= 10:
+                    mapping[child] += 1.0
+                elif 10 < l <= 20:
+                    mapping[child] += 1.5
+                elif 20 < l <= 40:
+                    mapping[child] += 2.0
+                elif 40 < l <= 80:
+                    mapping[child] += l / 40.0 * 5
+                else:
+                    mapping[child] += l / 40.0 * 8
+            elif child.name == "img":
+                if not child.find_parent("a"):
+                    mapping[child] += 5.0
+            elif child.name in ["div", "article"]:
                 score_dom_tree_new(child, mapping)
-                mapping[root] += mapping[child]
-            elif isinstance(child, NavigableString):
-                string = unicode(child).strip()
-                mapping[root] += len(string)/40 * 2
-    else:
-        if root.name == "p":
-            mapping[root] = 2.0
-            string = root.get_text().strip()
-            mapping[root] += len(string)/40 * 5
-        elif root.name == "img":
-            if root.find_parent("a"):
-                mapping[root] = 0.0
             else:
-                mapping[root] = 5.0
+                if not child.find_parent("a"):
+                    mapping[child] += len(child.get_text().strip())/20 * 4
+                else:
+                    mapping[child] = 0
+            mapping[root] += mapping[child]
+        elif isinstance(child, NavigableString):
+            string = unicode(child).strip()
+            mapping[root] += len(string)/40 * 5
         else:
-            mapping[root] = 0.0
+            mapping[child] = 0
+
+
+    # length = len([tag for tag in root.contents if isinstance(tag, Tag)])
+    # if length > 0:
+    #     for child in root.children:
+    #         if isinstance(child, Tag):
+    #             score_dom_tree_new(child, mapping)
+    #             mapping[root] += mapping[child]
+    #         elif isinstance(child, NavigableString):
+    #             if not child.find_parent("a"):
+    #                 string = unicode(child).strip()
+    #                 mapping[root] += len(string)/40 * 5
+    # else:
+    #     if root.name == "p":
+    #         string = root.get_text().strip()
+    #         l = len(string)
+    #         if l <= 10:
+    #             mapping[root] += 1.0
+    #         elif 10 < l <= 20:
+    #             mapping[root] += 1.5
+    #         elif 20 < l <= 40:
+    #             mapping[root] += 2.0
+    #         elif 40 < l <= 80:
+    #             mapping[root] += l/40.0 * 5
+    #         else:
+    #             mapping[root] += l/40.0 * 8
+    #     elif root.name == "img":
+    #         if root.find_parent("a"):
+    #             mapping[root] = 0.0
+    #         else:
+    #             mapping[root] = 3.0
+    #     else:
+    #         mapping[root] = 0.0
+
+
+def choose_content_tag(root, mapping):
+    score = mapping[root]
+    tag = root
+    min_score = score
+    for child in root.find_all(["div", "article"]):
+        c_score = mapping[child]
+        if 0.6 * score <= c_score < min_score:
+            min_score = c_score
+            tag = child
+    return None if tag.name == "body" else tag
 
 
 def find_content_tag(root):
@@ -259,18 +316,7 @@ def find_content_tag(root):
         return root
     mapping = dict()
     score_dom_tree_new(root, mapping)
-    score = mapping[root]
-    tag = root
-    min_score = score
-    for child in root.find_all(["div", "article"]):
-        c_score = mapping[child]
-        if c_score >= 0.6 * score:
-            if c_score < min_score:
-                min_score = c_score
-                tag = child
-    # mapping = sorted(mapping.items(), key=lambda k: k[1], reverse=True)
-    # return None if not mapping else mapping[0][0]
-    return tag
+    return choose_content_tag(root, mapping)
 
 
 class BaseExtractor(object):
@@ -474,63 +520,7 @@ class BaseExtractor(object):
         :param string:str, 需要清洗的时间字符串
         :return: str
         """
-        date_time_string = ""
-        p_date_list = [
-            r"((20\d{2})[/.-])?(\d{2})[/.-](\d{2})",
-            r"((20\d{2})?年)?(\d{2})月(\d{2})",
-            u"((20\d{2})?\u5e74)?(\d{2})\u6708(\d{2})",
-
-            r"((20\d{2})[/.-])?(\d{1})[/.-](\d{2})",
-            r"((20\d{2})?年)?(\d{1})月(\d{2})",
-            u"((20\d{2})?\u5e74)?(\d{1})\u6708(\d{2})",
-
-            r"((20\d{2})[/.-])?(\d{2})[/.-](\d{1})",
-            r"((20\d{2})?年)?(\d{2})月(\d{1})",
-            u"((20\d{2})?\u5e74)?(\d{2})\u6708(\d{1})",
-
-            r"((20\d{2})[/.-])?(\d{1})[/.-](\d{1})",
-            r"((20\d{2})?年)?(\d{1})月(\d{1})",
-            u"((20\d{2})?\u5e74)?(\d{1})\u6708(\d{1})",
-        ]
-        for p_date in p_date_list:
-            date_match = re.search(p_date, string)
-            if date_match is not None:
-                break
-        else:
-            return date_time_string
-        p_time = r"(\d{2}):(\d{2})(:(\d{2}))?"
-        time_match = re.search(p_time, string)
-        now = datetime.now()
-        year_now = now.strftime("%Y")
-        hour_now = now.strftime("%H")
-        minute_now = now.strftime("%M")
-        second_now = now.strftime("%S")
-        if date_match is None:
-            return date_time_string
-        else:
-            date_groups = date_match.groups()
-        if time_match is None:
-            time_groups = (hour_now, minute_now, ":"+second_now, second_now)
-        else:
-            time_groups = time_match.groups()
-        year = date_groups[1]
-        month = date_groups[2]
-        if len(month) == 1:
-            month = "0" + month
-        day = date_groups[3]
-        if len(day) == 1:
-            day = "0" + day
-        hour = time_groups[0]
-        minute = time_groups[1]
-        second = time_groups[3]
-        if year is None:
-            year = year_now
-        if second is None:
-            second = second_now
-        date_string = "-".join([year, month, day])
-        time_string = ":".join([hour, minute, second])
-        date_time_string = date_string + " " + time_string
-        return date_time_string
+        return clean_date_time(string)
 
     def exact_extract_post_source(self, param):
         return self.exact_extract_tag(self.base_soup, param)
@@ -569,11 +559,11 @@ class BaseExtractor(object):
     def extract_content(self, param=None, clean_param_list=None):
         content = list()
         if param is None:
-            tag = find_content_tag(self.soup)
+            tag = find_content_tag(self.soup.body)
         else:
             tag = self.exact_find_tag(self.soup, param)
             if tag is None:
-                tag = find_content_tag(self.soup)
+                tag = find_content_tag(self.soup.body)
         if tag is None:
             return content
         if clean_param_list is not None:

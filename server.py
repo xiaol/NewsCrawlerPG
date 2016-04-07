@@ -3,11 +3,12 @@
 import os
 import tornado.ioloop
 import tornado.web
+from tornado.web import RequestHandler
 
-from News.test.extractor import test_extractor
+from News.service import extract_service, score_service
 
 
-class ExtractorHandler(tornado.web.RequestHandler):
+class ExtractorHandler(RequestHandler):
 
     def get(self):
         self.render("index.html")
@@ -15,13 +16,27 @@ class ExtractorHandler(tornado.web.RequestHandler):
     def post(self):
         key = self.get_argument("key")
         url = self.get_argument("url")
-        title, post_date, post_user, summary, content = test_extractor(key, url)
+        title, post_date, post_user, summary, content = extract_service(key, url)
         results = {
             "title": title,
             "post_date": post_date,
             "post_user": post_user,
             "summary": summary,
             "content": content,
+        }
+        self.write(results)
+
+
+class ScoreHandler(RequestHandler):
+
+    def get(self):
+        self.render("score.html")
+
+    def post(self, *args, **kwargs):
+        url = self.get_argument("url")
+        data = score_service(url)
+        results = {
+            "data": data,
         }
         self.write(results)
 
@@ -33,6 +48,7 @@ def make_app():
     }
     return tornado.web.Application([
         (r"/", ExtractorHandler),
+        (r"/score", ScoreHandler),
     ], **settings)
 
 if __name__ == "__main__":
