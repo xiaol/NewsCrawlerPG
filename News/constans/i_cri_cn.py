@@ -32,9 +32,9 @@ POST_DATE_PARAM = {
 
 
 CATEGORIES = {
-    u"国际": ("http://i.cri.cn/world", None),
+    u"国际": ("http://i.cri.cn/world", 9),
     u"国内": ("http://i.cri.cn/china", None),
     u"趣闻": ("http://i.cri.cn/popularnews", None),
-    u"财经": ("http://i.cri.cn/finance", None),
+    u"财经": ("http://i.cri.cn/finance", 7),
     u"评论": ("http://i.cri.cn/opinion", None),
 }

@@ -26,7 +26,7 @@ _logger = logging.getLogger(__name__)
 
 
 @six.add_metaclass(abc.ABCMeta)
-class NewsSpider(Spider):
+class NewsSpider(RedisSpider):
 
     def parse(self, response):
         """

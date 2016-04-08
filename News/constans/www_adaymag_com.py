@@ -32,7 +32,7 @@ CATEGORIES = {
         u"奇闻": ("http://www.adaymag.com/worldpost/weird-news/", None),
         u"温情": ("http://www.adaymag.com/worldpost/heartwarming/", None),
         u"文化": ("http://www.adaymag.com/worldpost/culture/", None),
-        u"科学": ("http://www.adaymag.com/worldpost/science/", None),
+        u"科学": ("http://www.adaymag.com/worldpost/science/", 25),
         u"女性议题": ("http://www.adaymag.com/worldpost/women/", None),
         u"同性议题": ("http://www.adaymag.com/worldpost/lgbt/", None),
         u"网络热话": ("http://www.adaymag.com/worldpost/viral/", None),

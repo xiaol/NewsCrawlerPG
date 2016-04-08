@@ -56,12 +56,12 @@ CATEGORIES = {
     },
     u"国内": {
         u"时政要闻": ("http://m.huanqiu.com/lm.html?id=37", None),
-        u"社会万象": ("http://m.huanqiu.com/lm.html?id=113", None),
+        u"社会万象": ("http://m.huanqiu.com/lm.html?id=113", 2),
         # u"图说中国": ("http://m.huanqiu.com/lm.html?id=92", None), # 待解析
     },
     u"军事": {
         u"国际军事": ("http://m.huanqiu.com/lm.html?id=41", None),
-        u"中国军事": ("http://m.huanqiu.com/lm.html?id=40", None),
+        u"中国军事": ("http://m.huanqiu.com/lm.html?id=40", 8),
         u"军事评论": ("http://m.huanqiu.com/lm.html?id=90", None),
         u"航天航空": ("http://m.huanqiu.com/lm.html?id=91", None),
         # u"图说军事": ("http://m.huanqiu.com/lm.html?id=43", None),　# 待解析

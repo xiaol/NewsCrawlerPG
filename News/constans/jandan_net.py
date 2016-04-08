@@ -41,7 +41,7 @@ CONTENT_PARAM = {
 
 CATEGORIES = {
     u"科学": {
-        u"走进科学": ("http://jandan.net/tag/%E8%B5%B0%E8%BF%9B%E7%A7%91%E5%AD%A6", None),
+        u"走进科学": ("http://jandan.net/tag/%E8%B5%B0%E8%BF%9B%E7%A7%91%E5%AD%A6", 25),
         u"无厘头研究": ("http://jandan.net/tag/%E6%97%A0%E5%8E%98%E5%A4%B4%E7%A0%94%E7%A9%B6", None),
         u"天文": ("http://jandan.net/tag/%E5%A4%A9%E6%96%87", None),
         u"NASA": ("http://jandan.net/tag/nasa", None),

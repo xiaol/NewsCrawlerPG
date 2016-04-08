@@ -17,7 +17,7 @@ _logger = logging.getLogger(__name__)
 
 
 class CompatiblePipeline(object):
-    """为先后兼容， 对数据格式进行一些处理
+    """为向后兼容， 对数据格式进行一些处理
 
     - 修改内容中 text 为 txt
     - 为 item 添加 image_number
