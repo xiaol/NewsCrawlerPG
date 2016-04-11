@@ -1,5 +1,9 @@
 # coding: utf-8
 
+"""
+画出 DOM 树的打分图，测试用
+"""
+
 import json
 import networkx as nx
 import matplotlib.pyplot as plt

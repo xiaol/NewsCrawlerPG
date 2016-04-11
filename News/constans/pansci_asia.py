@@ -33,17 +33,17 @@ POST_DATE_PARAM = {
 
 CATEGORIES = {
     u"内容分类": {
-        u"人体解析": ("http://pansci.asia/archives/category/type/humanbeing", None),
-        u"地球脉动": ("http://pansci.asia/archives/category/type/earth", None),
-        u"自然生态": ("http://pansci.asia/archives/category/type/nature", None),
-        u"太空探索": ("http://pansci.asia/archives/category/type/space", None),
-        u"万物之理": ("http://pansci.asia/archives/category/type/%E7%89%A9%E7%90%86-%E5%8C%96%E5%AD%B8", None),
-        u"医疗疾病": ("http://pansci.asia/archives/category/type/medicine-disease", None),
+        u"人体解析": ("http://pansci.asia/archives/category/type/humanbeing", 24, 60, 3),
+        u"地球脉动": ("http://pansci.asia/archives/category/type/earth", 14, 60, 4),
+        u"自然生态": ("http://pansci.asia/archives/category/type/nature", 14, 60, 4),
+        u"太空探索": ("http://pansci.asia/archives/category/type/space", 14, 60, 4),
+        u"万物之理": ("http://pansci.asia/archives/category/type/%E7%89%A9%E7%90%86-%E5%8C%96%E5%AD%B8", 14, 60, 4),
+        u"医疗疾病": ("http://pansci.asia/archives/category/type/medicine-disease", 24, 60, 3),
         u"文明足迹": ("http://pansci.asia/archives/category/type/%E6%96%87%E6%98%8E%E8%B6%B3%E8%B7%A1", None),
         u"环境与我": ("http://pansci.asia/archives/category/type/environment", None),
-        u"生命奥秘": ("http://pansci.asia/archives/category/type/lifescience", None),
-        u"科学传播": ("http://pansci.asia/archives/category/type/scicomm", None),
-        u"科技前沿": ("http://pansci.asia/archives/category/type/technology", 4),
+        u"生命奥秘": ("http://pansci.asia/archives/category/type/lifescience", 14, 60, 3),
+        u"科学传播": ("http://pansci.asia/archives/category/type/scicomm", 14, 60, 3),
+        u"科技前沿": ("http://pansci.asia/archives/category/type/technology", None),
     }
 }
 

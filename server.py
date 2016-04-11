@@ -1,5 +1,9 @@
 # coding: utf-8
 
+"""
+解析与打分 web 服务
+"""
+
 import os
 import tornado.ioloop
 import tornado.web

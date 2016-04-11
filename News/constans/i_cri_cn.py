@@ -23,6 +23,14 @@ POST_DATE_PARAM = {
     "method": "find_all",
     "params": {"name": "span", "attrs": {"id": "acreatedtime"}}
 }
+POST_SOURCE_PARAM = {
+    "method": "find_all",
+    "parmas": {"name": "span", "attrs": {"id": "asource"}}
+}
+CONTENT_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"id": "abody"}}
+}
 
 # EXTRACTOR_CLS = "News.extractor."
 
@@ -32,9 +40,9 @@ POST_DATE_PARAM = {
 
 
 CATEGORIES = {
-    u"国际": ("http://i.cri.cn/world", 9),
-    u"国内": ("http://i.cri.cn/china", None),
-    u"趣闻": ("http://i.cri.cn/popularnews", None),
-    u"财经": ("http://i.cri.cn/finance", 7),
+    u"国际": ("http://i.cri.cn/world", 9, 30, 4),
+    u"国内": ("http://i.cri.cn/china", 2, 30, 4),
+    u"趣闻": ("http://i.cri.cn/popularnews", 31, 30, 4),
+    u"财经": ("http://i.cri.cn/finance", None),
     u"评论": ("http://i.cri.cn/opinion", None),
 }

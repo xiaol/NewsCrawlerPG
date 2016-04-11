@@ -27,6 +27,6 @@ THUMB_XPATH = "./p/img/@src"
 
 
 CATEGORIES = {
-    u"影像日报": ("http://moviesoon.com/news/", None)
+    u"影像日报": ("http://moviesoon.com/news/", 30, 30, 4),
 }
 

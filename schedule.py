@@ -1,5 +1,9 @@
 # coding: utf-8
 
+"""
+爬虫按频率调度
+"""
+
 from importlib import import_module
 import time
 from News.constans import SPIDER_CONFIG_NAMES

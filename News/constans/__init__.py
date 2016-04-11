@@ -33,6 +33,16 @@ CHANNELS_MAP = {
     26: {"name": u"美女", "online": 1},
     27: {"name": u"杂志", "online": 0},
     28: {"name": u"本地", "online": 0},
+
+    # add new channels
+    29: {"name": u"外媒", "online": 1},
+    30: {"name": u"影视", "online": 1},
+    31: {"name": u"奇闻", "online": 1},
+    32: {"name": u"萌宠", "online": 1},
+    33: {"name": u"图片", "online": 0},
+    34: {"name": u"专题", "online": 0},
+    35: {"name": u"关注", "online": 0},
+
     "0": {"name": u"今日焦点", "online": 1},    # 热点
     "1": {"name": u"热门专题", "online": 1},    # 精选
     "2": {"name": u"重口味", "online": 1},     # 重口味

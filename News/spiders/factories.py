@@ -40,6 +40,12 @@ def config_news_factory(config):
         class_attr["summary_param"] = config.SUMMARY_PARAM
     if hasattr(config, "CONTENT_PARAM"):
         class_attr["content_param"] = config.CONTENT_PARAM
+    if hasattr(config, "CLEAN_PARAM_LIST"):
+        class_attr["clean_param_list"] = config.CLEAN_PARAM_LIST
+    if hasattr(config, "CLEAN_CONTENT_BEFORE_PARAM"):
+        class_attr["clean_content_before_param"] = config.CLEAN_CONTENT_BEFORE_PARAM
+    if hasattr(config, "CLEAN_CONTENT_AFTER_PARAM"):
+        class_attr["clean_content_after_param"] = config.CLEAN_CONTENT_AFTER_PARAM
     if hasattr(config, "EXTRACTOR_CLS"):
         class_attr["extractor_cls"] = config.EXTRACTOR_CLS
     if hasattr(config, "CLASS_NAME"):

@@ -1,11 +1,12 @@
 # coding: utf-8
 import re
-from datetime import datetime
 from urlparse import urljoin
+
+from bs4 import BeautifulSoup, Comment, Tag, NavigableString
 from lxml import html
 from lxml.html.clean import Cleaner
-from bs4 import BeautifulSoup, Comment, Tag, NavigableString
-from News.cleaner import BaseCleaner, NewsCleaner
+
+from News.extractor.cleaner import BaseCleaner, NewsCleaner
 from News.utils.util import clean_date_time
 
 
@@ -292,6 +293,8 @@ class BaseExtractor(object):
     summary_param = None
     content_param = None
     clean_param_list = None
+    clean_content_before_param = None
+    clean_content_after_param = None
 
     def __init__(self, document, url=None, encoding="utf-8"):
         """抽取类初始化
@@ -517,7 +520,25 @@ class BaseExtractor(object):
             if tag is not None:
                 tag.extract()
 
-    def extract_content(self, param=None, clean_param_list=None):
+    @classmethod
+    def content_tag_clean_before(cls, root, param):
+        tag = cls.exact_find_tag(root, param)
+        if tag is not None:
+            for sibling in tag.previous_siblings:
+                sibling.extract()
+            tag.extract()
+
+    @classmethod
+    def content_tag_clean_after(cls, root, param):
+        tag = cls.exact_find_tag(root, param)
+        if tag is not None:
+            for sibling in tag.next_siblings:
+                sibling.extract()
+            tag.extract()
+
+    def extract_content(self, param=None, clean_param_list=None,
+                        clean_content_before_param=None,
+                        clean_content_after_param=None):
         content = list()
         if param is None:
             tag = find_content_tag(self.soup.body)
@@ -527,6 +548,10 @@ class BaseExtractor(object):
                 tag = find_content_tag(self.soup.body)
         if tag is None:
             return content
+        if clean_content_before_param is not None:
+            pass
+        if clean_content_after_param is not None:
+            pass
         if clean_param_list is not None:
             self.content_tag_clean(tag, clean_param_list)
         self.parse_content_tag(tag, content)
@@ -543,6 +568,8 @@ class BaseExtractor(object):
             summary_param=None,
             content_param=None,
             clean_param_list=None,
+            clean_content_before_param=None,
+            clean_content_after_param=None,
     ):
         if title_param is None:
             title_param = self.title_param
@@ -556,6 +583,10 @@ class BaseExtractor(object):
             content_param = self.content_param
         if clean_param_list is None:
             clean_param_list = self.clean_param_list
+        if clean_content_before_param is None:
+            clean_content_before_param = self.clean_content_before_param
+        if clean_content_after_param is None:
+            clean_content_after_param = self.clean_content_after_param
         title = self.extract_title(title_param)
         post_date = self.extract_post_date(post_date_param)
         post_source = self.extract_post_source(post_source_param)
