@@ -1,4 +1,5 @@
 # coding: utf-8
+import re
 
 __author__ = "Sven Lee"
 __copyright__ = "Copyright 2016-2019, ShangHai Lie Ying"
@@ -15,9 +16,30 @@ DOMAIN = "www.adaymag.com"
 
 ITEMS_XPATH = "//div[@class='td_mod_wrap td_mod8 ']"
 TITLE_XPATH = ".//div[@class='item-details']//h3//text()"
-URL_XPATH = ".//div[@class='item-details//h3/a/@href']"
+URL_XPATH = ".//div[@class='item-details']//h3/a/@href"
 SUMMARY_XPATH = ".//div[@class='item-details']//div[@class='td-post-text-excerpt']//text()"
 THUMB_XPATH = ".//div[@class='thumb-wrap']//img/@src"
+
+TITLE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "h1", "attrs": {"class": "entry-title"}}
+}
+POST_DATE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "meta", "attrs": {"property": "article:published_time"}}
+}
+CONTENT_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"class": "td-post-text-content"}}
+}
+CLEAN_CONTENT_BEFORE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "id": re.compile("^essb_displayed_both")}
+}
+CLEAN_CONTENT_AFTER_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "id": re.compile("^essb_displayed_both")}
+}
 
 # EXTRACTOR_CLS = "News.extractor."
 

@@ -37,6 +37,7 @@ def g_start_urls(categories, spider_name, scheduler_list):
                 "interval": interval,
                 "request": request,
                 "queue": queue,
+                "running": False,
             }
             scheduler_list.append(info)
         else:
@@ -52,6 +53,7 @@ def g_all_scheduler_info():
 
 
 def push_request_to_queue(queue, request):
+    print(request)
     Cache.lpush(queue, request)
 
 
@@ -64,9 +66,11 @@ def run():
             interval = info["interval"]
             request = info["request"]
             queue = info["queue"]
-            if now >= last + interval:
+            running = info["running"]
+            if now >= last + interval or not running:
                 push_request_to_queue(queue, request)
                 scheduler_info_list[index]["time"] = now
+                scheduler_info_list[index]["running"] = True
         time.sleep(30)
 
 

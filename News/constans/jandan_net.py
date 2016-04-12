@@ -19,17 +19,25 @@ URL_XPATH = "./h2[@class='title2']/a/@href"
 # SUMMARY_XPATH = ".//span[class='hList-context']/text()"
 THUMB_XPATH = "./div[@class='thumbs_b']/a/img/@data-original"
 
+TITLE_PARAM = {
+    "method": "select",
+    "params": {"selector": "div#content h1"}
+}
 POST_DATE_PARAM = {
     "method": "find_all",
     "params": {"name": "div", "attrs": {"class": "time_s"}},
 }
-SUMMARY_PARAM = {
-    "method": "find_all",
-    "params": {"name": "p", "attrs": {"class": "art-guidecont"}}
-}
 CONTENT_PARAM = {
     "method": "find_all",
-    "params": {"name": "div", "attrs": {"class": "artile-bodycont clearfix"}},
+    "params": {"name": "div", "attrs": {"class": "post f"}},
+}
+CLEAN_CONTENT_BEFORE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "h1"}
+}
+CLEAN_CONTENT_AFTER_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"class": "share-links"}},
 }
 
 # EXTRACTOR_CLS = "News.extractor."

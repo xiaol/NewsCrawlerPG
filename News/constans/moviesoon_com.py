@@ -19,7 +19,24 @@ URL_XPATH = "./h2/a/@href"
 SUMMARY_XPATH = "./p/text()"
 THUMB_XPATH = "./p/img/@src"
 
-# EXTRACTOR_CLS = "News.extractor."
+TITLE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "h2", "attrs": {"class": "baslik"}}
+}
+CONTENT_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"class": "post"}},
+}
+CLEAN_CONTENT_BEFORE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"class": "bqts"}},
+}
+CLEAN_CONTENT_AFTER_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"class": "wumii-hook"}},
+}
+
+EXTRACTOR_CLS = "News.extractor.MovieSoonExtractor"
 
 # CUSTOM_SETTINGS = {
 #

@@ -93,6 +93,8 @@ class CachePipeline(object):
             "img_list": json.dumps(item["image_list"]),
             "content": json.dumps(item["content"]),
             "content_html": "",
+            "channel_id": item["meta_channel_id"],
+            "channel_name": item["meta_channel_name"],
         }
         if item.get("province"):
             obj["province"] = item["province"]

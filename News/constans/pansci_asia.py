@@ -19,9 +19,21 @@ URL_XPATH = ".//div/h3/a/@href"
 SUMMARY_XPATH = ".//div/p/text()"
 THUMB_XPATH = ".//div/a/img/@src"
 
+TITLE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "h2", "attrs": {"class": "post"}}
+}
 POST_DATE_PARAM = {
     "method": "find_all",
     "params": {"name": "div", "attrs": {"class": "the_date"}},
+}
+CONTENT_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"class": "pure_content"}},
+}
+CLEAN_CONTENT_AFTER_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"class": "wpbcap wpbcap-88960 wpbcap-app"}},
 }
 
 # EXTRACTOR_CLS = "News.extractor."

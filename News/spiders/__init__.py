@@ -13,7 +13,6 @@
 
 import abc
 import six
-from importlib import import_module
 from urlparse import urljoin
 import logging
 from scrapy import Request, Spider
@@ -21,6 +20,7 @@ from News.distributed import RedisSpider
 from News.items import get_default_news
 from News.utils.util import g_cache_key, news_already_exists, load_json_data
 from News.extractor import GeneralExtractor
+from News.utils import load_object
 
 _logger = logging.getLogger(__name__)
 
@@ -230,17 +230,23 @@ class ConfigNewsSpider(NewsSpider):
         post_source_param = self.post_source_param if hasattr(self, "post_source_param") else None
         summary_param = self.summary_param if hasattr(self, "summary_param") else None
         content_param = self.content_param if hasattr(self, "content_param") else None
+        clean_param_list = self.clean_param_list if hasattr(self, "clean_param_list") else None
+        clean_content_before_param = self.clean_content_before_param if hasattr(self, "clean_content_before_param") else None
+        clean_content_after_param = self.clean_content_after_param if hasattr(self, "clean_content_after_param") else None
         if hasattr(self, "extractor_cls"):
-            extractor_cls = import_module(name=self.extractor_cls)
+            extractor_cls = load_object(path=self.extractor_cls)
         else:
             extractor_cls = GeneralExtractor
-        extractor = extractor_cls(body)
+        extractor = extractor_cls(body, response.url)
         title, post_date, post_user, summary, content = extractor(
             title_param=title_param,
             post_date_param=post_date_param,
             post_source_param=post_source_param,
             summary_param=summary_param,
             content_param=content_param,
+            clean_param_list=clean_param_list,
+            clean_content_before_param=clean_content_before_param,
+            clean_content_after_param=clean_content_after_param,
         )
         news["publish_time"] = post_date
         news["content"] = content

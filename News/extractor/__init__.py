@@ -169,7 +169,7 @@ def get_img_src(base_url, tag):
     :param tag:bs4.Tag, 要获取链接的 img Tag
     :return:str, 图片的链接地址
     """
-    img_url_name = ["src", "alt-src", "alt_src", "data-src"]
+    img_url_name = ["src", "alt-src", "alt_src", "data-src", "data-original"]
     urls = []
     img_types = [".jpg", ".png", ".webp", ".gif", ".jpeg"]
     for name in img_url_name:
@@ -378,10 +378,21 @@ class BaseExtractor(object):
             return tag.get("content", "")
         return tag.get_text().strip()
 
+    @staticmethod
+    def extract_tag_attribute(tag, name):
+        if tag is None:
+            return ""
+        assert isinstance(tag, Tag)
+        return tag.get(name, "")
+
     @classmethod
     def exact_extract_tag(cls, root, param):
         tag = cls.exact_find_tag(root, param)
-        string = cls.extract_tag_text(tag)
+        attribute = param.get("attribute", None)
+        if attribute is None:
+            string = cls.extract_tag_text(tag)
+        else:
+            string = cls.extract_tag_attribute(tag, attribute)
         return string
 
     def exact_extract_title(self, param):
@@ -524,7 +535,10 @@ class BaseExtractor(object):
     def content_tag_clean_before(cls, root, param):
         tag = cls.exact_find_tag(root, param)
         if tag is not None:
+            siblings = []
             for sibling in tag.previous_siblings:
+                siblings.append(sibling)
+            for sibling in siblings:
                 sibling.extract()
             tag.extract()
 
@@ -532,7 +546,10 @@ class BaseExtractor(object):
     def content_tag_clean_after(cls, root, param):
         tag = cls.exact_find_tag(root, param)
         if tag is not None:
+            siblings = []
             for sibling in tag.next_siblings:
+                siblings.append(sibling)
+            for sibling in siblings:
                 sibling.extract()
             tag.extract()
 
@@ -549,9 +566,9 @@ class BaseExtractor(object):
         if tag is None:
             return content
         if clean_content_before_param is not None:
-            pass
+            self.content_tag_clean_before(tag, clean_content_before_param)
         if clean_content_after_param is not None:
-            pass
+            self.content_tag_clean_after(tag, clean_content_after_param)
         if clean_param_list is not None:
             self.content_tag_clean(tag, clean_param_list)
         self.parse_content_tag(tag, content)
@@ -591,7 +608,10 @@ class BaseExtractor(object):
         post_date = self.extract_post_date(post_date_param)
         post_source = self.extract_post_source(post_source_param)
         summary = self.extract_summary(summary_param)
-        content = self.extract_content(content_param, clean_param_list)
+        content = self.extract_content(content_param,
+                                       clean_param_list,
+                                       clean_content_before_param,
+                                       clean_content_after_param)
         return title, post_date, post_source, summary, content
 
 
@@ -651,3 +671,51 @@ class WechatExtractor(GeneralExtractor):
         "method": "find_all",
         "params": {"name": None, "attrs": dict(id="js_content")},
     }
+
+
+class MovieSoonExtractor(GeneralExtractor):
+
+    DIGITAL_MAPPING = {
+        u"一": "01",
+        u"二": "02",
+        u"三": "03",
+        u"四": "04",
+        u"五": "05",
+        u"六": "06",
+        u"七": "07",
+        u"八": "08",
+        u"九": "09",
+        u"十": "10",
+        u"十一": "11",
+        u"十二": "12",
+    }
+
+    def default_extract_post_date(self):
+        year_param = {
+            "method": "find_all",
+            "params": {"name": "span", "attrs": {"class": "year"}},
+        }
+        month_param = {
+            "method": "find_all",
+            "params": {"name": "span", "attrs": {"class": "month"}},
+        }
+        day_param = {
+            "method": "find_all",
+            "params": {"name": "span", "attrs": {"class": "gun"}},
+        }
+        year = self.exact_extract_tag(self.base_soup, year_param)
+        month = self.exact_extract_tag(self.base_soup, month_param)
+        day = self.exact_extract_tag(self.base_soup, day_param)
+        if len(year) != 4:
+            return ""
+        if len(day) == 1:
+            day = "0" + day
+        if month not in self.DIGITAL_MAPPING:
+            return ""
+        month = self.DIGITAL_MAPPING[month]
+        time_tag = {
+            "method": "find_all",
+            "params": {"name": "div", "attrs": {"class": "postAyrinti"}},
+        }
+        time_string = self.exact_extract_tag(self.base_soup, time_tag)
+        return "-".join([year, month, day]) + time_string

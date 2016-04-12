@@ -19,13 +19,17 @@ URL_XPATH = ".//div[@class='title']/a/@href"
 # SUMMARY_XPATH = ".//span[class='hList-context']/text()"
 THUMB_XPATH = ".//div[@class='pic']/a/img/@src"
 
+TITLE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "h1", "attrs": {"id": "atitle"}}
+}
 POST_DATE_PARAM = {
     "method": "find_all",
     "params": {"name": "span", "attrs": {"id": "acreatedtime"}}
 }
 POST_SOURCE_PARAM = {
     "method": "find_all",
-    "parmas": {"name": "span", "attrs": {"id": "asource"}}
+    "params": {"name": "span", "attrs": {"id": "asource"}}
 }
 CONTENT_PARAM = {
     "method": "find_all",
