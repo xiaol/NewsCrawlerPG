@@ -15,17 +15,24 @@ CRAWL_SOURCE = u"搜狐新闻"
 DOMAIN = "news.sohu.com"
 
 # AJAX = True
-ITEMS_XPATH = ""
-TITLE_XPATH = ""
-URL_XPATH = ""
+ITEMS_XPATH = "//div[@class='article-list']"
+TITLE_XPATH = "./div/h3/a/text()"
+URL_XPATH = "./div/h3/a/@href"
 # SUMMARY_XPATH = ""
 # THUMB_XPATH = ""
 
-# TITLE_PARAM = {"method": "find_all", "params": {"name": "", "attrs": {}}}
-# POST_DATE_PARAM = {"method": "find_all", "params": {"name": "", "attrs": {}}}
-# POST_SOURCE_PARAM = {"method": "find_all", "params": {"name": "", "attrs": {}}}
-# SUMMARY_PARAM = {"method": "find_all", "params": {"name": "", "attrs": {}}}
-# CONTENT_PARAM = {"method": "find_all", "params": {"name": "", "attrs": {}}}
+TITLE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "h1"}
+}
+POST_DATE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"class": "time-source"}}
+}
+CONTENT_PARAM = {
+    "method": "find_all",
+    "params": {"name": "div", "attrs": {"id": "contentText"}}
+}
 
 # EXTRACTOR_CLS = "News.extractor."
 
@@ -35,6 +42,9 @@ URL_XPATH = ""
 
 
 CATEGORIES = {
-
+    u"民调": {
+        u"国内": ("http://news.sohu.com/guoneixinwen.shtml", None),
+        u"国际": ("http://news.sohu.com/guojixinwen.shtml", None),
+    }
 }
 

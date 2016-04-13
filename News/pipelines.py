@@ -93,8 +93,8 @@ class CachePipeline(object):
             "img_list": json.dumps(item["image_list"]),
             "content": json.dumps(item["content"]),
             "content_html": "",
-            "channel_id": item["meta_channel_id"],
-            "channel_name": item["meta_channel_name"],
+            # "channel_id": item["meta_channel_id"],
+            # "channel_name": item["meta_channel_name"],
         }
         if item.get("province"):
             obj["province"] = item["province"]
@@ -103,7 +103,7 @@ class CachePipeline(object):
         if item.get("district"):
             obj["district"] = item["district"]
         Cache.hmset(item["key"], obj)
-        Cache.expire(item["key"], 604800)
+        Cache.expire(item["key"], 604800)   # 60*60*24*7
         return item
 
 
@@ -158,7 +158,7 @@ class StorePipeline(object):
         if r.status_code <= 300:
             content = json.loads(r.content)
             if content["key"] == "succes":
-                _logger.debug("store %s success" % item["key"])
+                _logger.info("store %s success" % item["key"])
             else:
                 _logger.error("store failed: %s" % content["key"])
         else:
