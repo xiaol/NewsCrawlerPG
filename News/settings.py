@@ -9,7 +9,7 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
-DEBUG = True
+DEBUG = False
 
 BOT_NAME = 'News'
 
@@ -26,7 +26,7 @@ NEWSPIDER_MODULE = 'News.spiders'
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 0.2
+DOWNLOAD_DELAY = 0.5
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN=16
 #CONCURRENT_REQUESTS_PER_IP=16
@@ -108,7 +108,7 @@ else:
         "News.pipelines.CachePipeline": 302,
         'News.pipelines.StorePipeline': 303,
     }
-    LOG_LEVEL = "ERROR"
+    LOG_LEVEL = "INFO"
     REDIS_URL = 'redis://ccd827d637514872:LYcache2015@ccd827d637514872.m.cnhza.kvstore.aliyuncs.com:6379'
     # POSTGRES = "postgresql://postgres:ly@postgres&2015@120.27.163.25/BDP"
     MONGO_URI = "mongodb://h44:27017,h213:27017,h241:27017/?replicaSet=myset"

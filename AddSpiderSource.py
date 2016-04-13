@@ -75,7 +75,7 @@ def add_spider_source(sources, spider_queue_name):
         spider_source.queue_name = spider_queue_name
         spider_source.online = 0
         spider_source.create_time = datetime.now()
-        # spider_source.task_conf = ""
+        spider_source.task_conf = {}
         session = DBSession()
         try:
             session.add(spider_source)

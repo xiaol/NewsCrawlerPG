@@ -12,7 +12,7 @@ __date__ = "2016-04-11 14:32"
 
 
 NODES = {
-    "local": "http://localhost:6800/",
+    "local": "http://localhost:6888/",
 }
 
 
