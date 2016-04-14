@@ -63,7 +63,7 @@ class Wechat(NewsSpider):
             news["crawl_url"] = response.url
             news["key"] = g_cache_key(news["crawl_url"])
         body = response.body_as_unicode().encode("utf-8")
-        extractor = WechatExtractor(body)
+        extractor = WechatExtractor(body, response.url)
         title, post_date, post_user, summary, content = extractor()
         news["title"] = title
         news["publish_time"] = post_date
