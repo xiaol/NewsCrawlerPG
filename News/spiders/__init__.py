@@ -16,8 +16,8 @@ import six
 from urlparse import urljoin
 import logging
 from scrapy import Request, Spider
-# from News.distributed import RedisSpider
-from scrapy_redis.spiders import RedisSpider
+from News.distributed import RedisSpider, RedisMetaSpider
+# from scrapy_redis.spiders import RedisSpider
 from News.items import get_default_news
 from News.utils.util import g_cache_key, news_already_exists, load_json_data
 from News.extractor import GeneralExtractor
@@ -74,6 +74,11 @@ class NewsSpider(RedisSpider):
         """
         解析内容页, 抽象方法, 子类必须实现
         """
+
+
+class NewsMetaSpider(RedisMetaSpider, NewsSpider):
+
+    pass
 
 
 class ConfigNewsSpider(NewsSpider):

@@ -2,7 +2,7 @@
 
 import logging
 from scrapy import Request
-from News.spiders import NewsSpider
+from News.spiders import NewsMetaSpider
 from News.utils.util import load_json_data, g_cache_key, news_already_exists
 from News.items import get_default_news
 from News.constans.wechat import SPIDER_NAME
@@ -12,7 +12,7 @@ from News.extractor import WechatExtractor
 _logger = logging.getLogger(__name__)
 
 
-class Wechat(NewsSpider):
+class Wechat(NewsMetaSpider):
 
     name = SPIDER_NAME
     custom_settings = {
