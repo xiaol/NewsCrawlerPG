@@ -275,6 +275,7 @@ class PrintPipeline(object):
                 for key, value in i.items():
                     print("%s: %s" % (key, value))
             print("\n")
+            self.test_comment_spider(item)
 
         elif isinstance(item, CommentItem):
             print("*" * 50)
@@ -286,3 +287,10 @@ class PrintPipeline(object):
             # print("love: %s" % item['love'])
             # print("docid: %s" % item['docid'])
             # print("\n")
+
+    def test_comment_spider(self, item):
+        queue = item.get("comment_queue")
+        url = item.get("comment_url")
+        if queue and url:
+            Cache.lpush(queue, url)
+            _logger.info("push {url} in {queue}".format(url=url, queue=queue))
