@@ -30,7 +30,7 @@ class NewsItem(Item):
     crawl_source = Field()  # 抓取地址 str
     original_source = Field()   # 源地址 str
 
-    image_list = Field()    # 新闻 meta 图片列表， 只为向下兼容
+    # image_list = Field()    # 新闻 meta 图片列表， 只为向下兼容
 
     key = Field()   # redis key, base64 for crawl_url
     start_url = Field()  # start url, record to get channel info in pipeline
@@ -42,7 +42,7 @@ def get_default_news(title="", tags=None, summary="", publish_time="",
                      content=None, province=None, city=None, district=None,
                      love=0, up=0, down=0, image_number=0, docid="",
                      channel="", category="", crawl_url="", original_url="",
-                     crawl_source="", original_source="", image_list=None,
+                     crawl_source="", original_source="",
                      key="", start_url="", start_meta_info=None):
     news = NewsItem()
     news["title"] = title
@@ -64,7 +64,7 @@ def get_default_news(title="", tags=None, summary="", publish_time="",
     news["original_url"] = original_url
     news["crawl_source"] = crawl_source
     news["original_source"] = original_source
-    news["image_list"] = list() if image_list is None else image_list
+    # news["image_list"] = list() if image_list is None else image_list
     news["key"] = key
     news["start_url"] = start_url
     news["start_meta_info"] = start_meta_info

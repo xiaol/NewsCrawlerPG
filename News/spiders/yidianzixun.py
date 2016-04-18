@@ -37,7 +37,6 @@ class YiDianZiXun(NewsSpider):
             publish_time=article["date"],
             love=article.get("like", 0),
             up=article.get("up", 0),
-            image_list=self._g_image_list(article),
             original_url=article.get("url", ""),
             crawl_source=CRAWL_SOURCE,
             original_source=article.get("source", ""),
@@ -66,17 +65,6 @@ class YiDianZiXun(NewsSpider):
     @staticmethod
     def _g_article_url(docid):
         return ARTICLE_URL_TEMPLATE.format(docid=docid)
-
-    @classmethod
-    def _g_image_list(cls, article):
-        urls = list()
-        for image in article["image_urls"]:  # process image path
-            if image.startswith("http://static.yidianzixun.com"):
-                image_url = image
-            else:
-                image_url = cls._g_image_url(image, article["docid"])
-            urls.append(image_url)
-        return urls
 
     @staticmethod
     def _g_image_url(url, news_id):

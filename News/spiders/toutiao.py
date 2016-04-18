@@ -40,7 +40,6 @@ class TouTiao(NewsSpider):
             love=article.get("favorite_count", 0),
             up=article.get("digg_count", 0),
             down=article.get("bury_count", 0),
-            image_list=self._g_image_list(article),
             original_url=article.get("url", ""),
             original_source=article.get("source", ""),
             crawl_source=CRAWL_SOURCE,
@@ -69,13 +68,6 @@ class TouTiao(NewsSpider):
         else:
             # fixme add monitor here
             return ""
-
-    @staticmethod
-    def _g_image_list(article):
-        urls = [item["url"] for item in article["image_list"] if "url" in item]
-        if not urls and article.get("image_url"):
-            urls.append(article["image_url"])
-        return urls
 
 
 

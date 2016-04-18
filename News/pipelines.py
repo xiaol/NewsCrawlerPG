@@ -92,7 +92,6 @@ class CachePipeline(object):
             "love": item["love"],
             "docid": item["docid"],
             "content": json.dumps(item["content"]),
-            "img_list": json.dumps(item["image_list"]),
         }
         if item.get("province"):
             obj["province"] = item["province"]
