@@ -23,7 +23,9 @@ class TouTiao(NewsSpider):
         if article.get("has_video"):
             return None
         docid = article["source_url"]
-        crawl_url = self._g_crawl_url(docid)
+        crawl_url = self._g_crawl_url(article)
+        if not crawl_url:
+            return None
         key = g_cache_key(crawl_url)
         if news_already_exists(key):
             return None
@@ -38,16 +40,12 @@ class TouTiao(NewsSpider):
             love=article.get("favorite_count", 0),
             up=article.get("digg_count", 0),
             down=article.get("bury_count", 0),
-            image_list=self._g_image_list(article),
             original_url=article.get("url", ""),
             original_source=article.get("source", ""),
             crawl_source=CRAWL_SOURCE,
             start_url=start_url,
+            start_meta_info=meta,
         )
-        if meta is not None:
-            news["meta_channel_id"] = meta["channel"]
-            news["meta_channel_name"] = meta["name"]
-            news["meta_channel_online"] = meta["online"]
         return news
 
     def parse_news(self, response):
@@ -63,15 +61,13 @@ class TouTiao(NewsSpider):
         yield news
 
     @staticmethod
-    def _g_crawl_url(path):
-        return DOMAIN + path
-
-    @staticmethod
-    def _g_image_list(article):
-        urls = [item["url"] for item in article["image_list"] if "url" in item]
-        if not urls and article.get("image_url"):
-            urls.append(article["image_url"])
-        return urls
+    def _g_crawl_url(article):
+        display_url = article["display_url"]
+        if display_url.startswith(DOMAIN):
+            return display_url
+        else:
+            # fixme add monitor here
+            return ""
 
 
 

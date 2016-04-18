@@ -4,7 +4,7 @@ SPIDER_NAME = "spider:news:yidianzixun"
 COMMENT_SPIDER_NAME = 'spider:news:comment:yidianzixun'
 CRAWL_SOURCE = u"一点资讯"
 OUTER = ["jiemian.com"]
-ARTICLE_URL_TEMPLATE = "http://www.yidianzixun.com/home?page=article&id={docid}"
+ARTICLE_URL_TEMPLATE = "http://www.yidianzixun.com/article/{docid}"
 START_URL_PREFIX = "http://www.yidianzixun.com/api/q/?"
 CHANNELS = {
     "社会": {"channel": 2},

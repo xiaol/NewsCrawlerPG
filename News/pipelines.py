@@ -84,23 +84,23 @@ class CachePipeline(object):
         obj = {
             "key": item["key"],
             "url": item["crawl_url"],
-            "docid": item["docid"],
             "title": item["title"],
             "keywords": ",".join(item["tags"]),
-            "synopsis": item["summary"],
-            "love": item["love"],
-            "up": item["up"],
             "author": "",
-            "pub_url": item["original_url"] or item["crawl_url"],
-            "pub_name": item["original_source"] or item["crawl_source"],
             "pub_time": item["publish_time"],
-            "img_num": item["image_number"],
-            "img_list": json.dumps(item["image_list"]),
-            "content": json.dumps(item["content"]),
+            "pub_name": item["original_source"] or item["crawl_source"],
+            "pub_url": item["original_url"] or item["crawl_url"],
             "content_html": "",
-            # "channel_id": item["meta_channel_id"],
-            # "channel_name": item["meta_channel_name"],
+            "synopsis": item["summary"],
+            "img_num": item["image_number"],
+            "up": item["up"],
+            "love": item["love"],
+            "docid": item["docid"],
+            "content": json.dumps(item["content"]),
         }
+        if item.get("comment_queue") and item.get("comment_url"):
+            obj["comment_queue"] = item["comment_queue"]
+            obj["comment_task"] = item["comment_url"]
         if item.get("province"):
             obj["province"] = item["province"]
         if item.get("city"):
@@ -110,6 +110,17 @@ class CachePipeline(object):
         Cache.hmset(item["key"], obj)
         Cache.expire(item["key"], 604800)   # 60*60*24*7
         return item
+
+
+class StartMetaPipeline(object):
+    """ 处理传入的 meta 信息 """
+
+    def process_item(self, item, spider):
+        if not isinstance(item, NewsItem):
+            return item
+        elif item.get("start_meta_info") is None:
+            return item
+        pass
 
 
 class StorePipeline(object):
@@ -238,8 +249,8 @@ class MongoPipeline(object):
         old["create_time"] = item["publish_time"]
         old["source"] = item["original_source"]
 
-        old["channel_id"] = item["meta_channel_id"]
-        old["channel"] = item["meta_channel_name"]
+        # old["channel_id"] = item["meta_channel_id"]
+        # old["channel"] = item["meta_channel_name"]
         return old
 
     @staticmethod
@@ -275,5 +286,3 @@ class PrintPipeline(object):
             # print("love: %s" % item['love'])
             # print("docid: %s" % item['docid'])
             # print("\n")
-
-

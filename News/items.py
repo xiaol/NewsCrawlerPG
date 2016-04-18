@@ -30,23 +30,24 @@ class NewsItem(Item):
     crawl_source = Field()  # 抓取地址 str
     original_source = Field()   # 源地址 str
 
-    image_list = Field()    # 新闻 meta 图片列表， 只为向下兼容
+    # image_list = Field()    # 新闻 meta 图片列表， 只为向下兼容
 
     key = Field()   # redis key, base64 for crawl_url
     start_url = Field()  # start url, record to get channel info in pipeline
 
-    meta_channel_id = Field()
-    meta_channel_name = Field()
-    meta_channel_online = Field()
+    start_meta_info = Field()   # meta info from start request dict or None
+
+    comment_url = Field()   # comment url for comment spider
+    comment_queue = Field()  # comment redis queue for comment spider
 
 
 def get_default_news(title="", tags=None, summary="", publish_time="",
                      content=None, province=None, city=None, district=None,
                      love=0, up=0, down=0, image_number=0, docid="",
                      channel="", category="", crawl_url="", original_url="",
-                     crawl_source="", original_source="", image_list=None,
-                     key="", start_url="", meta_channel_id=None,
-                     meta_channel_name=None, meta_channel_online=None):
+                     crawl_source="", original_source="",
+                     key="", start_url="", start_meta_info=None,
+                     comment_queue="", comment_url=""):
     news = NewsItem()
     news["title"] = title
     news["tags"] = list() if tags is None else tags
@@ -67,12 +68,13 @@ def get_default_news(title="", tags=None, summary="", publish_time="",
     news["original_url"] = original_url
     news["crawl_source"] = crawl_source
     news["original_source"] = original_source
-    news["image_list"] = list() if image_list is None else image_list
+    # news["image_list"] = list() if image_list is None else image_list
     news["key"] = key
     news["start_url"] = start_url
-    news["meta_channel_id"] = meta_channel_id
-    news["meta_channel_name"] = meta_channel_name
-    news["meta_channel_online"] = meta_channel_online
+    news["start_meta_info"] = start_meta_info
+
+    news["comment_queue"] = comment_queue
+    news["comment_url"] = comment_url
     return news
 
 

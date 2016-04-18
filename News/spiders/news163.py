@@ -49,7 +49,6 @@ class News163(NewsSpider):
         news["love"] = 0
         news["up"] = 0
         news["down"] = 0
-        news["image_list"] = self._g_image_list()
 
         news["original_url"] = article.get("doc_url", "")
         news["channel"] = article.get("channel", "/").split("/")[0]
@@ -58,10 +57,7 @@ class News163(NewsSpider):
         news["original_source"] = article.get("source", "")
 
         news["start_url"] = start_url
-        if meta is not None:
-            news["meta_channel_id"] = meta["channel"]
-            news["meta_channel_name"] = meta["name"]
-            news["meta_channel_online"] = meta["online"]
+        news["start_meta_info"] = meta
         return news
 
     def g_news_request(self, item):
@@ -137,10 +133,6 @@ class News163(NewsSpider):
     @staticmethod
     def _g_comments_url(docid, offset):
         return COMMENT_URL_TEMPLATE.format(docid=docid, offset=offset)
-
-    @staticmethod
-    def _g_image_list():
-        return list()
 
 
 

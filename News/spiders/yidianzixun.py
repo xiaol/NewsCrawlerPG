@@ -24,7 +24,9 @@ class YiDianZiXun(NewsSpider):
         if article["ctype"] != "news":
             return None  # fixme: only support news now
         docid = article["docid"]
-        crawl_url = self._g_article_url(docid)
+        crawl_url = self._g_article_url(article.get("url"), docid)
+        if not crawl_url:
+            return None
         key = g_cache_key(crawl_url)
         if news_already_exists(key):
             return None
@@ -37,16 +39,12 @@ class YiDianZiXun(NewsSpider):
             publish_time=article["date"],
             love=article.get("like", 0),
             up=article.get("up", 0),
-            image_list=self._g_image_list(article),
             original_url=article.get("url", ""),
             crawl_source=CRAWL_SOURCE,
             original_source=article.get("source", ""),
             start_url=start_url,
+            start_meta_info=meta,
         )
-        if meta is not None:
-            news["meta_channel_id"] = meta["channel"]
-            news["meta_channel_name"] = meta["name"]
-            news["meta_channel_online"] = meta["online"]
         return news
 
     def parse_news(self, response):
@@ -67,19 +65,14 @@ class YiDianZiXun(NewsSpider):
             yield news
 
     @staticmethod
-    def _g_article_url(docid):
-        return ARTICLE_URL_TEMPLATE.format(docid=docid)
-
-    @classmethod
-    def _g_image_list(cls, article):
-        urls = list()
-        for image in article["image_urls"]:  # process image path
-            if image.startswith("http://static.yidianzixun.com"):
-                image_url = image
-            else:
-                image_url = cls._g_image_url(image, article["docid"])
-            urls.append(image_url)
-        return urls
+    def _g_article_url(url, docid):
+        if not url:
+            return ""
+        if url.startswith("http://www.yidianzixun.com"):
+            return ARTICLE_URL_TEMPLATE.format(docid=docid)
+        else:
+            # fixme add monitor here
+            return ""
 
     @staticmethod
     def _g_image_url(url, news_id):
