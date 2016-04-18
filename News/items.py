@@ -37,13 +37,17 @@ class NewsItem(Item):
 
     start_meta_info = Field()   # meta info from start request dict or None
 
+    comment_url = Field()   # comment url for comment spider
+    comment_queue = Field()  # comment redis queue for comment spider
+
 
 def get_default_news(title="", tags=None, summary="", publish_time="",
                      content=None, province=None, city=None, district=None,
                      love=0, up=0, down=0, image_number=0, docid="",
                      channel="", category="", crawl_url="", original_url="",
                      crawl_source="", original_source="",
-                     key="", start_url="", start_meta_info=None):
+                     key="", start_url="", start_meta_info=None,
+                     comment_queue="", comment_url=""):
     news = NewsItem()
     news["title"] = title
     news["tags"] = list() if tags is None else tags
@@ -68,6 +72,9 @@ def get_default_news(title="", tags=None, summary="", publish_time="",
     news["key"] = key
     news["start_url"] = start_url
     news["start_meta_info"] = start_meta_info
+
+    news["comment_queue"] = comment_queue
+    news["comment_url"] = comment_url
     return news
 
 
