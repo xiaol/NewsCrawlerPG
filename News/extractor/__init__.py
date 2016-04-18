@@ -650,7 +650,19 @@ class YiDianZiXunExtractor(GeneralExtractor):
 class TouTiaoExtractor(GeneralExtractor):
     title_param = {
         "method": "find_all",
-        "params": {"name": "h1", "attrs": dict()},
+        "params": {"name": "h1", "attrs": {"class": "title"}},
+    }
+    post_date_param = {
+        "method": "find_all",
+        "params": {"name": "span", "attrs": {"class": "time"}},
+    }
+    post_source_param = {
+        "method": "find_all",
+        "params": {"name": "span", "attrs": {"class": "src"}},
+    }
+    content_param = {
+        "method": "find_all",
+        "params": {"name": "div", "attrs": {"class": "article-content"}},
     }
 
 
