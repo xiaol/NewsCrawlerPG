@@ -74,7 +74,7 @@ class TouTiao(NewsSpider):
 
     @staticmethod
     def _g_comment_url(docid):
-        template = "http://toutiao.com{docid}comments/?count=10&page=2&offset=0&format=json"
+        template = "http://toutiao.com{docid}comments/?count=100&offset=0&format=json"
         comment_url = template.format(docid=docid)
         return comment_url
 
