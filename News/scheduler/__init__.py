@@ -37,7 +37,7 @@ def g_yidianzixun_urls(channels, offset=0, end=20):
         "cend": end,
     }
     start_urls = list()
-    for key, value in channels.iteritems():
+    for key, value in channels.items():
         params["display"] = key
         url = prefix + urlencode(params, True)
         print("channel: %s\nurl: %s\n" % (key, url))
@@ -60,7 +60,7 @@ def g_toutiao_urls(channels, offset=0, end=20):
         url = prefix + urlencode(params, True)
         print("channel: %s\nurl: %s\n" % (key, url))
         request = g_start_request(url, value)
-        start_urls.append(json.dumps(request))
+        start_urls.append(request)
     return start_urls
 
 
