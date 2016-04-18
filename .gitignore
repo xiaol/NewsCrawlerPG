@@ -10,5 +10,4 @@ project.egg-info/*
 setup.py
 twistd.pid
 logs/*
-
-
+News/settings.py
