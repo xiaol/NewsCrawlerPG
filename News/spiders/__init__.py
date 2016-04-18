@@ -16,9 +16,9 @@ import six
 from urlparse import urljoin
 import logging
 from scrapy import Request, Spider
-# from News.distributed import RedisSpider
-from scrapy_redis.spiders import RedisSpider
-from News.items import get_default_news
+from News.distributed import RedisSpider
+# from scrapy_redis.spiders import RedisSpider
+from News.items import get_default_news, CommentItem
 from News.utils.util import g_cache_key, news_already_exists, load_json_data
 from News.extractor import GeneralExtractor
 from News.utils import load_object

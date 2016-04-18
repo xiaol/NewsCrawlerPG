@@ -66,6 +66,11 @@ class CleanPipeline(object):
                 else:
                     item["publish_time"] = dt
                     return item
+        elif isinstance(item, CommentItem):
+            dt = clean_date_time(item['create_time'])
+            if len(dt) == 0:
+                raise DropItem("extractor datetime error %s" % item["publish_time"])
+            return item
         else:
             return item
 
@@ -248,15 +253,27 @@ class MongoPipeline(object):
 class PrintPipeline(object):
 
     def process_item(self, item, spider):
-        if not isinstance(item, NewsItem):
-            return item
-        print("*" * 50)
-        print("title: %s" % item["title"])
-        print("url: %s" % item["crawl_url"])
-        print("date: %s" % item["publish_time"])
-        print("user: %s" % item["original_source"])
-        print("channel: %s" % item.get("meta_channel_name", ""))
-        for i in item["content"]:
-            for key, value in i.items():
-                print("%s: %s" % (key, value))
-        print("\n")
+        if isinstance(item, NewsItem):
+            print("*" * 50)
+            print("title: %s" % item["title"])
+            print("url: %s" % item["crawl_url"])
+            print("date: %s" % item["publish_time"])
+            print("user: %s" % item["original_source"])
+            print("channel: %s" % item.get("meta_channel_name", ""))
+            for i in item["content"]:
+                for key, value in i.items():
+                    print("%s: %s" % (key, value))
+            print("\n")
+
+        elif isinstance(item, CommentItem):
+            print("*" * 50)
+            # print("id: %s" % item["comment_id"])
+            print("content: %s" % item["content"])
+            print("create_time: %s" % item["create_time"])
+            # print("nickname: %s" % item["nickname"])
+            # print("profile: %s" % item['profile'])
+            # print("love: %s" % item['love'])
+            # print("docid: %s" % item['docid'])
+            # print("\n")
+
+
