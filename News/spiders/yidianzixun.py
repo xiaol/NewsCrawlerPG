@@ -7,6 +7,7 @@ from News.spiders import NewsSpider
 from News.utils.util import load_json_data, g_cache_key, news_already_exists
 from News.items import get_default_news
 from News.constans.yidianzixun import SPIDER_NAME
+from News.constans.yidianzixun import COMMENT_SPIDER_NAME
 from News.constans.yidianzixun import ARTICLE_URL_TEMPLATE
 from News.constans.yidianzixun import CRAWL_SOURCE
 from News.extractor import YiDianZiXunExtractor
@@ -44,6 +45,8 @@ class YiDianZiXun(NewsSpider):
             original_source=article.get("source", ""),
             start_url=start_url,
             start_meta_info=meta,
+            comment_url=self._g_comment_url(docid),
+            comment_queue=COMMENT_SPIDER_NAME+":start_urls"
         )
         return news
 
@@ -84,6 +87,8 @@ class YiDianZiXun(NewsSpider):
         }
         return _image + urlencode(params)
 
-
-
+    @staticmethod
+    def _g_comment_url(docid):
+        template = "http://www.yidianzixun.com/api/q/?path=contents/comments&count=100&docid={docid}"
+        return template.format(docid=docid)
 
