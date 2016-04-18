@@ -6,6 +6,7 @@ from News.utils.util import load_json_data, g_cache_key, news_already_exists
 from News.utils.util import str_from_timestamp
 from News.items import get_default_news
 from News.constans.toutiao import SPIDER_NAME
+from News.constans.toutiao import COMMENT_SPIDER_NAME
 from News.constans.toutiao import DOMAIN
 from News.constans.toutiao import CRAWL_SOURCE
 from News.extractor import TouTiaoExtractor
@@ -45,7 +46,8 @@ class TouTiao(NewsSpider):
             crawl_source=CRAWL_SOURCE,
             start_url=start_url,
             start_meta_info=meta,
-            comment_url=self._g_comment_url(docid)
+            comment_url=self._g_comment_url(docid),
+            comment_queue=COMMENT_SPIDER_NAME+":start_urls"
         )
         return news
 
