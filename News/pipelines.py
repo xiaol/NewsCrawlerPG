@@ -93,6 +93,9 @@ class CachePipeline(object):
             "docid": item["docid"],
             "content": json.dumps(item["content"]),
         }
+        if item.get("comment_queue") and item.get("comment_url"):
+            obj["comment_queue"] = item["comment_queue"]
+            obj["comment_task"] = item["comment_url"]
         if item.get("province"):
             obj["province"] = item["province"]
         if item.get("city"):
