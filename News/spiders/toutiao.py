@@ -23,7 +23,9 @@ class TouTiao(NewsSpider):
         if article.get("has_video"):
             return None
         docid = article["source_url"]
-        crawl_url = self._g_crawl_url(docid)
+        crawl_url = self._g_crawl_url(article)
+        if not crawl_url:
+            return None
         key = g_cache_key(crawl_url)
         if news_already_exists(key):
             return None
@@ -60,8 +62,13 @@ class TouTiao(NewsSpider):
         yield news
 
     @staticmethod
-    def _g_crawl_url(path):
-        return DOMAIN + path
+    def _g_crawl_url(article):
+        display_url = article["display_url"]
+        if display_url.startswith(DOMAIN):
+            return display_url
+        else:
+            # fixme add monitor here
+            return ""
 
     @staticmethod
     def _g_image_list(article):
