@@ -24,7 +24,6 @@ class YidianzixunCommentsSpider(RedisSpider):
         if not dict_data['comments']:
             return
         comments = dict_data['comments']
-        page_count = len(dict_data['comments'])
         if 'total' in dict_data and dict_data['total'] == 0:
             return
         docid = dict_data['docid']
