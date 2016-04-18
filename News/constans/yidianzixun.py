@@ -1,6 +1,7 @@
 # coding: utf-8
 
 SPIDER_NAME = "spider:news:yidianzixun"
+COMMENT_SPIDER_NAME = 'spider:news:comment:yidianzixun'
 CRAWL_SOURCE = u"一点资讯"
 OUTER = ["jiemian.com"]
 ARTICLE_URL_TEMPLATE = "http://www.yidianzixun.com/article/{docid}"

@@ -1,6 +1,7 @@
 # coding: utf-8
 
 SPIDER_NAME = "spider:news:toutiao"
+COMMENT_SPIDER_NAME = "spider:news:comment:toutiao"
 CRAWL_SOURCE = u"今日头条"
 DOMAIN = "http://toutiao.com"
 OUTER = ["jiemian.com", "mafengwo.cn"]
