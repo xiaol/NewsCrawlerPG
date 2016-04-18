@@ -24,7 +24,9 @@ class YiDianZiXun(NewsSpider):
         if article["ctype"] != "news":
             return None  # fixme: only support news now
         docid = article["docid"]
-        crawl_url = self._g_article_url(docid)
+        crawl_url = self._g_article_url(article.get("url"), docid)
+        if not crawl_url:
+            return None
         key = g_cache_key(crawl_url)
         if news_already_exists(key):
             return None
@@ -63,8 +65,14 @@ class YiDianZiXun(NewsSpider):
             yield news
 
     @staticmethod
-    def _g_article_url(docid):
-        return ARTICLE_URL_TEMPLATE.format(docid=docid)
+    def _g_article_url(url, docid):
+        if not url:
+            return ""
+        if url.startswith("http://www.yidianzixun.com"):
+            return ARTICLE_URL_TEMPLATE.format(docid=docid)
+        else:
+            # fixme add monitor here
+            return ""
 
     @staticmethod
     def _g_image_url(url, news_id):

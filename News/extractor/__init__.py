@@ -645,6 +645,14 @@ class YiDianZiXunExtractor(GeneralExtractor):
         "method": "find_all",
         "params": {"name": "a", "attrs": dict(id="source-name")},
     }
+    content_param = {
+        "method": "find_all",
+        "params": {"name": "div", "attrs": {"class": "content-bd"}},
+    }
+    clean_content_after_param = {
+        "method": "find_all",
+        "params": {"name": "div", "attrs": {"class": "report"}}
+    }
 
 
 class TouTiaoExtractor(GeneralExtractor):
