@@ -43,11 +43,8 @@ class TouTiao(NewsSpider):
             original_source=article.get("source", ""),
             crawl_source=CRAWL_SOURCE,
             start_url=start_url,
+            start_meta_info=meta,
         )
-        if meta is not None:
-            news["meta_channel_id"] = meta["channel"]
-            news["meta_channel_name"] = meta["name"]
-            news["meta_channel_online"] = meta["online"]
         return news
 
     def parse_news(self, response):

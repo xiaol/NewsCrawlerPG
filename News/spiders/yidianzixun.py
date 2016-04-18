@@ -42,11 +42,8 @@ class YiDianZiXun(NewsSpider):
             crawl_source=CRAWL_SOURCE,
             original_source=article.get("source", ""),
             start_url=start_url,
+            start_meta_info=meta,
         )
-        if meta is not None:
-            news["meta_channel_id"] = meta["channel"]
-            news["meta_channel_name"] = meta["name"]
-            news["meta_channel_online"] = meta["online"]
         return news
 
     def parse_news(self, response):

@@ -2,7 +2,7 @@
 
 import logging
 from scrapy import Request
-from News.spiders import NewsMetaSpider
+from News.spiders import NewsSpider
 from News.utils.util import load_json_data, g_cache_key, news_already_exists
 from News.items import get_default_news
 from News.constans.wechat import SPIDER_NAME
@@ -12,7 +12,7 @@ from News.extractor import WechatExtractor
 _logger = logging.getLogger(__name__)
 
 
-class Wechat(NewsMetaSpider):
+class Wechat(NewsSpider):
 
     name = SPIDER_NAME
     custom_settings = {
@@ -48,12 +48,9 @@ class Wechat(NewsMetaSpider):
             key=g_cache_key(crawl_url),
             crawl_source=CRAWL_SOURCE,
             start_url=start_url,
-            summary=self._g_crawl_summary(article)
+            summary=self._g_crawl_summary(article),
+            start_meta_info=meta,
         )
-        if meta is not None:
-            news["meta_channel_id"] = meta["channel"]
-            news["meta_channel_name"] = meta["name"]
-            news["meta_channel_online"] = meta["online"]
         return None if news_already_exists(news["key"]) else news
 
     def parse_news(self, response):

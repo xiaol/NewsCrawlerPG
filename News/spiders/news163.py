@@ -58,10 +58,7 @@ class News163(NewsSpider):
         news["original_source"] = article.get("source", "")
 
         news["start_url"] = start_url
-        if meta is not None:
-            news["meta_channel_id"] = meta["channel"]
-            news["meta_channel_name"] = meta["name"]
-            news["meta_channel_online"] = meta["online"]
+        news["start_meta_info"] = meta
         return news
 
     def g_news_request(self, item):

@@ -93,8 +93,6 @@ class CachePipeline(object):
             "img_list": json.dumps(item["image_list"]),
             "content": json.dumps(item["content"]),
             "content_html": "",
-            # "channel_id": item["meta_channel_id"],
-            # "channel_name": item["meta_channel_name"],
         }
         if item.get("province"):
             obj["province"] = item["province"]
@@ -105,6 +103,17 @@ class CachePipeline(object):
         Cache.hmset(item["key"], obj)
         Cache.expire(item["key"], 604800)   # 60*60*24*7
         return item
+
+
+class StartMetaPipeline(object):
+    """ 处理传入的 meta 信息 """
+
+    def process_item(self, item, spider):
+        if not isinstance(item, NewsItem):
+            return item
+        elif item.get("start_meta_info") is None:
+            return item
+        pass
 
 
 class StorePipeline(object):
@@ -233,8 +242,8 @@ class MongoPipeline(object):
         old["create_time"] = item["publish_time"]
         old["source"] = item["original_source"]
 
-        old["channel_id"] = item["meta_channel_id"]
-        old["channel"] = item["meta_channel_name"]
+        # old["channel_id"] = item["meta_channel_id"]
+        # old["channel"] = item["meta_channel_name"]
         return old
 
     @staticmethod
@@ -255,7 +264,6 @@ class PrintPipeline(object):
         print("url: %s" % item["crawl_url"])
         print("date: %s" % item["publish_time"])
         print("user: %s" % item["original_source"])
-        print("channel: %s" % item.get("meta_channel_name", ""))
         for i in item["content"]:
             for key, value in i.items():
                 print("%s: %s" % (key, value))

@@ -27,7 +27,7 @@ _logger = logging.getLogger(__name__)
 
 
 @six.add_metaclass(abc.ABCMeta)
-class NewsSpider(RedisSpider):
+class NewsSpider(RedisMetaSpider, RedisSpider):
 
     def parse(self, response):
         """
@@ -74,11 +74,6 @@ class NewsSpider(RedisSpider):
         """
         解析内容页, 抽象方法, 子类必须实现
         """
-
-
-class NewsMetaSpider(RedisMetaSpider, NewsSpider):
-
-    pass
 
 
 class ConfigNewsSpider(NewsSpider):
@@ -215,12 +210,9 @@ class ConfigNewsSpider(NewsSpider):
             key=key,
             crawl_source=self.crawl_source,
             start_url=start_url,
-            summary=article.get("summary", "")
+            summary=article.get("summary", ""),
+            start_meta_info=meta
         )
-        if meta is not None:
-            news["meta_channel_id"] = meta["channel"]
-            news["meta_channel_name"] = meta["name"]
-            news["meta_channel_online"] = meta["online"]
         return news
 
     def parse_news(self, response):
