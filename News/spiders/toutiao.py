@@ -45,6 +45,7 @@ class TouTiao(NewsSpider):
             crawl_source=CRAWL_SOURCE,
             start_url=start_url,
             start_meta_info=meta,
+            comment_url=self._g_comment_url(docid)
         )
         return news
 
@@ -69,6 +70,11 @@ class TouTiao(NewsSpider):
             # fixme add monitor here
             return ""
 
+    @staticmethod
+    def _g_comment_url(docid):
+        template = "http://toutiao.com{docid}comments/?count=10&page=2&offset=0&format=json"
+        comment_url = template.format(docid=docid)
+        return comment_url
 
 
 
