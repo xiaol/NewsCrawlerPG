@@ -140,6 +140,7 @@ class StartMetaPipeline(object):
         info = item.get("start_meta_info")
         if info:
             Cache.hmset(item["key"], info)
+            return item
         else:
             raise DropItem("no start meta info")
 
