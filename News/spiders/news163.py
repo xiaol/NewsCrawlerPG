@@ -7,6 +7,7 @@ from News.utils.util import load_json_data, news_already_exists, g_cache_key
 from News.utils.util import str_from_timestamp
 from News.items import NewsItem, CommentItem
 from News.constans.news163 import SPIDER_NAME
+from News.constans.news163 import COMMENT_SPIDER_NAME
 from News.constans.news163 import CRAWL_SOURCE
 from News.constans.news163 import ARTICLE_URL_TEMPLATE
 from News.constans.news163 import COMMENT_URL_TEMPLATE
@@ -56,12 +57,15 @@ class News163(NewsSpider):
         news["crawl_source"] = CRAWL_SOURCE
         news["original_source"] = article.get("source", "")
 
+        news["comment_url"] = self._g_comment_url(docid=news["docid"])
+        news["comment_queue"] = self.COMMENT_SPIDER_NAME + ":start_urls"
         news["start_url"] = start_url
         news["start_meta_info"] = meta
         return news
 
     def g_news_request(self, item):
         url = self._g_article_url(item["docid"])
+        item["docid"] = item["comment_url"]
         return Request(
                 url=url,
                 callback=self.parse_news,
@@ -88,51 +92,10 @@ class News163(NewsSpider):
     def _g_article_url(docid):
         return ARTICLE_URL_TEMPLATE.format(docid=docid)
 
-    def parse_comments(self, response):
-        docid = response.meta["docid"]
-        page = response.meta["page"]
-        data = load_json_data(response.body)
-        count = data["newListSize"]
-        if count == 0: return
-        comment_ids = data["commentIds"]
-        comments = data["comments"]
-        for comment_id in comment_ids:
-            comment_id = comment_id.split(",")[-1]
-            if comment_id in comments:
-                item = self.g_comment_item(comments[comment_id], docid)
-                if item is not None:
-                    yield item
-        if self.default_comment_count * page < count:
-            yield self.g_comment_request(docid, page=page+1)
-
-    def g_comment_item(self, comment, docid):
-        item = CommentItem()
-        item["docid"] = docid
-        item["comment_id"] = comment["commentId"]
-        item["content"] = comment["content"]
-        user = comment["user"]
-        item["nickname"] = user.get("nickname", "")
-        item["profile"] = user.get("avatar", "")
-        item["love"] = comment["vote"]
-        item["create_time"] = comment["createTime"]
-        if item["content"].strip():
-            item["content"] = item["content"].strip().replace("<br>", "")
-            return item
-        else:
-            return None
-
-    def g_comment_request(self, docid, page=0):
-        offset = page * self.default_comment_count
-        url = self._g_comments_url(docid, offset)
-        return Request(
-            url=url,
-            callback=self.parse_comments,
-            meta={"docid": docid, "page": page}
-        )
-
     @staticmethod
-    def _g_comments_url(docid, offset):
-        return COMMENT_URL_TEMPLATE.format(docid=docid, offset=offset)
+    def _g_comment_url(docid, offset=0, count_per_page=30):
+        return COMMENT_URL_TEMPLATE.format(docid=docid, offset=offset,
+                                           count_per_page=count_per_page)
 
 
 
