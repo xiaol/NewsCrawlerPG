@@ -30,7 +30,7 @@ class RedisMetaSpider(RedisSpider):
                 self.log("json load error from %s" % self.redis_key)
             else:
                 assert isinstance(config, dict)
-                sid = config.get("id")
+                sid = config.get("source_id")
                 config["meta"]["monitor_id"] = sid
                 url = self.g_url_from_config(config)
                 meta = self.g_meta_from_config(config)
@@ -40,7 +40,7 @@ class RedisMetaSpider(RedisSpider):
                     _logger.error("generate start url error")
 
     def g_url_from_config(self, config):
-        return config["url"]
+        return config["source_url"]
 
     def g_meta_from_config(self, config):
         return config["meta"]
