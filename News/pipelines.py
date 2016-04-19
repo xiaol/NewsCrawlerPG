@@ -184,10 +184,10 @@ class StorePipeline(object):
     def store_comment(item):
         """调用远端的存储服务，存储 post 过去的评论数据"""
         comment = dict()
-        comment["comment_id"] = item["comment_id"]
+        comment["comment_id"] = str(item["comment_id"])
         comment["content"] = item["content"]
         comment["nickname"] = item["nickname"]
-        comment["love"] = item["love"]
+        comment["love"] = int(item["love"])
         comment["create_time"] = item["create_time"]
         comment["profile"] = item["profile"]
         comment["docid"] = item["docid"]
