@@ -49,7 +49,7 @@ class YidianzixunCommentsSpider(RedisSpider):
         item = CommentItem()
         item['comment_id'] = comment['comment_id']
         item['nickname'] = comment['nickname']
-        item['love'] = comment['like']
+        item['love'] = int(comment['like'])
         item['create_time'] = comment['createAt']
         item['profile'] = comment['profile']
         item['docid'] = fk_docid

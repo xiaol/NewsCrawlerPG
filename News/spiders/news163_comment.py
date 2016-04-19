@@ -54,7 +54,7 @@ class News163CommentsSpider(RedisSpider):
         user = comment['user']
         item['comment_id'] = comment['commentId']
         item['nickname'] = user.get('nickname', '')
-        item['love'] = comment['vote']
+        item['love'] = int(comment['vote'])
         item['create_time'] = comment['createTime']
         item['profile'] = user.get('avatar', '')
         item['docid'] = fk_docid

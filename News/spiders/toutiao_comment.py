@@ -53,7 +53,7 @@ class ToutiaoCommentsSpider(RedisSpider):
         item = CommentItem()
         item['comment_id'] = comment['id']
         item['nickname'] = comment['user_name']
-        item['love'] = comment['digg_count']
+        item['love'] = int(comment['digg_count'])
         item['create_time'] = str_from_timestamp(comment['create_time'])
         item['profile'] = comment['user_profile_image_url']
         item['docid'] = fk_docid
