@@ -64,8 +64,15 @@ def run_spider(node_name, project_name, spider):
 
 
 def run_spiders(node_name, project_name, spiders):
+    pendings, runnings, finisheds = list_jobs(node_name, project_name)
+    started_spiders = []
+    for spider in pendings+runnings:
+        started_spiders.append(spider["spider"])
     for spider in spiders:
-        run_spider(node_name, project_name, spider)
+        if spider in started_spiders:
+            print("warning: %s already started!" % spider)
+        else:
+            run_spider(node_name, project_name, spider)
 
 
 def stop_spider(node_name, project_name, jobid):
@@ -180,7 +187,8 @@ if __name__ == '__main__':
                 spider_names = [spiders[int(i)] for i in indexes]
                 run_spiders(node_name, project_name, spider_names)
             elif cmd == 3:
-                pass
+                spider_names = spiders
+                run_spiders(node_name, project_name, spider_names)
             elif cmd == 4:
                 indexes = raw_input("please input spider index(split by ','): ").strip().split(",")
                 spider_names = [spiders[int(i)] for i in indexes]
