@@ -128,6 +128,7 @@ class MonitorPipeline(object):
             date_string = now.strftime("%Y%m%d")
             key = "spider:news:monitor:" + date_string
             Cache.lpush(key, sid)
+            Cache.expire(key, 1296000)  # 60*60*24*15
         return item
 
 
