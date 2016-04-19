@@ -118,49 +118,24 @@ class StartMetaPipeline(object):
     def process_item(self, item, spider):
         if not isinstance(item, NewsItem):
             return item
-        elif item.get("start_meta_info") is None:
-            return item
-        pass
+        info = item.get("start_meta_info")
+        if info:
+            Cache.hmset(item["key"], info)
+        else:
+            raise DropItem("no start meta info")
 
 
 class StorePipeline(object):
     """调用远端存储服务， 数据入数据库"""
 
-    def __init__(self):
-        key = CACHE_SOURCE_KEY
-        self.mapping = self.__get_channel_info(key)
-
     def process_item(self, item, spider):
         if isinstance(item, NewsItem):
-            self.__update_cache_news(item["key"], item["start_url"])
             self.store_news(item)
         elif isinstance(item, CommentItem):
             self.store_comment(item)
         else:
             raise DropItem("unknown item type: %s" % type(item))
         return item
-
-    def __update_cache_news(self, key_in_cache, key):
-        """更新缓存中新闻信息，添加 channel 等字段"""
-        obj = dict()
-        if key in self.mapping:
-            info = self.mapping[key]
-            obj["source_id"] = info["id"]
-            obj["source_name"] = info["sourceName"]
-            obj["channel_name"] = info["channelName"]
-            obj["channel_id"] = info["channelId"]
-            obj["source_online"] = info["online"]
-            Cache.hmset(key_in_cache, obj)
-        else:
-            raise DropItem("no channel info in cache, key: %s" % key)
-
-    @staticmethod
-    def __get_channel_info(key):
-        """从缓存中获取额外的信息"""
-        sources = Cache.hgetall(key)
-        for k, v in sources.iteritems():
-            sources[k] = json.loads(v)
-        return sources
 
     @staticmethod
     def store_news(item):
