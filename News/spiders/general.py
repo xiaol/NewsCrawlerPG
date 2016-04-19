@@ -88,11 +88,11 @@ def news_spider_factory(start_urls, allowed_domains, rule, title_param,
     return type(class_name, (CrawlSpider, ), class_attr)
 
 
-mapping = locals()
-for spider in configs:
-    if spider["online"]:
-        Test = news_spider_factory(**spider)
-        mapping[Test.__name__] = Test
+# mapping = locals()
+# for spider in configs:
+#     if spider["online"]:
+#         Test = news_spider_factory(**spider)
+#         mapping[Test.__name__] = Test
 # cmdline.execute(argv=["python", "crawl", "spider:news:news_sina_com_cn"])
 
 

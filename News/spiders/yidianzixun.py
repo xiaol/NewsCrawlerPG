@@ -32,7 +32,6 @@ class YiDianZiXun(NewsSpider):
         if news_already_exists(key):
             return None
         news = get_default_news(
-            docid=docid,
             crawl_url=crawl_url,
             key=key,
             title=article["title"],
@@ -48,6 +47,7 @@ class YiDianZiXun(NewsSpider):
             comment_url=self._g_comment_url(docid),
             comment_queue=COMMENT_SPIDER_NAME+":start_urls"
         )
+        news["docid"] = news["comment_url"]
         return news
 
     def parse_news(self, response):

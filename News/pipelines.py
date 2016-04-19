@@ -112,55 +112,55 @@ class CachePipeline(object):
         return item
 
 
+class MonitorPipeline(object):
+    """ 添加监控信息　存入 redis
+
+    redis key: spider:news:monitor:20160419
+    存入爬虫源的id
+    """
+    def process_item(self, item, spider):
+        if not isinstance(item, NewsItem):
+            return item
+        info = item.get("start_meta_info")
+        if info and info.get("source_id"):
+            sid = info["source_id"]
+            now = datetime.now()
+            date_string = now.strftime("%Y%m%d")
+            key = "spider:news:monitor:" + date_string
+            Cache.lpush(key, sid)
+            Cache.expire(key, 1296000)  # 60*60*24*15
+        return item
+
+
 class StartMetaPipeline(object):
     """ 处理传入的 meta 信息 """
 
     def process_item(self, item, spider):
         if not isinstance(item, NewsItem):
             return item
-        elif item.get("start_meta_info") is None:
+        info = item.get("start_meta_info")
+        if info:
+            if isinstance(info.get("task_conf"), dict):
+                info["task_conf"] = json.dumps(info["task_conf"])
+            else:
+                info["task_conf"] = json.dumps({})
+            Cache.hmset(item["key"], info)
             return item
-        pass
+        else:
+            raise DropItem("no start meta info")
 
 
 class StorePipeline(object):
     """调用远端存储服务， 数据入数据库"""
 
-    def __init__(self):
-        key = CACHE_SOURCE_KEY
-        self.mapping = self.__get_channel_info(key)
-
     def process_item(self, item, spider):
         if isinstance(item, NewsItem):
-            self.__update_cache_news(item["key"], item["start_url"])
             self.store_news(item)
         elif isinstance(item, CommentItem):
             self.store_comment(item)
         else:
             raise DropItem("unknown item type: %s" % type(item))
         return item
-
-    def __update_cache_news(self, key_in_cache, key):
-        """更新缓存中新闻信息，添加 channel 等字段"""
-        obj = dict()
-        if key in self.mapping:
-            info = self.mapping[key]
-            obj["source_id"] = info["id"]
-            obj["source_name"] = info["sourceName"]
-            obj["channel_name"] = info["channelName"]
-            obj["channel_id"] = info["channelId"]
-            obj["source_online"] = info["online"]
-            Cache.hmset(key_in_cache, obj)
-        else:
-            raise DropItem("no channel info in cache, key: %s" % key)
-
-    @staticmethod
-    def __get_channel_info(key):
-        """从缓存中获取额外的信息"""
-        sources = Cache.hgetall(key)
-        for k, v in sources.iteritems():
-            sources[k] = json.loads(v)
-        return sources
 
     @staticmethod
     def store_news(item):
@@ -185,10 +185,10 @@ class StorePipeline(object):
     def store_comment(item):
         """调用远端的存储服务，存储 post 过去的评论数据"""
         comment = dict()
-        comment["comment_id"] = item["comment_id"]
+        comment["comment_id"] = str(item["comment_id"])
         comment["content"] = item["content"]
         comment["nickname"] = item["nickname"]
-        comment["love"] = item["love"]
+        comment["love"] = int(item["love"])
         comment["create_time"] = item["create_time"]
         comment["profile"] = item["profile"]
         comment["docid"] = item["docid"]
@@ -275,7 +275,8 @@ class PrintPipeline(object):
                 for key, value in i.items():
                     print("%s: %s" % (key, value))
             print("\n")
-            self.test_comment_spider(item)
+            if item.get("comment_queue") and item.get("comment_url"):
+                self.test_comment_spider(item)
 
         elif isinstance(item, CommentItem):
             print("*" * 50)
