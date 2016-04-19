@@ -122,8 +122,8 @@ class MonitorPipeline(object):
         if not isinstance(item, NewsItem):
             return item
         info = item.get("start_meta_info")
-        if info and info.get("monitor_id"):
-            sid = info["monitor_id"]
+        if info and info.get("source_id"):
+            sid = info["source_id"]
             now = datetime.now()
             date_string = now.strftime("%Y%m%d")
             key = "spider:news:monitor:" + date_string
@@ -139,6 +139,10 @@ class StartMetaPipeline(object):
             return item
         info = item.get("start_meta_info")
         if info:
+            if isinstance(info.get("task_conf"), dict):
+                info["task_conf"] = json.dumps(info["task_conf"])
+            else:
+                info["task_conf"] = json.dumps({})
             Cache.hmset(item["key"], info)
             return item
         else:

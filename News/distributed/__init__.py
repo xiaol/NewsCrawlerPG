@@ -31,7 +31,7 @@ class RedisMetaSpider(RedisSpider):
             else:
                 assert isinstance(config, dict)
                 sid = config.get("source_id")
-                config["meta"]["monitor_id"] = sid
+                config["meta"]["source_id"] = sid
                 url = self.g_url_from_config(config)
                 meta = self.g_meta_from_config(config)
                 if url:
