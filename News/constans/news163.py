@@ -1,13 +1,14 @@
 # coding: utf-8
 
 SPIDER_NAME = "spider:news:news163"
+COMMENT_SPIDER_NAME = "spider:news:comment:news163"
 CRAWL_SOURCE = u"网易新闻"
 ARTICLE_URL_TEMPLATE = "http://j.news.163.com/hy/doc.s?" \
                        "info=2&type=10&hash=&docid={docid}"
 COMMENT_URL_TEMPLATE = "http://comment.news.163.com/api/v1" \
                        "/products/a2869674571f77b5a0867c3d71db5856/" \
                        "threads/{docid}/comments/newList?" \
-                       "offset={offset}&limit=30"
+                       "offset={offset}&limit={count_per_page}"
 DOMAIN = "http://j.news.163.com"
 START_URL_PREFIX = "http://j.news.163.com/hy/newshot.s?"
 CHANNELS = {

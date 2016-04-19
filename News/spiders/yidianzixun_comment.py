@@ -8,14 +8,14 @@ from bs4 import BeautifulSoup
 
 from News.distributed import RedisSpider
 from News.items import CommentItem
-from News.constans.yidianzixun import COMMENT_SPIDER_NAME
+from News.constans.yidianzixun import COMMENT_SPIDER_NAME, SPIDER_NAME
 
 
 class YidianzixunCommentsSpider(RedisSpider):
 
     name = COMMENT_SPIDER_NAME
     base_url = 'http://www.yidianzixun.com/api/q/?path=contents/comments&version=999999&docid={docid}&count={count_per_page}'
-    crawl_source = u'一点资讯'
+    crawl_source = SPIDER_NAME
     default_comment_count = 100
 
     def parse(self, response):
