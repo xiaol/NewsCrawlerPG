@@ -34,28 +34,29 @@ class ToutiaoCommentsSpider(RedisSpider):
         if not docid_match:
             return
         docid = docid_match.group(0).split('/')[-2]
+        fk_docid = response.meta.get('docid', response.url)
         offset = int(dict_data['data']['comment_pagination']['offset']) + page_count
         for comment in comments:
-            yield self._parse_comment(comment, response)
+            yield self._parse_comment(comment, fk_docid)
         if offset < total_count:
-            yield self.g_comment_request(docid=docid, offset=offset)
+            yield self.g_comment_request(docid=docid, fk_docid=fk_docid, offset=offset)
 
-    def g_comment_request(self, docid, offset, count_per_page=100):
+    def g_comment_request(self, docid, offset, fk_docid, count_per_page=100):
         url = self.base_url.format(group_id=docid, count_per_page=count_per_page, offset_count=offset)
         return Request(
             url=url,
             callback=self.parse,
-            meta={'docid': docid, 'offset': offset}
+            meta={'docid': fk_docid, 'offset': offset}
         )
 
-    def _parse_comment(self, comment, docid):
+    def _parse_comment(self, comment, fk_docid):
         item = CommentItem()
         item['comment_id'] = comment['id']
         item['nickname'] = comment['user_name']
         item['love'] = comment['digg_count']
         item['create_time'] = str_from_timestamp(comment['create_time'])
         item['profile'] = comment['user_profile_image_url']
-        item['docid'] = docid
+        item['docid'] = fk_docid
         if comment['text'].strip():
             item['content'] = comment['text']
             return item
