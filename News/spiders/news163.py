@@ -58,7 +58,7 @@ class News163(NewsSpider):
         news["original_source"] = article.get("source", "")
 
         news["comment_url"] = self._g_comment_url(docid=news["docid"])
-        news["comment_queue"] = self.COMMENT_SPIDER_NAME + ":start_urls"
+        news["comment_queue"] = COMMENT_SPIDER_NAME + ":start_urls"
         news["start_url"] = start_url
         news["start_meta_info"] = meta
         return news
