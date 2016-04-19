@@ -285,7 +285,7 @@ class PrintPipeline(object):
             # print("nickname: %s" % item["nickname"])
             # print("profile: %s" % item['profile'])
             # print("love: %s" % item['love'])
-            # print("docid: %s" % item['docid'])
+            print("docid: %s" % item['docid'])
             # print("\n")
 
     def test_comment_spider(self, item):

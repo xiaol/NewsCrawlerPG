@@ -27,6 +27,7 @@ class News163CommentsSpider(RedisSpider):
         if count == 0: return
         offset = response.meta.get('offset', 0)
         docid = self.pattern_docid.search(response.url).group(0).split('/')[-2]
+        fk_docid = response.meta.get('docid', response.url)
         comment_ids = dict_data['commentIds']
         comments = dict_data['comments']
         if not comments:
@@ -34,21 +35,21 @@ class News163CommentsSpider(RedisSpider):
         for comment_id in comment_ids:
             comment_id = comment_id.split(',')[-1]
             if comment_id in comments:
-                item = self._parse_comment(comments[comment_id], docid)
+                item = self._parse_comment(comments[comment_id], fk_docid)
                 if item is not None:
                     yield item
         if offset + len(comments) < count:
-            yield self.g_comment_request(docid, offset + len(comments))
+            yield self.g_comment_request(docid, offset + len(comments), fk_docid)
 
-    def g_comment_request(self, docid, offset, count_per_page=default_comment_count):
+    def g_comment_request(self, docid, offset, fk_docid, count_per_page=default_comment_count):
         url = COMMENT_URL_TEMPLATE.format(docid=docid, count_per_page=count_per_page, offset=offset)
         return Request(
             url=url,
             callback=self.parse,
-            meta={'docid': docid, 'offset': offset}
+            meta={'docid': fk_docid, 'offset': offset}
         )
 
-    def _parse_comment(self, comment, docid):
+    def _parse_comment(self, comment, fk_docid):
         item = CommentItem()
         user = comment['user']
         item['comment_id'] = comment['commentId']
@@ -56,7 +57,7 @@ class News163CommentsSpider(RedisSpider):
         item['love'] = comment['vote']
         item['create_time'] = comment['createTime']
         item['profile'] = user.get('avatar', '')
-        item['docid'] = docid
+        item['docid'] = fk_docid
         if comment['content'].strip():
             item['content'] = comment['content']
             return item

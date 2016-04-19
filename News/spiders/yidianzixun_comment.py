@@ -27,31 +27,32 @@ class YidianzixunCommentsSpider(RedisSpider):
         if 'total' in dict_data and dict_data['total'] == 0:
             return
         docid = dict_data['docid']
+        fk_docid = response.meta.get('docid', response.url)
         for comment in comments:
-            yield self._parse_comment(comment, response)
+            yield self._parse_comment(comment, fk_docid)
         last_comment_id = comment['comment_id']
-        yield self.g_comment_request(docid=docid, last_comment_id=last_comment_id, count_per_page=100)
+        yield self.g_comment_request(docid=docid, fk_docid=fk_docid, last_comment_id=last_comment_id, count_per_page=100)
 
 
 
-    def g_comment_request(self, docid, last_comment_id='', count_per_page=100):
+    def g_comment_request(self, docid, fk_docid, last_comment_id='', count_per_page=100):
         url = self.base_url.format(docid=docid, count_per_page=count_per_page)
         if last_comment_id:
             url += '&last_comment_id=%s' % last_comment_id
         return Request(
             url=url,
             callback=self.parse,
-            meta={'docid': docid}
+            meta={'docid': fk_docid}
         )
 
-    def _parse_comment(self, comment, docid):
+    def _parse_comment(self, comment, fk_docid):
         item = CommentItem()
         item['comment_id'] = comment['comment_id']
         item['nickname'] = comment['nickname']
         item['love'] = comment['like']
         item['create_time'] = comment['createAt']
         item['profile'] = comment['profile']
-        item['docid'] = docid
+        item['docid'] = fk_docid
         if comment['comment'].strip():
             item['content'] = comment['comment']
             return item
