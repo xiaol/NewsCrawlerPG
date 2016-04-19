@@ -8,6 +8,7 @@ from News.items import get_default_news
 from News.constans.wechat import SPIDER_NAME
 from News.constans.wechat import CRAWL_SOURCE
 from News.extractor import WechatExtractor
+from News.scheduler import wechat
 
 _logger = logging.getLogger(__name__)
 
@@ -31,6 +32,13 @@ class Wechat(NewsSpider):
             # "News.pipelines.PrintPipeline": 304,
         },
     }
+
+    def g_url_from_config(self, config):
+        meta = config["meta"]
+        source_name = meta["source_name"].split(";")
+        name = source_name[0]
+        oid = source_name[1]
+        return wechat.get_start_url(name, oid)
 
     def g_news_meta_list(self, response):
         results = load_json_data(response.body)

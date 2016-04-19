@@ -103,6 +103,7 @@ def g_wechat_urls(sources):
     for key, value in sources.items():
         oid = key[0]
         name = key[1]
+        value["source_name"] = name + ";" + oid
         url = wechat.get_start_url(name=name, oid=oid)
         if url:
             print("oid: %s\nname: %s\nurl: %s\n" % (oid, name, url))
