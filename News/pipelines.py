@@ -250,7 +250,8 @@ class PrintPipeline(object):
                 for key, value in i.items():
                     print("%s: %s" % (key, value))
             print("\n")
-            self.test_comment_spider(item)
+            if item.get("comment_queue") and item.get("comment_url"):
+                self.test_comment_spider(item)
 
         elif isinstance(item, CommentItem):
             print("*" * 50)
