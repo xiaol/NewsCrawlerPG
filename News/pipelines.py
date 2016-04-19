@@ -112,6 +112,25 @@ class CachePipeline(object):
         return item
 
 
+class MonitorPipeline(object):
+    """ 添加监控信息　存入 redis
+
+    redis key: spider:news:monitor:20160419
+    存入爬虫源的id
+    """
+    def process_item(self, item, spider):
+        if not isinstance(item, NewsItem):
+            return item
+        info = item.get("start_meta_info")
+        if info and info.get("monitor_id"):
+            sid = info["monitor_id"]
+            now = datetime.now()
+            date_string = now.strftime("%Y%m%d")
+            key = "spider:news:monitor:" + date_string
+            Cache.lpush(key, sid)
+        return item
+
+
 class StartMetaPipeline(object):
     """ 处理传入的 meta 信息 """
 

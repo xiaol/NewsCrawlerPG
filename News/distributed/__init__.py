@@ -29,6 +29,9 @@ class RedisMetaSpider(RedisSpider):
             except Exception:
                 self.log("json load error from %s" % self.redis_key)
             else:
+                assert isinstance(config, dict)
+                sid = config.get("id")
+                config["meta"]["monitor_id"] = sid
                 url = self.g_url_from_config(config)
                 meta = self.g_meta_from_config(config)
                 if url:
