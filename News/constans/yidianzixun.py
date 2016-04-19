@@ -21,6 +21,21 @@ CHANNELS = {
     "健康": {"channel": 24},
     "科学": {"channel": 25},
     "美女": {"channel": 26},
+    "娱乐": {"channel": 3},
+    "国际": {"channel": 9},
+    "育儿": {"channel": 16},
+    "旅游": {"channel": 12},
+    "历史": {"channel": 13},
+    "游戏": {"channel": 11},
+    "美文": {"channel": 19},
+    "美食": {"channel": 15},
+    "养生": {"channel": 17},
+    "奇闻趣事": {"channel": 31},
+    "宠物": {"channel": 32},
+    "美剧": {"channel": 30},
+    "英剧": {"channel": 30},
+    "韩剧": {"channel": 30},
+    "日剧": {"channel": 30},
 }
 
 CATEGORIES = {
