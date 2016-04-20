@@ -50,40 +50,40 @@ CONTENT_PARAM = {
 
 CATEGORIES = {
     u"国际": {
-        u"独家报道": ("http://m.huanqiu.com/lm.html?id=33", None),
-        u"环球要闻": ("http://m.huanqiu.com/lm.html?id=32", None),
-        u"海外看中国": ("http://m.huanqiu.com/lm.html?id=35", None),
+        u"独家报道": ("http://m.huanqiu.com/lm.html?id=33", 9, 60, 4),
+        u"环球要闻": ("http://m.huanqiu.com/lm.html?id=32", 9, 60, 4),
+        u"海外看中国": ("http://m.huanqiu.com/lm.html?id=35", 29, 60, 4),
     },
     u"国内": {
         u"时政要闻": ("http://m.huanqiu.com/lm.html?id=37", None),
-        u"社会万象": ("http://m.huanqiu.com/lm.html?id=113", 2),
+        u"社会万象": ("http://m.huanqiu.com/lm.html?id=113", 2, 60, 3),
         # u"图说中国": ("http://m.huanqiu.com/lm.html?id=92", None), # 待解析
     },
     u"军事": {
-        u"国际军事": ("http://m.huanqiu.com/lm.html?id=41", None),
-        u"中国军事": ("http://m.huanqiu.com/lm.html?id=40", 8),
-        u"军事评论": ("http://m.huanqiu.com/lm.html?id=90", None),
-        u"航天航空": ("http://m.huanqiu.com/lm.html?id=91", None),
+        u"国际军事": ("http://m.huanqiu.com/lm.html?id=41", 8, 60, 3),
+        u"中国军事": ("http://m.huanqiu.com/lm.html?id=40", 8, 60, 3),
+        u"军事评论": ("http://m.huanqiu.com/lm.html?id=90", 8, 60, 3),
+        u"航天航空": ("http://m.huanqiu.com/lm.html?id=91", 8, 60, 3),
         # u"图说军事": ("http://m.huanqiu.com/lm.html?id=43", None),　# 待解析
     },
     u"台海": {
-        u"两岸时政": ("http://m.huanqiu.com/lm.html?id=44", None),
-        u"台湾社会": ("http://m.huanqiu.com/lm.html?id=46", None),
+        u"两岸时政": ("http://m.huanqiu.com/lm.html?id=44", 29, 60, 3),
+        u"台湾社会": ("http://m.huanqiu.com/lm.html?id=46", 29, 60, 3),
     },
     u"评论": {
         u"环球今日评": ("http://m.huanqiu.com/lm.html?id=138", None),
         u"国际评论": ("http://m.huanqiu.com/lm.html?id=18", None),
     },
     u"财经": {
-        u"中国财经": ("http://m.huanqiu.com/lm.html?id=29", None),
-        u"国际财讯": ("http://m.huanqiu.com/lm.html?id=48", None),
+        u"中国财经": ("http://m.huanqiu.com/lm.html?id=29", 7, 60, 3),
+        u"国际财讯": ("http://m.huanqiu.com/lm.html?id=48", 7, 60, 3),
     },
     u"科技": {
-        u"科技资讯": ("http://m.huanqiu.com/lm.html?id=53", None),
+        u"科技资讯": ("http://m.huanqiu.com/lm.html?id=53", 22, 60, 4),
         # u"科技产品": ("http://m.huanqiu.com/lm.html?id=54", None), # 待解析
     },
     u"博览": {
-        u"环球博览": ("http://m.huanqiu.com/lm.html?id=114", None),
+        u"环球博览": ("http://m.huanqiu.com/lm.html?id=114", 9, 60, 4),
         # u"有真相": ("http://m.huanqiu.com/lm.html?id=111", None),　# 待解析
     },
     u"娱乐": {
@@ -94,8 +94,8 @@ CATEGORIES = {
         # u"体坛酷图": ("http://m.huanqiu.com/lm.html?id=88", None), # 待解析
     },
     u"健康": {
-        u"保健养生": ("http://m.huanqiu.com/lm.html?id=66", None),
-        u"健康资讯": ("http://m.huanqiu.com/lm.html?id=137", None),
+        u"保健养生": ("http://m.huanqiu.com/lm.html?id=66", 24, 60, 4),
+        u"健康资讯": ("http://m.huanqiu.com/lm.html?id=137", 24, 60, 4),
     },
     u"图片": {
         # u"图说世界": ("http://m.huanqiu.com/lm.html?id=62", None), # 待解析

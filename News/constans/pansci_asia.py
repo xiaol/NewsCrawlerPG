@@ -55,7 +55,7 @@ CATEGORIES = {
         u"环境与我": ("http://pansci.asia/archives/category/type/environment", None),
         u"生命奥秘": ("http://pansci.asia/archives/category/type/lifescience", 14, 60, 3),
         u"科学传播": ("http://pansci.asia/archives/category/type/scicomm", 14, 60, 3),
-        u"科技前沿": ("http://pansci.asia/archives/category/type/technology", None),
+        u"科技前沿": ("http://pansci.asia/archives/category/type/technology", 4, 60, 3),
     }
 }
 

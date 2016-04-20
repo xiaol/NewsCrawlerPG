@@ -20,6 +20,11 @@ URL_XPATH = "entityurl"
 # SUMMARY_XPATH = ""
 # THUMB_XPATH = ""
 
+TITLE_PARAM = {
+    'method': 'find_all',
+    'params': {'name': 'div', 'attrs': {'id': 'artibodyTitle'}}
+}
+
 POST_DATE_PARAM = {
     "method": "find_all",
     "params": {"name": "span", "attrs": {"id": "pubtime_baidu"}},
@@ -39,9 +44,9 @@ CONTENT_PARAM = {
 CATEGORIES = {
     u"新闻": {
         # http://news.hexun.com/domestic/
-        u"国内": ("http://open.tool.hexun.com/MongodbNewsService/newsListPageByJson.jsp?id=108511056&s=30&cp=1", None),
+        u"国内": ("http://open.tool.hexun.com/MongodbNewsService/newsListPageByJson.jsp?id=108511056&s=30&cp=1", 7, 30, 3),
         # http://news.hexun.com/international/
-        u"国际": ("http://open.tool.hexun.com/MongodbNewsService/newsListPageByJson.jsp?id=108511065&s=30&cp=1", None)
+        u"国际": ("http://open.tool.hexun.com/MongodbNewsService/newsListPageByJson.jsp?id=108511065&s=30&cp=1", 7, 30, 3)
     }
 }
 

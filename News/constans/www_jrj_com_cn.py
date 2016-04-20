@@ -43,16 +43,16 @@ CONTENT_PARAM = {
 
 CATEGORIES = {
     u"财经频道": {
-        u"国内财经": ("http://finance.jrj.com.cn/list/guoneicj.shtml", None),
-        u"国际财经": ("http://finance.jrj.com.cn/list/guojicj.shtml", None),
-        u"产业动态": ("http://finance.jrj.com.cn/list/industrynews.shtml", None),
-        u"微学院": ("http://finance.jrj.com.cn/list/weixx.shtml", None),
+        u"国内财经": ("http://finance.jrj.com.cn/list/guoneicj.shtml", 7, 60, 3),
+        u"国际财经": ("http://finance.jrj.com.cn/list/guojicj.shtml", 7, 60, 3),
+        u"产业动态": ("http://finance.jrj.com.cn/list/industrynews.shtml", 7, 60, 3),
+        u"微学院": ("http://finance.jrj.com.cn/list/weixx.shtml", 20, 60, 3),
     },
     u"观点": {
-        u"名家专栏": ("http://opinion.jrj.com.cn/list/mjzl.shtml", None),
-        u"谈股论金": ("http://opinion.jrj.com.cn/list/tglj.shtml", None),
-        u"经济时评": ("http://opinion.jrj.com.cn/list/jjsp.shtml", None),
-        u"产业观察": ("http://opinion.jrj.com.cn/list/cygc.shtml", None),
+        u"名家专栏": ("http://opinion.jrj.com.cn/list/mjzl.shtml", 20, 60, 3),
+        u"谈股论金": ("http://opinion.jrj.com.cn/list/tglj.shtml", 20, 60, 3),
+        u"经济时评": ("http://opinion.jrj.com.cn/list/jjsp.shtml", 7, 60, 4),
+        u"产业观察": ("http://opinion.jrj.com.cn/list/cygc.shtml", 7, 60, 3),
     },
 }
 

@@ -42,17 +42,17 @@ CONTENT_PARAM = {
 
 
 CATEGORIES = {
-    u"汽车": ("http://www.ifanr.com/category/special/intelligentcar", None),
-    u"观察": ("http://www.ifanr.com/category/special/news", None),
-    u"新创": ("http://www.ifanr.com/category/special/innovation", None),
-    u"商业": ("http://www.ifanr.com/category/special/business", None),
-    u"MindTalk": ("http://www.ifanr.com/category/special/mindtalk", None),
-    u"产品": ("http://www.ifanr.com/category/special/product", None),
-    u"AppSolution": ("http://www.ifanr.com/app", None),
-    u"游戏": ("http://www.ifanr.com/category/special/game-special", None),
-    u"现场": ("http://www.ifanr.com/category/special/live", None),
-    u"译文": ("http://www.ifanr.com/category/special/%E8%AF%91%E6%96%87", None),
-    u"故事": ("http://www.ifanr.com/category/special/story", None),
-    u"清单": ("http://www.ifanr.com/category/special/%E6%B8%85%E5%8D%95", None),
+    u"汽车": ("http://www.ifanr.com/category/special/intelligentcar", 5, 60, 4),
+    u"观察": ("http://www.ifanr.com/category/special/news", 22, 60, 4),
+    u"新创": ("http://www.ifanr.com/category/special/innovation", 4, 60, 5),
+    u"商业": ("http://www.ifanr.com/category/special/business", 4, 60, 4),
+    u"MindTalk": ("http://www.ifanr.com/category/special/mindtalk", 22, 60, 4),
+    u"产品": ("http://www.ifanr.com/category/special/product", 4, 60, 4),
+    u"AppSolution": ("http://www.ifanr.com/app", 4, 60, 4),
+    u"游戏": ("http://www.ifanr.com/category/special/game-special", 11, 60, 5),
+    u"现场": ("http://www.ifanr.com/category/special/live", 4, 60, 4),
+    u"译文": ("http://www.ifanr.com/category/special/%E8%AF%91%E6%96%87", 4, 60, 3),
+    u"故事": ("http://www.ifanr.com/category/special/story", 22, 60, 4),
+    u"清单": ("http://www.ifanr.com/category/special/%E6%B8%85%E5%8D%95", 4, 60, 3),
 }
 

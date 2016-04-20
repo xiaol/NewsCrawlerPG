@@ -50,8 +50,8 @@ CATEGORIES = {
     },
     u"潮流": {
         u"男装秀场": ("http://shows.gq.com.cn/", None),
-        u"搭配指南": ("http://www.gq.com.cn/fashion/dressing-tips/", None),
-        u"流行趋势": ("http://www.gq.com.cn/fashion/trends/", None),
+        u"搭配指南": ("http://www.gq.com.cn/fashion/dressing-tips/", 10, 40, 4),
+        u"流行趋势": ("http://www.gq.com.cn/fashion/trends/", 10, 40, 3),
         u"必备单品": ("http://www.gq.com.cn/fashion/item/", None),
         u"时尚圈": ("http://www.gq.com.cn/fashion/news/", None),
     },
@@ -64,7 +64,7 @@ CATEGORIES = {
     u"汽车": {
         u"玩家": ("http://www.gq.com.cn/auto/player/", None),
         u"装备": ("http://www.gq.com.cn/auto/equipment/", None),
-        u"探索": ("http://www.gq.com.cn/auto/discover/", None),
+        u"探索": ("http://www.gq.com.cn/auto/discover/", 5, 40, 3),
         u"印象": ("http://www.gq.com.cn/auto/image/", None),
     },
     u"数码": {

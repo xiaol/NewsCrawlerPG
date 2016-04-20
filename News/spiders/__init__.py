@@ -247,6 +247,9 @@ class ConfigNewsSpider(NewsSpider):
         )
         news["publish_time"] = post_date
         news["content"] = content
+        # test code
+        # news['title'] = title
+        # end test code
         yield news
 
 

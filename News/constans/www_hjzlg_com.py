@@ -20,6 +20,10 @@ URL_XPATH = "./a/@href"
 # SUMMARY_XPATH = ""
 # THUMB_XPATH = ""
 
+TITLE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "center"},
+}
 CONTENT_PARAM = {
     "method": "find_all",
     "params": {"name": "div", "attrs": {"id": "size"}},

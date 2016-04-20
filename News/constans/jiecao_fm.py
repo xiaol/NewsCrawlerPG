@@ -21,6 +21,10 @@ URL_XPATH = "./a/@href"
 # SUMMARY_XPATH = ""
 THUMB_XPATH = "./a/img/@src"
 
+TITLE_PARAM = {
+    'method': 'find_all',
+    'params': {'name': 'h3'}
+}
 POST_DATE_PARAM = {
     "method": "find_all",
     "params": {"name": "div", "attrs": {"class": "artname pd5"}},
@@ -38,6 +42,6 @@ CONTENT_PARAM = {
 
 
 CATEGORIES = {
-    u"首页": ("http://jiecao.fm/news/", None),
+    u"首页": ("http://jiecao.fm/news/", 21, 20, 3),
 }
 
