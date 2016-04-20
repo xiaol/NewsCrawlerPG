@@ -38,7 +38,13 @@ CLEAN_CONTENT_AFTER_PARAM = {
     'method': 'find_all',
     'params': {'name': 'a', 'attrs': {'href': 'http://www.ifeng.com/'}}
 }
-# EXTRACTOR_CLS = "News.extractor."
+CLEAN_PARAM_LIST = [
+    {
+        'method': 'find_all',
+        'params': {'name': 'p', 'attrs': {'class': 'detailPic'}}
+    }
+]
+EXTRACTOR_CLS = "News.extractor.ifeng"
 
 # CUSTOM_SETTINGS = {
 #

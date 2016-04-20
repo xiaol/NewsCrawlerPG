@@ -57,15 +57,15 @@ class ItemHandler(RequestHandler):
         html_code_list = list()
         for i in news:
             html = ''
-            html += '<h2>' + i['title'] + '</h2>'
+            html += '<center><h2>' + i['title'] + '</h2></center>'
             html += '<p>' + i['pub_time'] + '</p>'
             html += '<p>' + i['pub_name'] + '</p>'
             content = json.loads(i['content'])
             for j in content:
                 if 'txt' in j:
-                    html += '<p>' + j['txt'].encode('utf8') + '</p>'
+                    html += '<p>&nbsp&nbsp&nbsp&nbsp&nbsp' + j['txt'].encode('utf8') + '</p>'
                 elif 'img' in j:
-                    html += '<img src="' + j['img'].encode('utf8') + '">'
+                    html += '<center><img src="' + j['img'].encode('utf8') + '"></center>'
             html_code_list.append(html)
         self.render('item.html', data=html_code_list)
 
