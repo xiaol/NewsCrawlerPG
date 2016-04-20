@@ -9,7 +9,7 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
-DEBUG = False 
+DEBUG = False
 
 BOT_NAME = 'News'
 
@@ -92,9 +92,9 @@ if DEBUG:
         "News.pipelines.CleanPipeline": 300,
         "News.pipelines.CompatiblePipeline": 301,
         "News.pipelines.CachePipeline": 302,
-        "News.pipelines.MonitorPipeline": 313,
-        "News.pipelines.PrintPipeline": 324,
-        # 'News.test.pipelines.PostgrePipeline': 303,
+        "News.pipelines.StartMetaPipeline": 313,
+        "News.pipelines.MonitorPipeline": 314,
+        "News.pipelines.PrintPipeline": 315,
     }
     LOG_LEVEL = "INFO"
     REDIS_URL = 'redis://localhost:6379'
@@ -107,8 +107,8 @@ else:
         "News.pipelines.CleanPipeline": 300,
         "News.pipelines.CompatiblePipeline": 301,
         "News.pipelines.CachePipeline": 302,
-        "News.pipelines.MonitorPipeline": 313,
-        "News.pipelines.StartMetaPipeline": 314,
+        "News.pipelines.StartMetaPipeline": 313,
+        "News.pipelines.MonitorPipeline": 314,
         'News.pipelines.StorePipeline': 315,
     }
     LOG_LEVEL = "INFO"
