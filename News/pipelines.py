@@ -10,7 +10,7 @@ from scrapy.exceptions import DropItem
 
 from News.items import NewsItem, CommentItem
 from News.utils.cache import Cache
-from News.utils.util import clean_date_time
+from News.utils.util import clean_date_time, replace_a_href_to_ours
 from News.constans import NEWS_STORE_API, CACHE_SOURCE_KEY, COMMENT_STORE_API
 
 _logger = logging.getLogger(__name__)
@@ -21,6 +21,7 @@ class CompatiblePipeline(object):
 
     - 修改内容中 text 为 txt
     - 为 item 添加 image_number
+    - 修改 txt 中的 a 标签为自己的链接
 
     """
 
@@ -35,8 +36,9 @@ class CompatiblePipeline(object):
     def _change_text_txt(content):
         changed = list()
         for item in content:
-            for key, value in item.iteritems():
+            for key, value in item.items():
                 if key == "text":
+                    value = replace_a_href_to_ours(value)
                     changed.append({"txt": value})
                 else:
                     changed.append({key: value})

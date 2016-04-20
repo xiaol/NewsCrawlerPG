@@ -62,7 +62,7 @@ class YiDianZiXun(NewsSpider):
                 news["crawl_url"] = response.url
                 news["key"] = g_cache_key(news["crawl_url"])
             body = response.body_as_unicode().encode("utf-8")
-            extractor = YiDianZiXunExtractor(body)
+            extractor = YiDianZiXunExtractor(body, response.url)
             title, post_date, post_user, summary, content = extractor()
             news["content"] = content
             news["content_html"] = response.body
