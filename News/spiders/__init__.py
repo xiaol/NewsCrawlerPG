@@ -250,6 +250,7 @@ class ConfigNewsSpider(NewsSpider):
         # test code
         # news['title'] = title
         # end test code
+        news["content_html"] = response.body
         yield news
 
 

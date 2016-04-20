@@ -29,7 +29,7 @@ class NewsItem(Item):
     original_url = Field()  # 源网址 str
     crawl_source = Field()  # 抓取地址 str
     original_source = Field()   # 源地址 str
-
+    content_html = Field()  # 文章原始内容
     # image_list = Field()    # 新闻 meta 图片列表， 只为向下兼容
 
     key = Field()   # redis key, base64 for crawl_url
@@ -47,7 +47,7 @@ def get_default_news(title="", tags=None, summary="", publish_time="",
                      channel="", category="", crawl_url="", original_url="",
                      crawl_source="", original_source="",
                      key="", start_url="", start_meta_info=None,
-                     comment_queue="", comment_url=""):
+                     comment_queue="", comment_url="", content_html=""):
     news = NewsItem()
     news["title"] = title
     news["tags"] = list() if tags is None else tags
@@ -68,6 +68,7 @@ def get_default_news(title="", tags=None, summary="", publish_time="",
     news["original_url"] = original_url
     news["crawl_source"] = crawl_source
     news["original_source"] = original_source
+    news["content_html"] = content_html
     # news["image_list"] = list() if image_list is None else image_list
     news["key"] = key
     news["start_url"] = start_url

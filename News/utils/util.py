@@ -128,3 +128,17 @@ def get_document(url):
         return ""
 
 
+_A_PATTERN = r'<a href="([^<]*)">([^<]*)</a>'
+_P_A_PATTERN = re.compile(_A_PATTERN)
+
+
+def replace_a_href_to_ours(string):
+    for m in _P_A_PATTERN.finditer(string):
+        href = m.group(1)
+        text = m.group(2)
+        if not href or not text or not href.startswith("http"):
+            continue
+        url = "http://deeporiginalx.com/search.html#sw=" + text
+        string = string.replace(href, url)
+    return string
+

@@ -79,6 +79,7 @@ class News163(NewsSpider):
         content, image_number = extractor.extract()
         news["content"] = content
         news["image_number"] = image_number
+        news["content_html"] = response.body
         if len(news["content"]) == 0:
             return
         else:

@@ -6,9 +6,11 @@
 
 from importlib import import_module
 import time
+import json
 from News.constans import SPIDER_CONFIG_NAMES
 from News.scheduler import g_start_request, g_queue_name
 from News.utils.cache import Cache
+from db_spider_sources import SOURCE
 
 __author__ = "Sven Lee"
 __copyright__ = "Copyright 2016-2019, ShangHai Lie Ying"
@@ -57,8 +59,36 @@ def push_request_to_queue(queue, request):
     Cache.lpush(queue, request)
 
 
+def get_schedule_queue():
+    """ 从数据库调度源获取调度信息，生成调度队列 """
+    schedule_queue = list()
+    for source in SOURCE:
+        request = dict()
+        request["source_id"] = source[0]
+        request["source_url"] = source[6]
+        meta = dict()
+        meta["channel_id"] = source[2]
+        meta["channel_name"] = source[1]
+        meta["source_name"] = source[3]
+        meta["task_conf"] = {}
+        request["meta"] = meta
+        r = json.dumps(request)
+        queue_name = source[4]
+        frequency = source[5]
+        schedule_queue.append(
+            {
+                "time": int(time.time()),
+                "queue": queue_name,
+                "interval": frequency*60,
+                "request": r,
+                "running": False,
+            }
+        )
+    return schedule_queue
+
+
 def run():
-    scheduler_info_list = g_all_scheduler_info()
+    scheduler_info_list = get_schedule_queue()
     while 1:
         for index, info in enumerate(scheduler_info_list):
             now = int(time.time())
