@@ -61,6 +61,7 @@ class TouTiao(NewsSpider):
         extractor = TouTiaoExtractor(body)
         title, post_date, post_user, summary, content = extractor()
         news["content"] = content
+        news["content_html"] = response.body
         yield news
 
     @staticmethod

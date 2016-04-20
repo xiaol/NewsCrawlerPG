@@ -247,6 +247,7 @@ class ConfigNewsSpider(NewsSpider):
         )
         news["publish_time"] = post_date
         news["content"] = content
+        news["content_html"] = response.body
         yield news
 
 

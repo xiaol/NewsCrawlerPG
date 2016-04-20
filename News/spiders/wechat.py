@@ -75,6 +75,7 @@ class Wechat(NewsSpider):
         news["original_source"] = post_user
         news["original_url"] = news["crawl_url"]
         news["content"] = content
+        news["content_html"] = response.body
         yield news
 
     @staticmethod

@@ -90,7 +90,7 @@ class CachePipeline(object):
             "pub_time": item["publish_time"],
             "pub_name": item["original_source"] or item["crawl_source"],
             "pub_url": item["original_url"] or item["crawl_url"],
-            "content_html": "",
+            "content_html": item.get("content_html", ""),
             "synopsis": item["summary"],
             "img_num": item["image_number"],
             "up": item["up"],
