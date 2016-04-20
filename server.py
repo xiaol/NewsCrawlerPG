@@ -3,13 +3,15 @@
 """
 解析与打分 web 服务
 """
-
+import json
 import os
 import tornado.ioloop
 import tornado.web
+from redis import Redis
 from tornado.web import RequestHandler
 
 from News.service import extract_service, score_service
+from News.utils.cache import Cache
 
 
 class ExtractorHandler(RequestHandler):
@@ -45,6 +47,29 @@ class ScoreHandler(RequestHandler):
         self.write(results)
 
 
+class ItemHandler(RequestHandler):
+
+    def get(self, *args, **kwargs):
+        r = Redis()
+        new_keys = r.keys('news*')
+        new_keys = new_keys[:10]
+        news = [r.hgetall(i) for i in new_keys]
+        html_code_list = list()
+        for i in news:
+            html = ''
+            html += '<h2>' + i['title'] + '</h2>'
+            html += '<p>' + i['pub_time'] + '</p>'
+            html += '<p>' + i['pub_name'] + '</p>'
+            content = json.loads(i['content'])
+            for j in content:
+                if 'txt' in j:
+                    html += '<p>' + j['txt'].encode('utf8') + '</p>'
+                elif 'img' in j:
+                    html += '<img src="' + j['img'].encode('utf8') + '">'
+            html_code_list.append(html)
+        self.render('item.html', data=html_code_list)
+
+
 def make_app():
     settings = {
         "template_path": "web",
@@ -53,6 +78,7 @@ def make_app():
     return tornado.web.Application([
         (r"/", ExtractorHandler),
         (r"/score", ScoreHandler),
+        (r'/item', ItemHandler)
     ], **settings)
 
 if __name__ == "__main__":
