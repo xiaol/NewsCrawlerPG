@@ -308,6 +308,20 @@ class BaseExtractor(object):
         self.news_cleaned_html = self.news_clean(self.base_cleaned_html)
         self.soup = BeautifulSoup(self.news_cleaned_html, "lxml", from_encoding=self.encoding)
         self.base_url = url
+        if self.base_url:
+            self.clean_a_tag_attrs(self.soup, self.base_url)
+
+    @staticmethod
+    def clean_a_tag_attrs(root, base_url):
+        """clean a tag attrs and convert relative link to absolute link
+
+            only keep href attrs
+
+        :param root: bs4 tag or soup
+        :param base_url: base url
+        """
+        for a_tag in root.find_all("a"):
+            a_tag.attrs = {"href": urljoin(base_url, a_tag.get("href", ""))}
 
     @classmethod
     def base_clean(cls, document, cleaner=None):
