@@ -1,7 +1,10 @@
 # coding: utf-8
 
+from datetime import datetime
 from functools import wraps
 import logging
+
+from News.utils.cache import Cache
 
 _logger = logging.getLogger(__name__)
 
@@ -34,7 +37,26 @@ def monitor(error):
     return decorator
 
 
+def redis_monitor_news(key, value):
+    Cache.lpush(key, value)
+    Cache.expire(key, 1296000)  # 60*60*24*15
 
+
+def _get_today_string():
+    now = datetime.now()
+    return now.strftime("%Y%m%d")
+
+
+def monitor_news_in_pipeline(sid):
+    tail = _get_today_string()
+    key = "spider:news:monitor:pipeline:" + tail
+    redis_monitor_news(key, value=sid)
+
+
+def monitor_news_store_success(sid):
+    tail = _get_today_string()
+    key = "spider:news:monitor:store:success:" + tail
+    redis_monitor_news(key, value=sid)
 
 
 

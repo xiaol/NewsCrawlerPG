@@ -12,6 +12,8 @@ from News.items import NewsItem, CommentItem
 from News.utils.cache import Cache
 from News.utils.util import clean_date_time, replace_a_href_to_ours
 from News.constans import NEWS_STORE_API, CACHE_SOURCE_KEY, COMMENT_STORE_API
+from News.monitor import monitor_news_in_pipeline
+from News.monitor import monitor_news_store_success
 
 _logger = logging.getLogger(__name__)
 
@@ -126,11 +128,7 @@ class MonitorPipeline(object):
         info = item.get("start_meta_info")
         if info and info.get("source_id"):
             sid = info["source_id"]
-            now = datetime.now()
-            date_string = now.strftime("%Y%m%d")
-            key = "spider:news:monitor:" + date_string
-            Cache.lpush(key, sid)
-            Cache.expire(key, 1296000)  # 60*60*24*15
+            monitor_news_in_pipeline(sid)
         return item
 
 
@@ -176,6 +174,10 @@ class StorePipeline(object):
         if r.status_code <= 300:
             content = json.loads(r.content)
             if content["key"] == "succes":
+                info = item.get("start_meta_info")
+                if info and info.get("source_id"):
+                    sid = info["source_id"]
+                    monitor_news_store_success(sid)
                 _logger.info("store %s success" % item["key"])
             else:
                 _logger.error("store failed: %s" % content["key"])
