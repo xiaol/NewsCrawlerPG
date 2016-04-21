@@ -9,16 +9,17 @@ __email__ = "lee1300394324@gmail.com"
 __date__ = "2016-03-31 17:02"
 
 SPIDER_NAME = "spider:news:www_ifanr_com"
-START_URLS = ["http://www.ifanr.com/category/special/news"]
+# START_URLS = ["http://www.ifanr.com/category/special/news"]
 # CLASS_NAME = ""
 CRAWL_SOURCE = u"爱范儿"
 DOMAIN = "www.ifanr.com"
 
 # AJAX = True
-ITEMS_XPATH = "//div[@class='new-post-item-content']"
-TITLE_XPATH = ".//h2/a/@title"
-URL_XPATH = ".//h2/a/@href"
-SUMMARY_XPATH = "./p/text()"
+# ITEMS_XPATH = "//div[@class='c-card-article__thumbnail']"
+ITEMS_XPATH = "//a[@class='c-card-article__link']"
+TITLE_XPATH = "./text()"
+URL_XPATH = "./@href"
+# SUMMARY_XPATH = "./p/text()"
 # THUMB_XPATH = "./a/@href"
 
 TITLE_PARAM = {
