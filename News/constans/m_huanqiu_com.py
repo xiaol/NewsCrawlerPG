@@ -40,6 +40,16 @@ CONTENT_PARAM = {
     "method": "find_all",
     "params": {"name": "div", "attrs": {"id": "text"}},
 }
+CLEAN_CONTENT_AFTER_PARAM = {
+    'method': 'find_all',
+    'params': {'name': 'div', 'attrs': {'class': 'reTopics'}}
+}
+CLEAN_PARAM_LIST = [
+    {
+        'method': 'find_all',
+        'params': {'name': 'img', 'attrs': {'src': 'http://a3.peoplecdn.cn/a7f5e844e54faf51ad7656367cf08c2a.jpg'}}
+    }
+]
 
 # EXTRACTOR_CLS = "News.extractor."
 
