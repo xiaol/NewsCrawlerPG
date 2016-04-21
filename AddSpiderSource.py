@@ -122,25 +122,26 @@ def _g_spider_source(categories, source_name, sources, prefix=""):
 
 
 if __name__ == '__main__':
-    path = raw_input("please input spider config path: ").strip()
-    cfg = import_module(path)
-    spider_name = cfg.SPIDER_NAME
-    categories = cfg.CATEGORIES
-    source_name = cfg.CRAWL_SOURCE
-    spider_queue_name = g_queue_name(spider_name)
-
-    sources = g_spider_source(categories, source_name)
     while 1:
-        print("""
-        1. add spider queue
-        2. add spider source
-        """)
-        command = int(raw_input("please input command index: ").strip())
-        if command == 1:
-            add_spider_queue(spider_name, spider_queue_name)
-        elif command == 2:
-            add_spider_source(sources, spider_queue_name)
-        else:
-            break
+        path = raw_input("please input spider config path: ").strip()
+        cfg = import_module(path)
+        spider_name = cfg.SPIDER_NAME
+        categories = cfg.CATEGORIES
+        source_name = cfg.CRAWL_SOURCE
+        spider_queue_name = g_queue_name(spider_name)
+
+        sources = g_spider_source(categories, source_name)
+        while 1:
+            print("""
+            1. add spider queue
+            2. add spider source
+            """)
+            command = int(raw_input("please input command index: ").strip())
+            if command == 1:
+                add_spider_queue(spider_name, spider_queue_name)
+            elif command == 2:
+                add_spider_source(sources, spider_queue_name)
+            else:
+                break
 
 
