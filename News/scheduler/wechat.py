@@ -5,7 +5,6 @@ import random
 import requests
 from bs4 import BeautifulSoup
 
-from News.constans.wechat import START_URL_PREFIX
 from News.constans.useragent import WEB_USER_AGENT
 
 
@@ -44,7 +43,6 @@ def get_start_url(name, oid):
             results = query(name, page)
         for item in results:
             if item["name"] == name and item["oid"] == oid:
-                tail = item["href"][:4] + "js" + item["href"][4:] + "&page=1"
-                return START_URL_PREFIX + tail
+                return item["href"]
         time.sleep(random.randint(50, 150)/10.0)
     return None
