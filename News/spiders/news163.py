@@ -5,14 +5,14 @@ from scrapy import Request
 from News.spiders import NewsSpider
 from News.utils.util import load_json_data, news_already_exists, g_cache_key
 from News.utils.util import str_from_timestamp
-from News.items import NewsItem, CommentItem
+from News.items import NewsItem
 from News.constans.news163 import SPIDER_NAME
 from News.constans.news163 import COMMENT_SPIDER_NAME
 from News.constans.news163 import CRAWL_SOURCE
 from News.constans.news163 import ARTICLE_URL_TEMPLATE
 from News.constans.news163 import COMMENT_URL_TEMPLATE
 from News.constans.news163 import DOMAIN
-from News.extractor.news163 import News163Extractor
+from News.extractor import News163Extractor
 
 _logger = logging.getLogger(__name__)
 
@@ -75,11 +75,11 @@ class News163(NewsSpider):
     def parse_news(self, response):
         news = response.meta["news"]
         data = load_json_data(response.body)
-        extractor = News163Extractor(data["content"], response.url, news=news)
-        content, image_number = extractor.extract()
+        body = "<div>" + data["content"] + "</div>"
+        extractor = News163Extractor(body)
+        title, post_date, post_user, summary, content = extractor()
         news["content"] = content
-        news["image_number"] = image_number
-        news["content_html"] = response.body
+        news["content_html"] = body
         if len(news["content"]) == 0:
             return
         else:
