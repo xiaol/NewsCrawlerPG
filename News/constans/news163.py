@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from urllib import urlencode
+
 SPIDER_NAME = "spider:news:news163"
 COMMENT_SPIDER_NAME = "spider:news:comment:news163"
 CRAWL_SOURCE = u"网易新闻"
@@ -37,7 +39,7 @@ CHANNELS = {
     29: {"channel": "动漫"},  # 动漫
     30: {"channel": 17},    # 养生
     31: {"channel": "教育"},  # 教育
-    32: {"channel": 13},    # 历史
+    32: {"channel": "历史"},    # 13
     66: {"channel": "图集"},  # 图集
     98: {"channel": "专题"},  # 专题
 }
@@ -76,5 +78,45 @@ CITIES = "中卫,七台河,巫山,红河,三明,崇明,白城,池州,西沙,莆�
          "长寿,扬州,南沙岛,桂林,昌都,十堰,张掖,云阳,开县,玉溪,日喀则,常德,临夏,陵水," \
          "邢台,乌兰浩特,德州,平顶山,嘉兴,柳州,眉山,昌吉,定安,东丽,黄山,周口,岳阳," \
          "揭阳,南充,保山,贵港,萍乡,六盘水,安康,涪陵,奉节,孝感,那曲,安庆,吴忠,璧山,曲靖"
+
+_URL_TEMPLATE = "http://j.news.163.com/hy/newshot.s?newchannel=news&limit=100&channel={0}&offset=0"
+CATEGORIES = {
+    u"娱乐": (_URL_TEMPLATE.format(2), 3, 30),
+    u"体育": (_URL_TEMPLATE.format(3), 6, 30),
+    u"财经": (_URL_TEMPLATE.format(4), 7, 30),
+    u"科技": (_URL_TEMPLATE.format(5), 4, 30),
+    u"汽车": (_URL_TEMPLATE.format(6), 5, 30),
+    u"女人": (_URL_TEMPLATE.format(7), None),
+    u"搞笑": (_URL_TEMPLATE.format(8), 21, 30),
+    u"美女": (_URL_TEMPLATE.format(9), 26, 30),
+    u"LOFTER": (_URL_TEMPLATE.format(11), None),
+    u"交友": (_URL_TEMPLATE.format(14), None),
+    u"星座": (_URL_TEMPLATE.format(16), None),
+    u"旅游": (_URL_TEMPLATE.format(17), 12, 30),
+    u"美食": (_URL_TEMPLATE.format(18), 15, 30),
+    u"数码": (_URL_TEMPLATE.format(19), None),
+    u"房产": (_URL_TEMPLATE.format(20), None),
+    u"家居": (_URL_TEMPLATE.format(21), None),
+    u"人文": (_URL_TEMPLATE.format(22), None),
+    u"亲子": (_URL_TEMPLATE.format(23), None),
+    u"游戏": (_URL_TEMPLATE.format(24), 11, 30),
+    u"减肥": (_URL_TEMPLATE.format(25), None),
+    u"手机": (_URL_TEMPLATE.format(26), None),
+    u"生活": (_URL_TEMPLATE.format(28), None),
+    u"动漫": (_URL_TEMPLATE.format(29), None),
+    u"养生": (_URL_TEMPLATE.format(30), 17, 30),
+    u"教育": (_URL_TEMPLATE.format(31), None),
+    u"图集": (_URL_TEMPLATE.format(66), None),
+    u"最具争议": (_URL_TEMPLATE.format(97), None),
+    u"专题": (_URL_TEMPLATE.format(98), None),
+    u"本地": {
+
+    }
+}
+
+__URL_LOCAL = "http://j.news.163.com/hy/newshot.s?newchannel=news&limit=100&channel=10&offset=0&"
+for city in CITIES.split(","):
+    params = {"city": city}
+    CATEGORIES[u"本地"][city] = (__URL_LOCAL+urlencode(params), 28, 60)
 
 
