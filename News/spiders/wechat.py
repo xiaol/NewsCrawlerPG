@@ -1,9 +1,12 @@
 # coding: utf-8
 
+import json
 import logging
-from scrapy import Request
+from urlparse import urljoin
+import re
 from News.spiders import NewsSpider
-from News.utils.util import load_json_data, g_cache_key, news_already_exists
+from News.utils.util import g_cache_key, news_already_exists
+from News.utils.util import str_from_timestamp
 from News.items import get_default_news
 from News.constans.wechat import SPIDER_NAME
 from News.constans.wechat import CRAWL_SOURCE
@@ -24,13 +27,6 @@ class Wechat(NewsSpider):
             "News.middlewares.RotateUserAgentMiddleware": None,
             "News.middlewares.WechatUserAgentMiddleware": 405,
         },
-        "ITEM_PIPELINES": {
-            "News.pipelines.CleanPipeline": 300,
-            "News.pipelines.CompatiblePipeline": 301,
-            "News.pipelines.CachePipeline": 302,
-            "News.pipelines.MongoPipeline": 303,
-            # "News.pipelines.PrintPipeline": 304,
-        },
     }
 
     def g_url_from_config(self, config):
@@ -40,23 +36,86 @@ class Wechat(NewsSpider):
         oid = source_name[1]
         return wechat.get_start_url(name, oid)
 
+    def clean_script_data(self, string):
+        mapping = [
+            ("\\\\", ""),
+            ("&quot;", '"'),
+            ("&amp;", "&"),
+        ]
+        for k, v in mapping:
+            string = string.replace(k, v)
+        return string
+
+    def clean_escape_data(self, string):
+        mapping = {
+            "&quot;": '"',
+            "&amp;": "&",
+            "&lt;": "<",
+            "&gt;": ">",
+            "&nbsp;": " ",
+            "&cent;": u"¢",
+            "&pound;": u"£",
+            "&yen;": u"¥",
+            "&euro;": u"€",
+            "&copy;": u"©",
+            "&reg;": u"®",
+        }
+        for k, v in mapping.items():
+            string = string.replace(k, v)
+        return string
+
     def g_news_meta_list(self, response):
-        results = load_json_data(response.body)
-        if results is None:
-            _logger.error("spider has been banned for %s" % response.request.url)
+        p = "var msgList = '([^']*)';"
+        match = re.search(p, response.body)
+        if match is None:
             return []
-        else:
-            return results["items"]
+        data = match.group(1)
+        if not data:
+            return []
+        data = self.clean_script_data(data)
+        data_list = json.loads(data)
+        data_list = data_list["list"]
+        articles = []
+        for item in data_list:
+            comm_msg_info = item["comm_msg_info"]
+            publish_time = str_from_timestamp(comm_msg_info["datetime"])
+            app_msg_ext_info = item["app_msg_ext_info"]
+            article = {
+                "title": app_msg_ext_info["title"],
+                "summary": app_msg_ext_info.get("digest", ""),
+                "crawl_url": app_msg_ext_info["content_url"],
+                "publish_time": publish_time,
+                "thumb": app_msg_ext_info.get("cover", ""),
+            }
+            articles.append(article)
+            for msg in app_msg_ext_info.get("multi_app_msg_item_list", []):
+                article = {
+                    "title": msg["title"],
+                    "summary": msg.get("digest", ""),
+                    "crawl_url": msg["content_url"],
+                    "publish_time": publish_time,
+                    "thumb": msg.get("cover", "")
+                }
+                articles.append(article)
+        for article in articles:
+            article["title"] = self.clean_escape_data(article["title"])
+            article["summary"] = self.clean_escape_data(article["summary"])
+            article["crawl_url"] = self.clean_escape_data(urljoin(response.url, article["crawl_url"]))
+            article["thumb"] = self.clean_escape_data(article["thumb"])
+            print(article["title"])
+            print(article["crawl_url"])
+        return articles
 
     def g_news_item(self, article, start_url="", meta=None):
-        crawl_url = self._g_crawl_url(article)
-        if not crawl_url: return None
+        crawl_url = article["crawl_url"]
         news = get_default_news(
             crawl_url=crawl_url,
             key=g_cache_key(crawl_url),
             crawl_source=CRAWL_SOURCE,
             start_url=start_url,
-            summary=self._g_crawl_summary(article),
+            summary=article["summary"],
+            publish_time=article["publish_time"],
+            title=article["title"],
             start_meta_info=meta,
         )
         return None if news_already_exists(news["key"]) else news
@@ -77,25 +136,6 @@ class Wechat(NewsSpider):
         news["content"] = content
         news["content_html"] = response.body
         yield news
-
-    @staticmethod
-    def _g_crawl_url(string):
-        domain = "http://weixin.sogou.com"
-        start = string.find("<url><![CDATA[")
-        end = string.find("]]></url>")
-        if start > 0 and end > 0:
-            return domain + string[start+14:end]
-        else:
-            return None
-
-    @staticmethod
-    def _g_crawl_summary(string):
-        start = string.find("<content><![CDATA[")
-        end = string.find("]]></content>")
-        if start > 0 and end > 0:
-            return string[start+18:end]
-        else:
-            return ""
 
 
 
