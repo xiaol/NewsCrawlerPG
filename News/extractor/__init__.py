@@ -481,12 +481,13 @@ class BaseExtractor(object):
         return self.exact_extract_tag(self.base_soup, param)
 
     def default_extract_post_date(self):
-        param = {
-            "method": "find_all",
-            "params": {"name": None, "attrs": dict()},
-            "nth": 0,
-        }
-        return self.exact_extract_post_date(param)
+        # param = {
+        #     "method": "find_all",
+        #     "params": {"name": None, "attrs": dict()},
+        #     "nth": 0,
+        # }
+        # return self.exact_extract_post_date(param)
+        return ""
 
     def extract_post_date(self, param=None):
         """新闻发布时间抽取
@@ -515,12 +516,13 @@ class BaseExtractor(object):
         return self.exact_extract_tag(self.base_soup, param)
 
     def default_extract_post_source(self):
-        param = {
-            "method": "find_all",
-            "params": {"name": None, "attrs": dict()},
-            "nth": 0,
-        }
-        return self.exact_extract_post_source(param)
+        # param = {
+        #     "method": "find_all",
+        #     "params": {"name": None, "attrs": dict()},
+        #     "nth": 0,
+        # }
+        # return self.exact_extract_post_source(param)
+        return ""
 
     def extract_post_source(self, param=None):
         """新闻来源抽取
@@ -757,3 +759,9 @@ class MovieSoonExtractor(GeneralExtractor):
         }
         time_string = self.exact_extract_tag(self.base_soup, time_tag)
         return "-".join([year, month, day]) + time_string
+
+
+class News163Extractor(GeneralExtractor):
+
+    pass
+
