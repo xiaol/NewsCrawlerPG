@@ -37,6 +37,6 @@ CONTENT_PARAM = {
 
 
 CATEGORIES = {
-    u"韩娱新闻": ("http://www.hjzlg.com/web5/YCMS_News.asp", None),
+    u"韩娱新闻": ("http://www.hjzlg.com/web5/YCMS_News.asp", 30, 120, 4),
 }
 
