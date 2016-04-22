@@ -32,7 +32,7 @@ CHANNELS_MAP = {
     25: {"name": u"科学", "online": 1},
     26: {"name": u"美女", "online": 1},
     27: {"name": u"杂志", "online": 0},
-    28: {"name": u"本地", "online": 0},
+    28: {"name": u"本地", "online": 1},
 
     # add new channels
     29: {"name": u"外媒", "online": 1},
