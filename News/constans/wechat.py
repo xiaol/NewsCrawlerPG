@@ -22,7 +22,11 @@ CRAWL_SOURCE = u"微信公众号"
 #     {"oid": "iwaimei", "name": u"外媒看天朝", "channel_id": "16"},
 # ]
 
-SOURCES = {
-    ("iwaimei", u"外媒看天朝"): {"channel": "16"},
+CATEGORIES = {
+    ("iwaimei", u"外媒看天朝"): {
+        "channel": "16",
+        "description": "",
+        "image": "",
+        "url": "",
+    },
 }
-
