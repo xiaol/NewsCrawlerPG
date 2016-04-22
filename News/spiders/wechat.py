@@ -102,8 +102,6 @@ class Wechat(NewsSpider):
             article["summary"] = self.clean_escape_data(article["summary"])
             article["crawl_url"] = self.clean_escape_data(urljoin(response.url, article["crawl_url"]))
             article["thumb"] = self.clean_escape_data(article["thumb"])
-            print(article["title"])
-            print(article["crawl_url"])
         return articles
 
     def g_news_item(self, article, start_url="", meta=None):
