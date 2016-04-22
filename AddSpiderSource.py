@@ -89,8 +89,34 @@ def add_spider_source(sources, spider_queue_name):
 
 def g_spider_source(categories, source_name):
     sources = []
-    _g_spider_source(categories, source_name, sources)
+    if isinstance(categories, list):
+        _g_special_spider_source(categories, sources)
+    elif isinstance(categories, dict):
+        _g_spider_source(categories, source_name, sources)
+    else:
+        pass
     return sources
+
+
+def _g_special_spider_source(categories, sources):
+    for item in categories:
+        source = dict()
+        oid = item["oid"]
+        name = item["name"]
+        source_name = name + ";" + oid
+        channel_id = item["channel_id"]
+        channel = CHANNELS_MAP[channel_id]
+        channel_name = channel["name"]
+        channel_status = channel["online"]
+
+        source["source_url"] = item["url"]
+        source["source_name"] = source_name
+        source["channel_name"] = channel_name
+        source["channel_id"] = channel_id
+        source["descr"] = item["description"]
+        source["frequency"] = item["frequency"]
+        source["status"] = channel_status
+        sources.append(source)
 
 
 def _g_spider_source(categories, source_name, sources, prefix=""):
@@ -124,7 +150,10 @@ def _g_spider_source(categories, source_name, sources, prefix=""):
 if __name__ == '__main__':
     while 1:
         path = raw_input("please input spider config path: ").strip()
-        cfg = import_module(path)
+        try:
+            cfg = import_module(path)
+        except ImportError:
+            break
         spider_name = cfg.SPIDER_NAME
         categories = cfg.CATEGORIES
         source_name = cfg.CRAWL_SOURCE
