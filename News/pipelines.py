@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 import pymongo
 import json
 import requests
@@ -64,7 +64,7 @@ class CleanPipeline(object):
             if len(item["content"]) == 0:
                 raise DropItem("content empty: %s" % item["crawl_url"])
             else:
-                dt = clean_date_time(item["publish_time"])
+                dt = self.clean_post_date(item["publish_time"])
                 if len(dt) == 0:
                     raise DropItem("extractor datetime error %s" % item["publish_time"])
                 else:
@@ -77,6 +77,16 @@ class CleanPipeline(object):
             return item
         else:
             return item
+
+    @staticmethod
+    def clean_post_date(string):
+        now = datetime.now() + timedelta(days=1)
+        dt = now.strftime("%Y-%m-%d %H:%M:%S")
+        time = clean_date_time(string)
+        if time > dt:
+            return ""
+        else:
+            return time
 
 
 class CachePipeline(object):
