@@ -22,7 +22,7 @@ class YiDianZiXun(NewsSpider):
         return data.get("result", [])
 
     def g_news_item(self, article, start_url="", meta=None):
-        if article["ctype"] != "news":
+        if article["ctype"] not in ["news", "picture"]:
             return None  # fixme: only support news now
         docid = article["docid"]
         crawl_url = self._g_article_url(article.get("url"), docid)
@@ -70,23 +70,11 @@ class YiDianZiXun(NewsSpider):
 
     @staticmethod
     def _g_article_url(url, docid):
-        if not url:
-            return ""
-        if url.startswith("http://www.yidianzixun.com"):
+        if not url or url.startswith("http://www.yidianzixun.com"):
             return ARTICLE_URL_TEMPLATE.format(docid=docid)
         else:
             # fixme add monitor here
             return ""
-
-    @staticmethod
-    def _g_image_url(url, news_id):
-        _image = "http://i1.go2yd.com/image.php?"
-        params = {
-            "url": url,
-            "news_id": news_id,
-            "type": "thumbnail_192x108"
-        }
-        return _image + urlencode(params)
 
     @staticmethod
     def _g_comment_url(docid):
