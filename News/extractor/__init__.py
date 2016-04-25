@@ -268,7 +268,7 @@ def choose_content_tag(root, mapping):
     min_score = score
     content_tags = root.find_all(name=["div", "article"])
     for child in content_tags:
-        c_score = mapping[child]
+        c_score = mapping.get(child, 0)
         if 0.6 * score < c_score <= min_score:
             min_score = c_score
             tag = child
