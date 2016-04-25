@@ -765,5 +765,8 @@ class MovieSoonExtractor(GeneralExtractor):
 
 class News163Extractor(GeneralExtractor):
 
-    pass
+    content_param = {
+        "method": "find_all",
+        "params": {"name": "div", "attrs": dict(id="inner_article")}
+    }
 

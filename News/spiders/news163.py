@@ -75,7 +75,7 @@ class News163(NewsSpider):
     def parse_news(self, response):
         news = response.meta["news"]
         data = load_json_data(response.body)
-        body = "<div>" + data["content"] + "</div>"
+        body = '<div id="inner_article">' + data["content"] + "</div>"
         extractor = News163Extractor(body)
         title, post_date, post_user, summary, content = extractor()
         news["content"] = content
