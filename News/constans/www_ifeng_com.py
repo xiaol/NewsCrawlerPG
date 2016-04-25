@@ -44,7 +44,7 @@ CLEAN_PARAM_LIST = [
         'params': {'name': 'p', 'attrs': {'class': 'detailPic'}}
     }
 ]
-EXTRACTOR_CLS = "News.extractor.ifeng"
+# EXTRACTOR_CLS = "News.extractor."
 
 # CUSTOM_SETTINGS = {
 #
