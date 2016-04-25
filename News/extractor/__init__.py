@@ -240,7 +240,7 @@ def score_dom_tree_new(root, mapping):
         if isinstance(child, Tag):
             mapping[child] = mapping.get(child, 0.0)
             if child.name == "img":
-                if child.find_parent("a"):
+                if child.find_parent("a"):  # 超链接图片
                     pass
                 else:
                     mapping[child] += 3.0
@@ -254,7 +254,9 @@ def score_dom_tree_new(root, mapping):
             mapping[root] += mapping[child]
         elif isinstance(child, NavigableString):
             parent = child.parent
-            if child.find_parent(name="a"):
+            if child.find_parent(name="a"):     # 超链接文本
+                pass
+            else:
                 mapping[parent] += len(unicode(child).strip())/40 * 3
         else:
             pass
