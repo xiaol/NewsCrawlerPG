@@ -1,6 +1,5 @@
 # coding: utf-8
 
-from scrapy import Request
 from News.spiders import NewsSpider
 from News.utils.util import load_json_data, g_cache_key, news_already_exists
 from News.utils.util import str_from_timestamp
@@ -18,7 +17,10 @@ class TouTiao(NewsSpider):
 
     def g_news_meta_list(self, response):
         data = load_json_data(response.body)
-        return data.get("data", [])
+        if data is not None:
+            return data.get("data", [])
+        else:
+            self.logger.warning("can't get data: url: %s body: %s" % (response.url, response.body_as_unicode()))
 
     def g_news_item(self, article, start_url="", meta=None):
         if article.get("has_video"):
@@ -64,13 +66,12 @@ class TouTiao(NewsSpider):
         news["content_html"] = response.body
         yield news
 
-    @staticmethod
-    def _g_crawl_url(article):
+    def _g_crawl_url(self, article):
         display_url = article["display_url"]
         if display_url.startswith(DOMAIN):
             return display_url
         else:
-            # fixme add monitor here
+            self.logger.warning("outer link: %s" % display_url)
             return ""
 
     @staticmethod

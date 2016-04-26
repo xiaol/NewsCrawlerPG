@@ -26,12 +26,12 @@ TITLE_PARAM = {
 
 POST_DATE_PARAM = {
     "method": "find_all",
-    "params": {"name": "p", "attrs": {"class": "p_time"}},
+    "params": {"name": "meta", "attrs": {"name": "og:time"}},
 }
 
 CONTENT_PARAM = {
     'method': 'find_all',
-    'params': {'name': 'div', 'attrs': {'class': 'main_content'}}
+    'params': {'name': 'div', 'attrs': {'id': 'main_content'}}
 }
 
 CLEAN_CONTENT_AFTER_PARAM = {

@@ -233,9 +233,8 @@ def score_dom_tree_new(root, mapping):
     if not isinstance(root, (Tag, BeautifulSoup)):
         return
     mapping[root] = 0.0
-    root_child_length = len(root.contents)
     root_p_length = len(root.find_all("p", recursive=False))
-    weight = 1 if root_p_length > 0 else root_p_length
+    weight = root_p_length if root_p_length > 0 else 1
     for child in root.children:
         if isinstance(child, Tag):
             mapping[child] = mapping.get(child, 0.0)
@@ -245,6 +244,7 @@ def score_dom_tree_new(root, mapping):
                 else:
                     mapping[child] += 3.0
             elif child.name == "p":
+                mapping[child] += 3.0
                 if child.img:
                     mapping[child] += 10.0
                 l = len(child.get_text().strip())

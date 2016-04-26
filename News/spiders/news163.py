@@ -1,6 +1,5 @@
 # coding: utf-8
 
-import logging
 from scrapy import Request
 from News.spiders import NewsSpider
 from News.utils.util import load_json_data, news_already_exists, g_cache_key
@@ -14,8 +13,6 @@ from News.constans.news163 import COMMENT_URL_TEMPLATE
 from News.constans.news163 import DOMAIN
 from News.extractor import News163Extractor
 
-_logger = logging.getLogger(__name__)
-
 
 class News163(NewsSpider):
 
@@ -25,7 +22,7 @@ class News163(NewsSpider):
     def g_news_meta_list(self, response):
         articles = load_json_data(response.body)
         if articles is None:
-            _logger.error("spider has been banned for %s" % response.request.url)
+            self.logger.error("spider has been banned for %s" % response.request.url)
             return []
         else:
             return articles
@@ -75,15 +72,18 @@ class News163(NewsSpider):
     def parse_news(self, response):
         news = response.meta["news"]
         data = load_json_data(response.body)
-        body = '<div id="inner_article">' + data["content"] + "</div>"
-        extractor = News163Extractor(body)
-        title, post_date, post_user, summary, content = extractor()
-        news["content"] = content
-        news["content_html"] = body
-        if len(news["content"]) == 0:
-            return
+        if data and data.get("content"):
+            body = '<div id="inner_article">' + data["content"] + "</div>"
+            extractor = News163Extractor(body)
+            title, post_date, post_user, summary, content = extractor()
+            news["content"] = content
+            news["content_html"] = body
+            if len(news["content"]) == 0:
+                return
+            else:
+                yield news
         else:
-            yield news
+            self.logger.warning("can't get content url: %s body: %s" % (response.url, response.body_as_unicode()))
 
     @staticmethod
     def _g_crawl_url(path):
