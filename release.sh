@@ -1,16 +1,22 @@
 #!/usr/bin/env bash
 
+echo 'kill all spider process'
 ps -ewf | grep spider:news | awk '{print $2}' | xargs kill -9
 
+echo 'remove pyc'
 find -name *.pyc | xargs rm -f
 
+echo 'update project from git'
 git pull
 
-
+echo 'clean logs and eggs in scrapyd'
 rm -rf /etc/scrapyd/logs/News/*
 rm -rf /etc/scrapyd/eggs/News/*
 
+echo 'deploy project News'
+scrapyd-deploy local
 
+echo 'start spiders'
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:comment:news163
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:comment:toutiao
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:comment:yidianzixun
