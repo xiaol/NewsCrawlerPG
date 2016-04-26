@@ -248,7 +248,7 @@ def score_dom_tree_new(root, mapping):
                 if child.img:
                     mapping[child] += 10.0
                 l = len(child.get_text().strip())
-                mapping[child] += l/40.0 * 6 * weight
+                mapping[child] += l/40 * 6 * weight
             else:
                 score_dom_tree_new(child, mapping)
             mapping[root] += mapping[child]
