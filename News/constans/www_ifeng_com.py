@@ -26,7 +26,7 @@ TITLE_PARAM = {
 
 POST_DATE_PARAM = {
     "method": "find_all",
-    "params": {"name": "p", "attrs": {"class": "p_time"}},
+    "params": {"name": "meta", "attrs": {"name": "og:time"}},
 }
 
 CONTENT_PARAM = {
