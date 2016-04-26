@@ -10,7 +10,7 @@ import tornado.web
 from redis import Redis
 from tornado.web import RequestHandler
 
-from News.service import extract_service, score_service
+from News.service import extract_service, score_service, GeneralExtractor
 from News.utils.cache import Cache
 
 
@@ -31,6 +31,23 @@ class ExtractorHandler(RequestHandler):
             "content": content,
         }
         self.write(results)
+
+
+class ExtractByHTMLHandler(RequestHandler):
+    def post(self, *args, **kwargs):
+        html = self.get_argument('content_html')
+        print html
+        extractor = GeneralExtractor(html)
+        title, post_date, post_user, summary, content = extractor()
+        results = {
+            "title": title,
+            "post_date": post_date,
+            "post_user": post_user,
+            "summary": summary,
+            "content": content,
+        }
+        self.write(results)
+
 
 
 class ScoreHandler(RequestHandler):
@@ -77,6 +94,7 @@ def make_app():
     }
     return tornado.web.Application([
         (r"/", ExtractorHandler),
+        (r'/htmlextract', ExtractByHTMLHandler),
         (r"/score", ScoreHandler),
         (r'/item', ItemHandler)
     ], **settings)

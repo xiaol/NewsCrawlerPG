@@ -23,15 +23,21 @@ TITLE_PARAM = {
     'method': 'find_all',
     'params': {'name': 'h1', 'attrs': {'class': 'entry-title'}}
 }
-
 CONTENT_PARAM = {
     'method': 'find_all',
-    'params': {'name': 'div', 'attrs': {'class': 'left_zw'}}
+    'params': {'name': 'div', 'attrs': {'id': 'cont_1_1_2'}}
 }
-
 POST_DATE_PARAM = {
     "method": "find_all",
     "params": {"name": "div", "attrs": {"class": "left-t"}},
+}
+CLEAN_CONTENT_BEFORE_PARAM = {
+    'method': 'find_all',
+    'params': {'name': 'div', 'attrs': {'id': 'tupian_div'}}
+}
+CLEAN_CONTENT_AFTER_PARAM = {
+    'method': 'find_all',
+    'params': {'name': 'div', 'attrs': {'class': 'left_name'}}
 }
 
 # EXTRACTOR_CLS = "News.extractor."
