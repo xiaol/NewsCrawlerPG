@@ -31,7 +31,7 @@ POST_DATE_PARAM = {
 
 CONTENT_PARAM = {
     'method': 'find_all',
-    'params': {'name': 'div', 'attrs': {'class': 'main_content'}}
+    'params': {'name': 'div', 'attrs': {'id': 'main_content'}}
 }
 
 CLEAN_CONTENT_AFTER_PARAM = {
