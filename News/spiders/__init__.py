@@ -154,7 +154,7 @@ class ConfigNewsSpider(NewsSpider):
         """
         body = load_json_data(response.body_as_unicode())
         if body is None:
-            self.logger.warning("can't get data")
+            self.logger.warning("can't get data: url: %s body: %s" % (response.url, response.body_as_unicode()))
             return []
         items = self.get_dict_value(body, self.items_xpath)
         self.logger.info("item len: %s" % len(items))

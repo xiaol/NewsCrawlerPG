@@ -19,7 +19,7 @@ class YiDianZiXun(NewsSpider):
         if data is not None:
             return data.get("result", [])
         else:
-            self.logger.warning("can't get data")
+            self.logger.warning("can't get data: url: %s body: %s" % (response.url, response.body_as_unicode()))
 
     def g_news_item(self, article, start_url="", meta=None):
         if article["ctype"] not in ["news", "picture"]:

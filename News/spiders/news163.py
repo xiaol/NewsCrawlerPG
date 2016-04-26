@@ -83,7 +83,7 @@ class News163(NewsSpider):
             else:
                 yield news
         else:
-            self.logger.warning("can't get content")
+            self.logger.warning("can't get content url: %s body: %s" % (response.url, response.body_as_unicode()))
 
     @staticmethod
     def _g_crawl_url(path):
