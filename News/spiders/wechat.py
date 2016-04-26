@@ -1,7 +1,6 @@
 # coding: utf-8
 
 import json
-import logging
 from urlparse import urljoin
 import re
 from News.spiders import NewsSpider
@@ -12,8 +11,6 @@ from News.constans.wechat import SPIDER_NAME
 from News.constans.wechat import CRAWL_SOURCE
 from News.extractor import WechatExtractor
 from News.scheduler import wechat
-
-_logger = logging.getLogger(__name__)
 
 
 class Wechat(NewsSpider):

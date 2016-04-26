@@ -14,15 +14,12 @@
 import abc
 import six
 from urlparse import urljoin
-import logging
 from scrapy import Request
 from News.distributed import RedisMetaSpider
 from News.items import get_default_news
 from News.utils.util import g_cache_key, news_already_exists, load_json_data
 from News.extractor import GeneralExtractor
 from News.utils import load_object
-
-_logger = logging.getLogger(__name__)
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -125,7 +122,7 @@ class ConfigNewsSpider(NewsSpider):
         """
         base = response.url
         items = response.xpath(self.items_xpath)
-        _logger.info("items len: %s" % len(items))
+        self.logger.info("items len: %s" % len(items))
         articles = list()
         for item in items:
             article = dict()
@@ -144,7 +141,7 @@ class ConfigNewsSpider(NewsSpider):
                 article["url"] = urljoin(base, url[0])
                 articles.append(article)
             else:
-                _logger.warn("title: %s, url: %s" % ("".join(title), "".join(url)))
+                self.logger.warning("title: %s, url: %s" % ("".join(title), "".join(url)))
         return articles
 
     def g_ajax_news_meta_list(self, response):
@@ -156,8 +153,11 @@ class ConfigNewsSpider(NewsSpider):
         :rtype: list[dict]
         """
         body = load_json_data(response.body_as_unicode())
+        if body is None:
+            self.logger.warning("can't get data")
+            return []
         items = self.get_dict_value(body, self.items_xpath)
-        _logger.info("item len: %s" % len(items))
+        self.logger.info("item len: %s" % len(items))
         articles = list()
         for item in items:
             article = dict()

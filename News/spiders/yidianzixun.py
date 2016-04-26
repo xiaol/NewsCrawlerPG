@@ -1,8 +1,5 @@
 # coding: utf-8
 
-from urllib import urlencode
-
-from scrapy import Request
 from News.spiders import NewsSpider
 from News.utils.util import load_json_data, g_cache_key, news_already_exists
 from News.items import get_default_news
@@ -19,7 +16,10 @@ class YiDianZiXun(NewsSpider):
 
     def g_news_meta_list(self, response):
         data = load_json_data(response.body)
-        return data.get("result", [])
+        if data is not None:
+            return data.get("result", [])
+        else:
+            self.logger.warning("can't get data")
 
     def g_news_item(self, article, start_url="", meta=None):
         if article["ctype"] not in ["news", "picture"]:
@@ -68,12 +68,11 @@ class YiDianZiXun(NewsSpider):
             news["content_html"] = response.body
             yield news
 
-    @staticmethod
-    def _g_article_url(url, docid):
+    def _g_article_url(self, url, docid):
         if not url or url.startswith("http://www.yidianzixun.com"):
             return ARTICLE_URL_TEMPLATE.format(docid=docid)
         else:
-            # fixme add monitor here
+            self.logger.warning("outer link: %s" % url)
             return ""
 
     @staticmethod
