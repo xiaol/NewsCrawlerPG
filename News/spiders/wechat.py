@@ -105,6 +105,7 @@ class Wechat(NewsSpider):
         crawl_url = article["crawl_url"]
         news = get_default_news(
             crawl_url=crawl_url,
+            docid=crawl_url,
             key=g_cache_key(crawl_url),
             crawl_source=CRAWL_SOURCE,
             start_url=start_url,
