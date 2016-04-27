@@ -12,7 +12,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.automap import automap_base
 
 from News.scheduler import g_queue_name
-from News.constans import CHANNELS_MAP
+from News.scheduler.sources import g_spider_source
 
 __author__ = "Sven Lee"
 __copyright__ = "Copyright 2016-2019, ShangHai Lie Ying"
@@ -24,7 +24,6 @@ __date__ = "2016-04-13 10:34"
 
 
 POSTGRES = "postgresql://postgres:ly@postgres&2015@120.27.163.25/BDP"
-# POSTGRES = "postgresql://postgres:lee@localhost/test"
 DBBase = automap_base()
 engine = create_engine(POSTGRES, convert_unicode=True)
 DBBase.prepare(engine, reflect=True)
@@ -85,66 +84,6 @@ def add_spider_source(sources, spider_queue_name):
             session.rollback()
         else:
             print("insert %s into spider source list" % source["descr"])
-
-
-def g_spider_source(categories, source_name):
-    sources = []
-    if isinstance(categories, list):
-        _g_special_spider_source(categories, sources)
-    elif isinstance(categories, dict):
-        _g_spider_source(categories, source_name, sources)
-    else:
-        pass
-    return sources
-
-
-def _g_special_spider_source(categories, sources):
-    for item in categories:
-        source = dict()
-        oid = item["oid"]
-        name = item["name"]
-        source_name = name + ";" + oid
-        channel_id = item["channel_id"]
-        channel = CHANNELS_MAP[channel_id]
-        channel_name = channel["name"]
-        channel_status = channel["online"]
-
-        source["source_url"] = item["url"]
-        source["source_name"] = source_name
-        source["channel_name"] = channel_name
-        source["channel_id"] = channel_id
-        source["descr"] = item["description"]
-        source["frequency"] = item["frequency"]
-        source["status"] = channel_status
-        sources.append(source)
-
-
-def _g_spider_source(categories, source_name, sources, prefix=""):
-    for k, v in categories.items():
-        if isinstance(v, dict):
-            _g_spider_source(v, source_name, sources, prefix=prefix+k+"/")
-        elif isinstance(v, tuple):
-            if v[1] is None:
-                continue
-            source = dict()
-            url = v[0]
-            channel_id = v[1]
-            channel = CHANNELS_MAP[channel_id]
-            channel_name = channel["name"]
-            channel_status = channel["online"]
-            frequency = v[2]
-            descr = prefix + k
-
-            source["source_url"] = url
-            source["source_name"] = source_name
-            source["channel_name"] = channel_name
-            source["channel_id"] = channel_id
-            source["descr"] = descr
-            source["frequency"] = frequency
-            source["status"] = channel_status
-            sources.append(source)
-        else:
-            raise ValueError("wrong format")
 
 
 if __name__ == '__main__':
