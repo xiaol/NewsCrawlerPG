@@ -8,6 +8,7 @@ from News.utils.util import g_cache_key, news_already_exists
 from News.utils.util import str_from_timestamp
 from News.items import get_default_news
 from News.constans.wechat import SPIDER_NAME
+from News.constans.wechat import COMMENT_SPIDER_NAME
 from News.constans.wechat import CRAWL_SOURCE
 from News.extractor import WechatExtractor
 from News.scheduler import wechat
@@ -105,6 +106,7 @@ class Wechat(NewsSpider):
         crawl_url = article["crawl_url"]
         news = get_default_news(
             crawl_url=crawl_url,
+            docid=crawl_url,
             key=g_cache_key(crawl_url),
             crawl_source=CRAWL_SOURCE,
             start_url=start_url,
@@ -112,6 +114,8 @@ class Wechat(NewsSpider):
             publish_time=article["publish_time"],
             title=article["title"],
             start_meta_info=meta,
+            comment_url=self._g_comment_url(crawl_url),
+            comment_queue=COMMENT_SPIDER_NAME+":start_urls"
         )
         return None if news_already_exists(news["key"]) else news
 
@@ -132,5 +136,13 @@ class Wechat(NewsSpider):
         news["content_html"] = response.body
         yield news
 
-
+    @staticmethod
+    def _g_comment_url(url):
+        prefix = "http://mp.weixin.qq.com/mp/getcomment"
+        try:
+            index = url.index("?")
+        except ValueError:
+            return ""
+        else:
+            return prefix+url[index:]
 

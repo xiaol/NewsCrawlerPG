@@ -1,6 +1,7 @@
 # coding: utf-8
 
 SPIDER_NAME = "spider:news:wechat"
+COMMENT_SPIDER_NAME = "spider:news:comment:wechat"
 CRAWL_SOURCE = u"微信公众号"
 
 # SOURCES = [
@@ -29,6 +30,15 @@ CATEGORIES = [
         "channel_id": 29,
         "frequency": 60*5,
         "description": u"外媒如何看中国？不用翻墙，这里都有。",
+        "image": "",
+        "url": "",
+    },
+    {
+        "oid": "geekpark",
+        "name": u"极客公园",
+        "channel_id": 4,
+        "frequency": 60*5,
+        "description": u"科技创新者的大本营。汇聚优秀的产品报道、评测视频和高质量的线下活动。",
         "image": "",
         "url": "",
     },

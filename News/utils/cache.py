@@ -1,4 +1,5 @@
-from redis import Redis
+# coding: utf-8
+
 from redis import from_url
 
 from News.settings import REDIS_URL
@@ -6,7 +7,7 @@ from News.settings import REDIS_URL
 
 class Cache(object):
 
-    r = from_url(REDIS_URL) if REDIS_URL else Redis()
+    r = from_url(REDIS_URL, max_connections=3)
 
     @classmethod
     def exist(cls, key):
