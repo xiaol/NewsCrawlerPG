@@ -56,18 +56,18 @@ def add_spider_queue(spider_name, queue_name):
 def get_spider_source_max_id():
     session = DBSession()
     spider_sources = session.query(SpiderSource).order_by(SpiderSource.id.desc())
-    urls = []
+    url_source_names = []
     max_id = spider_sources[0].id
     for source in spider_sources:
-        urls.append(source.source_url)
-    return max_id, urls
+        url_source_names.append((source.source_url, source.source_name))
+    return max_id, url_source_names
 
 
 def add_spider_source(sources, spider_queue_name):
     for source in sources:
-        max_id, urls = get_spider_source_max_id()
-        if source["source_url"] in urls:
-            print("%s already in spider source list" % source["source_url"])
+        max_id, url_source_names = get_spider_source_max_id()
+        if (source["source_url"], source["source_name"]) in url_source_names:
+            print("%s already in spider source list %s" % (source["source_name"], source["source_url"]))
             continue
         spider_source = SpiderSource(**source)
         spider_source.id = max_id + 1
@@ -83,7 +83,7 @@ def add_spider_source(sources, spider_queue_name):
             print(e.message)
             session.rollback()
         else:
-            print("insert %s into spider source list" % source["descr"])
+            print("insert %s into spider source list %s" % (source["source_name"], source["descr"]))
 
 
 if __name__ == '__main__':
