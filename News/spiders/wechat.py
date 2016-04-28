@@ -3,6 +3,7 @@
 import json
 from urlparse import urljoin
 import re
+from datetime import datetime
 from News.spiders import NewsSpider
 from News.utils.util import g_cache_key, news_already_exists
 from News.utils.util import str_from_timestamp
@@ -77,6 +78,11 @@ class Wechat(NewsSpider):
         for item in data_list:
             comm_msg_info = item["comm_msg_info"]
             publish_time = str_from_timestamp(comm_msg_info["datetime"])
+            today = datetime.today().date()
+            today_string = today.strftime("%Y-%m-%d %H:%M:%S")
+            if publish_time < today_string:
+                self.logger.info("%s < %s" % (publish_time, today_string))
+                continue
             app_msg_ext_info = item["app_msg_ext_info"]
             article = {
                 "title": app_msg_ext_info["title"],

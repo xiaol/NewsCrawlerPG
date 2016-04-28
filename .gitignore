@@ -10,3 +10,5 @@ project.egg-info/*
 setup.py
 twistd.pid
 logs/*
+db_spider_sources.py
+
