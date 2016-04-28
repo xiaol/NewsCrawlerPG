@@ -38,12 +38,21 @@ CLEAN_CONTENT_AFTER_PARAM = {
     'method': 'find_all',
     'params': {'name': 'a', 'attrs': {'href': 'http://www.ifeng.com/'}}
 }
-CLEAN_PARAM_LIST = [
-    {
-        'method': 'find_all',
-        'params': {'name': 'p', 'attrs': {'class': 'detailPic'}}
-    }
-]
+# CLEAN_PARAM_LIST = [
+#     {
+#         'method': 'find_all',
+#         'params': {'name': 'img', 'attrs': {'src': 'http://y1.ifengimg.com/a/2016_17/7a693f8f44eed11.png'}}
+#     },
+#     {
+#         'method': 'find_all',
+#         'params': {'name': 'img', 'attrs': {'src': 'http://y3.ifengimg.com/a/2016_18/d0254ba2c68c284.jpg'}}
+#     },
+#     {
+#         'method': 'find_all',
+#         'params': {'name': 'img', 'attrs': {'src': 'http://y1.ifengimg.com/a/2016_17/b6a2b8c3970a6f9.jpg'}}
+#     },
+#
+# ]
 # EXTRACTOR_CLS = "News.extractor."
 
 # CUSTOM_SETTINGS = {
