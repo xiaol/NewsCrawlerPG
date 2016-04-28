@@ -20,6 +20,7 @@ echo 'start spiders'
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:comment:news163
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:comment:toutiao
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:comment:yidianzixun
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:comment:wechat
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:i_cri_cn
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:jandan_net
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:jiecao_fm
