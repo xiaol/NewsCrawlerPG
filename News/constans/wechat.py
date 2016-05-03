@@ -881,7 +881,7 @@ CATEGORIES = [
     {
         "oid": "tsjunshi81",
         "name": u"鹰眼图说军事",
-        "channel_id": 22,
+        "channel_id": 8,
         "frequency": 60*6,
         "description": u"鹰眼图说军事为大家提供最新全球军事动态,中国武器装备、钓鱼岛和南海局势等最新热点军事新闻及图片资讯.",
         "image": "",
