@@ -122,7 +122,7 @@ class CachePipeline(object):
         if item.get("district"):
             obj["district"] = item["district"]
         Cache.hmset(item["key"], obj)
-        Cache.expire(item["key"], 604800)   # 60*60*24*7
+        Cache.expire(item["key"], 259200)   # 60*60*24*3
         return item
 
 
