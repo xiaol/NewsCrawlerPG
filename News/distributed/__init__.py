@@ -37,7 +37,7 @@ class RedisMetaSpider(RedisSpider):
                 if url:
                     return self.make_requests_from_url_meta(url, meta)
                 else:
-                    _logger.error("generate start url error")
+                    _logger.error("generate start url error: %s" % config["meta"].get("source_name", ""))
 
     def g_url_from_config(self, config):
         return config["source_url"]
