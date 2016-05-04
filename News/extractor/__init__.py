@@ -653,14 +653,15 @@ class GeneralExtractor(BaseExtractor):
                 elif self.only_contain_tags(child, names=["a"]):
                     string = str(child)
                     string = remove_tag_name(string, [child.name])
-                    if string:
+                    if string.strip():
                         content.append(get_content_item("text", string))
                 elif child.name == "div" or child.img or child.br:
                     self.parse_content_tag(child, content)
                 elif child.get_text().strip():
                     string = str(child)
                     string = remove_tag_name(string, [child.name])
-                    content.append(get_content_item("text", string))
+                    if string.strip():
+                        content.append(get_content_item("text", string))
 
     def only_contain_tags(self, tag, names):
         for child in tag.children:
