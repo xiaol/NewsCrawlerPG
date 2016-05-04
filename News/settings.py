@@ -89,8 +89,8 @@ DOWNLOAD_HANDLERS = {'s3': None}
 
 if DEBUG:
     ITEM_PIPELINES = {
-        "News.pipelines.CleanPipeline": 300,
-        "News.pipelines.CompatiblePipeline": 301,
+        "News.pipelines.CompatiblePipeline": 300,
+        "News.pipelines.CleanPipeline": 301,
         "News.pipelines.CachePipeline": 302,
         "News.pipelines.StartMetaPipeline": 313,
         "News.pipelines.MonitorPipeline": 314,
@@ -104,8 +104,8 @@ if DEBUG:
     MONGO_COLLECTION = "news"
 else:
     ITEM_PIPELINES = {
-        "News.pipelines.CleanPipeline": 300,
-        "News.pipelines.CompatiblePipeline": 301,
+        "News.pipelines.CompatiblePipeline": 300,
+        "News.pipelines.CleanPipeline": 301,
         "News.pipelines.CachePipeline": 302,
         "News.pipelines.StartMetaPipeline": 313,
         "News.pipelines.MonitorPipeline": 314,
