@@ -9,9 +9,10 @@ import logging
 from scrapy.exceptions import DropItem
 
 from News.items import NewsItem, CommentItem
+from News.utils import QR
 from News.utils.cache import Cache
 from News.utils.util import clean_date_time, replace_a_href_to_ours
-from News.constans import NEWS_STORE_API, CACHE_SOURCE_KEY, COMMENT_STORE_API
+from News.constans import NEWS_STORE_API, COMMENT_STORE_API
 from News.monitor import monitor_news_in_pipeline
 from News.monitor import monitor_news_store_success
 
@@ -61,15 +62,17 @@ class CleanPipeline(object):
 
     def process_item(self, item, spider):
         if isinstance(item, NewsItem):
-            if len(item["content"]) == 0:
-                raise DropItem("content empty: %s" % item["crawl_url"])
+            cleaned_time = self.clean_post_date(item["publish_time"])
+            if isinstance(cleaned_time, DropItem):
+                raise cleaned_time
             else:
-                dt = self.clean_post_date(item["publish_time"])
-                if len(dt) == 0:
-                    raise DropItem("extractor datetime error %s" % item["publish_time"])
-                else:
-                    item["publish_time"] = dt
-                    return item
+                item["publish_time"] = cleaned_time
+            cleaned_content = self.clean_content(item["content"], item["image_number"])
+            if isinstance(cleaned_content, DropItem):
+                raise cleaned_content
+            else:
+                item["content"] = cleaned_content
+                return item
         elif isinstance(item, CommentItem):
             dt = clean_date_time(item['create_time'])
             if len(dt) == 0:
@@ -84,9 +87,44 @@ class CleanPipeline(object):
         dt = now.strftime("%Y-%m-%d %H:%M:%S")
         time = clean_date_time(string)
         if time > dt:
-            return ""
+            return DropItem("extractor datetime error")
         else:
             return time
+
+    def clean_content(self, content, image_number):
+        cleaned = list()
+        index = 1
+        length = len(content)
+        for i, item in enumerate(content, start=1):
+            # for k, v in item.items():
+            k, v = item.items()[0]
+            if k == "txt" and not self.is_dirty_text(v):
+                cleaned.append({k: v})
+            elif k == "img":
+                if index == image_number and self.is_dirty_image(v):
+                    # the last image is qr, remove it
+                    _logger.info("remove qr image: %s" % v)
+                    break
+                elif 1.0*i/length >= 0.7 and self.is_dirty_image(v):
+                    # the last image is qr, remove it
+                    _logger.info("remove qr image 0.7: %s" % v)
+                    break
+                else:
+                    cleaned.append({k: v})
+                index += 1
+            else:
+                cleaned.append({k: v})
+        if len(cleaned) == 0:
+            return DropItem("content empty")
+        return cleaned
+
+    @staticmethod
+    def is_dirty_text(string):
+        return False
+
+    @staticmethod
+    def is_dirty_image(url):
+        return QR.is_qr_image(url)
 
 
 class CachePipeline(object):
