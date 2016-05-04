@@ -672,7 +672,56 @@ class GeneralExtractor(BaseExtractor):
         return True
 
 
-class YiDianZiXunExtractor(GeneralExtractor):
+class NewGeneralExtractor(BaseExtractor):
+
+    new_line_tag_names = {"img", "div", "article", "p", "br"}
+    new_line_head_names = {"h1", "h2", "h3", "h4", "h5", "h6"}
+
+    def parse_content_tag(self, tag, content):
+        strings = list()
+        for child in tag.children:
+            if isinstance(child, NavigableString):
+                string = unicode(child).strip()
+                if string:
+                    strings.append(string)
+            elif isinstance(child, Tag):
+                if child.name in self.new_line_tag_names:
+                    self.store_string_content(content, strings)
+                    strings = list()
+                    if child.name == "img":
+                        src = get_img_src(self.base_url, child)
+                        self.store_image_content(content, src)
+                    elif child.name == "br":
+                        pass
+                    else:
+                        self.parse_content_tag(child, content)
+                elif child.name in self.new_line_head_names:
+                    self.store_string_content(content, strings)
+                    strings = list()
+                    self.store_string_content(
+                        content,
+                        [str(child).decode("utf-8")]
+                    )
+                else:
+                    strings.append(str(child).decode("utf-8"))
+            else:
+                self.store_string_content(content, strings)
+                strings = list()
+        self.store_string_content(content, strings)
+
+    @staticmethod
+    def store_string_content(content, strings):
+        string = "".join(strings).strip()
+        if string:
+            content.append(get_content_item("text", string.encode("utf-8")))
+
+    @staticmethod
+    def store_image_content(content, src):
+        if src:
+            content.append(get_content_item("image", src))
+
+
+class YiDianZiXunExtractor(NewGeneralExtractor):
     title_param = {
         "method": "find_all",
         "params": {"name": "h2", "attrs": dict()},
