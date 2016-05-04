@@ -3,7 +3,7 @@
 import json
 from urlparse import urljoin
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from News.spiders import NewsSpider
 from News.utils.util import g_cache_key, news_already_exists
 from News.utils.util import str_from_timestamp
@@ -78,7 +78,7 @@ class Wechat(NewsSpider):
         for item in data_list:
             comm_msg_info = item["comm_msg_info"]
             publish_time = str_from_timestamp(comm_msg_info["datetime"])
-            today = datetime.today().date()
+            today = datetime.now() - timedelta(days=1)
             today_string = today.strftime("%Y-%m-%d %H:%M:%S")
             if publish_time < today_string:
                 self.logger.info("%s < %s" % (publish_time, today_string))
@@ -113,7 +113,7 @@ class Wechat(NewsSpider):
         news = get_default_news(
             crawl_url=crawl_url,
             docid=crawl_url,
-            key=g_cache_key(crawl_url),
+            key=g_cache_key(article["title"].encode("utf-8")),
             crawl_source=CRAWL_SOURCE,
             start_url=start_url,
             summary=article["summary"],
@@ -130,7 +130,6 @@ class Wechat(NewsSpider):
         redirects = response.request.meta.get("redirect_urls")
         if redirects:
             news["crawl_url"] = response.url
-            news["key"] = g_cache_key(news["crawl_url"])
         body = response.body_as_unicode().encode("utf-8")
         extractor = WechatExtractor(body, response.url)
         title, post_date, post_user, summary, content = extractor()
