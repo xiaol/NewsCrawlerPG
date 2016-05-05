@@ -297,6 +297,7 @@ class BaseExtractor(object):
     clean_param_list = None
     clean_content_before_param = None
     clean_content_after_param = None
+    default_score_content = False
 
     def __init__(self, document, url=None, encoding="utf-8"):
         """抽取类初始化
@@ -573,13 +574,14 @@ class BaseExtractor(object):
 
     def extract_content(self, param=None, clean_param_list=None,
                         clean_content_before_param=None,
-                        clean_content_after_param=None):
+                        clean_content_after_param=None,
+                        default_score_content=None):
         content = list()
         if param is None:
-            tag = find_content_tag(self.soup.body)
+            tag = find_content_tag(self.soup.body) if default_score_content else None
         else:
             tag = self.exact_find_tag(self.soup, param)
-            if tag is None:
+            if tag is None and default_score_content:
                 tag = find_content_tag(self.soup.body)
         if tag is None:
             return content
@@ -609,6 +611,7 @@ class BaseExtractor(object):
             clean_param_list=None,
             clean_content_before_param=None,
             clean_content_after_param=None,
+            default_score_content=None,
     ):
         if title_param is None:
             title_param = self.title_param
@@ -626,6 +629,8 @@ class BaseExtractor(object):
             clean_content_before_param = self.clean_content_before_param
         if clean_content_after_param is None:
             clean_content_after_param = self.clean_content_after_param
+        if default_score_content is None:
+            default_score_content = self.default_score_content
         title = self.extract_title(title_param)
         post_date = self.extract_post_date(post_date_param)
         post_source = self.extract_post_source(post_source_param)
@@ -633,7 +638,9 @@ class BaseExtractor(object):
         content = self.extract_content(content_param,
                                        clean_param_list,
                                        clean_content_before_param,
-                                       clean_content_after_param)
+                                       clean_content_after_param,
+                                       default_score_content
+                                       )
         return title, post_date, post_source, summary, content
 
 
