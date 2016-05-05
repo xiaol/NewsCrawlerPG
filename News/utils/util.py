@@ -133,7 +133,7 @@ _P_A_PATTERN = re.compile(_A_PATTERN)
 
 
 def replace_a_href_to_ours(string):
-    page_words = ["上一页", "下一页"]
+    page_words = [u"上一页", u"下一页"]
     for m in _P_A_PATTERN.finditer(string):
         href = m.group(1)
         text = m.group(2)
