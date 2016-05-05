@@ -22,8 +22,8 @@ def config_news_factory(config):
         url_xpath=config.URL_XPATH,
         __module__=__name__,
     )
-    if hasattr(config, "START_URLS"):
-        class_attr["start_urls"] = config.START_URLS
+    # if hasattr(config, "START_URLS"):
+    #     class_attr["start_urls"] = config.START_URLS
     if hasattr(config, "AJAX"):
         class_attr["ajax"] = config.AJAX
     if hasattr(config, "SUMMARY_XPATH"):
