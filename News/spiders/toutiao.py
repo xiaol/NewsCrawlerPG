@@ -59,7 +59,6 @@ class TouTiao(NewsSpider):
         redirects = response.request.meta.get("redirect_urls")
         if redirects:
             news["crawl_url"] = response.url
-            news["key"] = g_cache_key(news["crawl_url"])
         body = response.body_as_unicode().encode("utf-8")
         extractor = TouTiaoExtractor(body, response.url)
         title, post_date, post_user, summary, content = extractor()
