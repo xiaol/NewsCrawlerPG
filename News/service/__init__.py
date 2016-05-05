@@ -21,7 +21,7 @@ def extract_service(k, url):
         extractor = WechatExtractor(string, url)
     else:
         extractor = GeneralExtractor(string, url)
-    title, post_date, post_user, summary, content = extractor()
+    title, post_date, post_user, summary, content = extractor(default_score_content=True)
     return title, post_date, post_user, summary, content
 
 
