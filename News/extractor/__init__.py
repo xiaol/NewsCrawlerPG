@@ -651,14 +651,14 @@ class GeneralExtractor(BaseExtractor):
                     if src:
                         content.append(get_content_item("image", src))
                 elif self.only_contain_tags(child, names=["a"]):
-                    string = str(child)
+                    string = unicode(child)
                     string = remove_tag_name(string, [child.name])
                     if string.strip():
                         content.append(get_content_item("text", string))
                 elif child.name == "div" or child.img or child.br:
                     self.parse_content_tag(child, content)
                 elif child.get_text().strip():
-                    string = str(child)
+                    string = unicode(child)
                     string = remove_tag_name(string, [child.name])
                     if string.strip():
                         content.append(get_content_item("text", string))
@@ -700,10 +700,10 @@ class NewGeneralExtractor(BaseExtractor):
                     strings = list()
                     self.store_string_content(
                         content,
-                        [str(child).decode("utf-8")]
+                        [unicode(child)]
                     )
                 else:
-                    strings.append(str(child).decode("utf-8"))
+                    strings.append(unicode(child))
             else:
                 self.store_string_content(content, strings)
                 strings = list()
