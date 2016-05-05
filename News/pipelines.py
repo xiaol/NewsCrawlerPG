@@ -322,7 +322,11 @@ class PrintPipeline(object):
             print("url: %s" % item["crawl_url"])
             print("date: %s" % item["publish_time"])
             print("user: %s" % item["original_source"])
-            print("channel: %s" % item.get("meta_channel_name", ""))
+            meta = item.get("start_meta_info")
+            if meta:
+                print("source name: %s" % meta.get("source_name"))
+                print("channel: %s" % meta.get("channel_name"))
+            print("docid: %s" % item.get("docid"))
             for i in item["content"]:
                 for key, value in i.items():
                     print("%s: %s" % (key, value))
