@@ -28,8 +28,6 @@ class TouTiao(NewsSpider):
             return None
         docid = article["source_url"]
         crawl_url = self._g_crawl_url(article)
-        if not crawl_url:
-            return None
         key = g_cache_key(crawl_url)
         if news_already_exists(key):
             return None
@@ -59,6 +57,9 @@ class TouTiao(NewsSpider):
         redirects = response.request.meta.get("redirect_urls")
         if redirects:
             news["crawl_url"] = response.url
+            if not news["crawl_url"].startswith(DOMAIN):
+                self.logger.warning("outer link: %s" % news["crawl_url"])
+                return
         body = response.body_as_unicode().encode("utf-8")
         extractor = TouTiaoExtractor(body, response.url)
         title, post_date, post_user, summary, content = extractor()
@@ -67,12 +68,7 @@ class TouTiao(NewsSpider):
         yield news
 
     def _g_crawl_url(self, article):
-        display_url = article["display_url"]
-        if display_url.startswith(DOMAIN):
-            return display_url
-        else:
-            self.logger.warning("outer link: %s" % display_url)
-            return ""
+        return DOMAIN + article["source_url"]
 
     @staticmethod
     def _g_comment_url(docid):
