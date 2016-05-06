@@ -5,12 +5,14 @@
 """
 import json
 import os
+from StringIO import StringIO
 import tornado.ioloop
 import tornado.web
 from redis import Redis
 from tornado.web import RequestHandler
 
 from News.service import extract_service, score_service, GeneralExtractor
+from News.service import image
 from News.utils.cache import Cache
 
 
@@ -22,7 +24,24 @@ class ExtractorHandler(RequestHandler):
     def post(self):
         key = self.get_argument("key")
         url = self.get_argument("url")
-        title, post_date, post_user, summary, content = extract_service(key, url)
+        title = ""
+        post_date = ""
+        post_user = ""
+        summary = ""
+        content = []
+        if key == "image":
+            raw = image.download_image(url)
+            if raw is None:
+                title = "download image error"
+            else:
+                if image.is_qr_image(StringIO(raw)):
+                    title = u"二维码"
+                elif image.is_ad_image(raw):
+                    title = u"广告"
+                else:
+                    title = u"正常内容图片"
+        else:
+            title, post_date, post_user, summary, content = extract_service(key, url)
         results = {
             "title": title,
             "post_date": post_date,
