@@ -9,13 +9,12 @@ import logging
 from scrapy.exceptions import DropItem
 
 from News.items import NewsItem, CommentItem
-from News.utils import QR
 from News.utils.cache import Cache
 from News.utils.util import clean_date_time, replace_a_href_to_ours
 from News.constans import NEWS_STORE_API, COMMENT_STORE_API
 from News.monitor import monitor_news_in_pipeline
 from News.monitor import monitor_news_store_success
-
+from News.service import image
 _logger = logging.getLogger(__name__)
 
 
@@ -124,7 +123,7 @@ class CleanPipeline(object):
 
     @staticmethod
     def is_dirty_image(url):
-        return QR.is_qr_image(url)
+        return image.is_dirty_image(url)
 
 
 class CachePipeline(object):
