@@ -646,7 +646,13 @@ class BaseExtractor(object):
 
 class GeneralExtractor(BaseExtractor):
 
+    not_newline_names = {
+        "a", "strong", "sup", "tt", "u",
+        "b", "blod", "big", "i", "em", "italic", "small", "strike", "sub",
+    }
+
     def parse_content_tag(self, tag, content):
+
         for child in tag.children:
             if isinstance(child, NavigableString):
                 string = unicode(child).strip()
@@ -657,7 +663,7 @@ class GeneralExtractor(BaseExtractor):
                     src = get_img_src(self.base_url, child)
                     if src:
                         content.append(get_content_item("image", src))
-                elif self.only_contain_tags(child, names=["a"]):
+                elif self.only_contain_tags(child, names=self.not_newline_names):
                     string = unicode(child)
                     string = remove_tag_name(string, [child.name])
                     if string.strip():
@@ -671,7 +677,7 @@ class GeneralExtractor(BaseExtractor):
                         content.append(get_content_item("text", string))
 
     def only_contain_tags(self, tag, names):
-        for child in tag.children:
+        for child in tag.descendants:
             if not isinstance(child, Tag):
                 continue
             if child.name not in names:
