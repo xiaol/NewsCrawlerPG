@@ -33,6 +33,14 @@ class Cache(object):
     def expire(cls, key, seconds):
         return cls.r.expire(key, seconds)
 
+    @classmethod
+    def sadd(cls, key, *args):
+        return cls.r.sadd(key, *args)
+
+    @classmethod
+    def sismember(cls, key, value):
+        return cls.r.sismember(key, value)
+
 
 
 
