@@ -104,6 +104,8 @@ class CleanPipeline(object):
                     # the last image is qr, remove it
                     _logger.info("remove qr image: %s" % v)
                     break
+                elif index == 1 and self.is_dirty_image(v):
+                    _logger.info("remove qr image: %s" % v)
                 elif 1.0*i/length >= 0.7 and self.is_dirty_image(v):
                     # the last image is qr, remove it
                     _logger.info("remove qr image 0.7: %s" % v)
