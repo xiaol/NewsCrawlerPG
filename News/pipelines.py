@@ -12,6 +12,7 @@ from News.items import NewsItem, CommentItem
 from News.utils.cache import Cache
 from News.utils.util import clean_date_time, replace_a_href_to_ours
 from News.constans import NEWS_STORE_API, COMMENT_STORE_API
+from News.constans import wechat
 from News.monitor import monitor_news_in_pipeline
 from News.monitor import monitor_news_store_success
 from News.service import image
@@ -66,7 +67,7 @@ class CleanPipeline(object):
                 raise cleaned_time
             else:
                 item["publish_time"] = cleaned_time
-            cleaned_content = self.clean_content(item["content"], item["image_number"])
+            cleaned_content = self.clean_content(item["content"], item["image_number"], spider)
             if isinstance(cleaned_content, DropItem):
                 raise cleaned_content
             else:
@@ -90,26 +91,31 @@ class CleanPipeline(object):
         else:
             return time
 
-    def clean_content(self, content, image_number):
+    def clean_content(self, content, image_number, spider):
         cleaned = list()
         index = 1
         length = len(content)
+        if spider.name == wechat.SPIDER_NAME:
+            for item in content:
+                k, v = item.items()[0]
+                if k == "txt":
+                    if not self.is_dirty_text(v):
+                        cleaned.append({k: v})
+                elif k == "img":
+                    if not self.is_dirty_image(v):
+                        cleaned.append({k: v})
+                else:
+                    cleaned.append({k: v})
+            return cleaned
         for i, item in enumerate(content, start=1):
-            # for k, v in item.items():
             k, v = item.items()[0]
-            if k == "txt" and not self.is_dirty_text(v):
-                cleaned.append({k: v})
+            if k == "txt":
+                if not self.is_dirty_text(v):
+                    cleaned.append({k: v})
             elif k == "img":
-                if index == image_number and self.is_dirty_image(v):
-                    # the last image is qr, remove it
+                if (index == 1 or index == image_number or 1.0*i/length >= 0.7) \
+                        and self.is_dirty_image(v):
                     _logger.info("remove qr image: %s" % v)
-                    break
-                elif index == 1 and self.is_dirty_image(v):
-                    _logger.info("remove qr image: %s" % v)
-                elif 1.0*i/length >= 0.7 and self.is_dirty_image(v):
-                    # the last image is qr, remove it
-                    _logger.info("remove qr image 0.7: %s" % v)
-                    break
                 else:
                     cleaned.append({k: v})
                 index += 1
