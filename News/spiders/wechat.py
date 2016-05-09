@@ -110,9 +110,10 @@ class Wechat(NewsSpider):
 
     def g_news_item(self, article, start_url="", meta=None):
         crawl_url = article["crawl_url"]
+        comment_url = self._g_comment_url(crawl_url)
         news = get_default_news(
             crawl_url=crawl_url,
-            docid=crawl_url,
+            docid=comment_url,
             key=g_cache_key(article["title"].encode("utf-8")),
             crawl_source=CRAWL_SOURCE,
             start_url=start_url,
@@ -120,7 +121,7 @@ class Wechat(NewsSpider):
             publish_time=article["publish_time"],
             title=article["title"],
             start_meta_info=meta,
-            comment_url=self._g_comment_url(crawl_url),
+            comment_url=comment_url,
             comment_queue=COMMENT_SPIDER_NAME+":start_urls"
         )
         return None if news_already_exists(news["key"]) else news
