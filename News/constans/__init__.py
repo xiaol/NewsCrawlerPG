@@ -90,6 +90,7 @@ SPIDER_CONFIG_NAMES = [
     'News.constans.www_hanjucc_com',
     'News.constans.www_hanjumi_com',
     'News.constans.www_jiemian_com',
+    'News.constans.www_thepaper_cn',
     # 'News.constans.www_wenweipo_com',
     # 'News.constans.www_oushinet_com',
 ]
