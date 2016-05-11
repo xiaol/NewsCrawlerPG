@@ -734,6 +734,90 @@ class NewGeneralExtractor(BaseExtractor):
             content.append(get_content_item("image", src))
 
 
+class PeopleExtractor(GeneralExtractor):
+    def extract_content(self, param=None, clean_param_list=None,
+                        clean_content_before_param=None,
+                        clean_content_after_param=None,
+                        default_score_content=None):
+
+
+        content = list()
+        if self.soup.find_all('div', class_='zdfy'):
+            return content
+        if param is None:
+            tag = find_content_tag(self.soup.body) if default_score_content else None
+        else:
+            tag = self.exact_find_tag(self.soup, param)
+            if tag is None and default_score_content:
+                tag = find_content_tag(self.soup.body)
+        if tag is None:
+            return content
+        if clean_content_before_param is not None:
+            self.content_tag_clean_before(tag, clean_content_before_param)
+        if clean_content_after_param is not None:
+            self.content_tag_clean_after(tag, clean_content_after_param)
+        if clean_param_list is not None:
+            self.content_tag_clean(tag, clean_param_list)
+        self.parse_content_tag(tag, content)
+        return self.clean_content(content)
+
+
+class FTChinexeExtractor(GeneralExtractor):
+    def extract_content(self, param=None, clean_param_list=None,
+                        clean_content_before_param=None,
+                        clean_content_after_param=None,
+                        default_score_content=None):
+
+
+        content = list()
+        if self.soup.find_all('div', class_='pagination'):
+            return content
+        if param is None:
+            tag = find_content_tag(self.soup.body) if default_score_content else None
+        else:
+            tag = self.exact_find_tag(self.soup, param)
+            if tag is None and default_score_content:
+                tag = find_content_tag(self.soup.body)
+        if tag is None:
+            return content
+        if clean_content_before_param is not None:
+            self.content_tag_clean_before(tag, clean_content_before_param)
+        if clean_content_after_param is not None:
+            self.content_tag_clean_after(tag, clean_content_after_param)
+        if clean_param_list is not None:
+            self.content_tag_clean(tag, clean_param_list)
+        self.parse_content_tag(tag, content)
+        return self.clean_content(content)
+
+
+class NikkeiExtractor(GeneralExtractor):
+    def extract_content(self, param=None, clean_param_list=None,
+                        clean_content_before_param=None,
+                        clean_content_after_param=None,
+                        default_score_content=None):
+
+
+        content = list()
+        if self.soup.find_all('div', class_='pagenavbar'):
+            return content
+        if param is None:
+            tag = find_content_tag(self.soup.body) if default_score_content else None
+        else:
+            tag = self.exact_find_tag(self.soup, param)
+            if tag is None and default_score_content:
+                tag = find_content_tag(self.soup.body)
+        if tag is None:
+            return content
+        if clean_content_before_param is not None:
+            self.content_tag_clean_before(tag, clean_content_before_param)
+        if clean_content_after_param is not None:
+            self.content_tag_clean_after(tag, clean_content_after_param)
+        if clean_param_list is not None:
+            self.content_tag_clean(tag, clean_param_list)
+        self.parse_content_tag(tag, content)
+        return self.clean_content(content)
+
+
 class YiDianZiXunExtractor(NewGeneralExtractor):
     title_param = {
         "method": "find_all",
@@ -750,6 +834,33 @@ class YiDianZiXunExtractor(NewGeneralExtractor):
     clean_content_after_param = {
         "method": "find_all",
         "params": {"name": "div", "attrs": {"class": "report"}}
+    }
+
+
+class OushinetExtractor(GeneralExtractor):
+    title_param = {
+        'method': 'find_all',
+        'params': {'name': 'h2',}
+    }
+
+    post_date_param = {
+        'method': 'find_all',
+        'params': {'name': 'div', 'attrs': {'class': 'gray2 f12'}}
+    }
+
+    content_param = {
+        'method': 'find_all',
+        'params': {'name': 'div', 'attrs': {'id': 'artMain'}}
+    }
+
+    clean_content_after_param= {
+        'method': 'find_all',
+        'params': {'name': 'div', 'attrs': {'class': 'mb-10'}}
+    }
+
+    clean_content_before_param = {
+        'method': 'find_all',
+        'params': {'name': 'div', 'attrs': {'class': 'line'}}
     }
 
 

@@ -40,7 +40,7 @@ CONTENT_PARAM = {
     "params": {"name": "div", "attrs": {"id": "p_content"}},
 }
 
-# EXTRACTOR_CLS = "News.extractor."
+EXTRACTOR_CLS = "News.extractor.PeopleExtractor"
 
 # CUSTOM_SETTINGS = {
 #     
@@ -55,12 +55,12 @@ CATEGORIES = {
         u"时事解读": ("http://politics.people.com.cn/GB/389979/index.html", None),
     },
     u"社会": {
-        u"本网原创": ("http://society.people.com.cn/GB/86800/index.html", None),
+        u"本网原创": ("http://society.people.com.cn/GB/86800/index.html", 2, 120, 4),
         u"民生报道": ("http://society.people.com.cn/GB/41158/index.html", None),
-        u"社会万象": ("http://society.people.com.cn/GB/1062/index.html", None),
+        u"社会万象": ("http://society.people.com.cn/GB/1062/index.html", 2, 120, 3),
     },
     u"法制": {
-        u"滚动新闻": ("http://legal.people.com.cn/GB/188502/index.html", None),
+        u"滚动新闻": ("http://legal.people.com.cn/GB/188502/index.html", 2, 120, 3),
     },
     u"观点": {
         u"每日最新评论": ("http://opinion.people.com.cn/GB/159301/index.html", None)
@@ -69,7 +69,7 @@ CATEGORIES = {
         u"最新资讯": ("http://media.people.com.cn/GB/40606/index.html", None),
     },
     u"国际": {
-        u"滚动新闻": ("http://world.people.com.cn/GB/157278/index.html", None),
+        u"滚动新闻": ("http://world.people.com.cn/GB/157278/index.html", 9, 120, 3),
     },
     u"台湾": {
         u"滚动新闻": ("http://tw.people.com.cn/GB/104510/index.html", None),
@@ -78,7 +78,7 @@ CATEGORIES = {
         u"滚动新闻": ("http://finance.people.com.cn/GB/70846/index.html", None),
     },
     u"IT": {
-        u"滚动新闻": ("http://it.people.com.cn/GB/243510/index.html", None),
+        u"滚动新闻": ("http://it.people.com.cn/GB/243510/index.html", 22, 120, 3),
     },
     u"教育": {
         u"滚动新闻": ("http://edu.people.com.cn/GB/1053/index.html", None),
@@ -90,10 +90,10 @@ CATEGORIES = {
         u"滚动新闻": ("http://sports.people.com.cn/GB/22176/index.html", None),
     },
     u"游戏": {
-        u"滚动新闻": ("http://game.people.com.cn/GB/218877/index.html", None),
+        u"滚动新闻": ("http://game.people.com.cn/GB/218877/index.html", 11, 120, 4),
     },
     u"娱乐": {
-        u"独家": ("http://ent.people.com.cn/GB/233357/index.html", None),
+        u"独家": ("http://ent.people.com.cn/GB/233357/index.html", 3, 120, 4),
     },
     # 本地新闻待抓取
 }
