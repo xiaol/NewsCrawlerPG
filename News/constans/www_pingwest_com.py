@@ -39,12 +39,12 @@ CONTENT_PARAM = {
 
 CATEGORIES = {
     u"资讯": {
-        u"人物": ("http://www.pingwest.com/category/figure/", None),
-        u"现象": ("http://www.pingwest.com/category/phenomenon/", None),
-        u"真相": ("http://www.pingwest.com/category/truth/", None),
-        u"短新闻": ("http://www.pingwest.com/category/news/", None),
-        u"腔调": ("http://www.pingwest.com/category/tune/", None),
-        u"酷玩": ("http://www.pingwest.com/category/coolplay/", None),
+        u"人物": ("http://www.pingwest.com/category/figure/", 22, 120, 5),
+        u"现象": ("http://www.pingwest.com/category/phenomenon/", 4, 120, 5),
+        u"真相": ("http://www.pingwest.com/category/truth/", 22, 120, 4),
+        u"短新闻": ("http://www.pingwest.com/category/news/", 4, 120, 4),
+        u"腔调": ("http://www.pingwest.com/category/tune/", 22, 120, 4),
+        u"酷玩": ("http://www.pingwest.com/category/coolplay/", 4, 120, 4),
     },
 }
 
