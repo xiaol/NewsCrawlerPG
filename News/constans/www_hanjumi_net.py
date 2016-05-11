@@ -1,8 +1,8 @@
 # coding: utf-8
-SPIDER_NAME = 'spider:news:www_hanjumi_com'
+SPIDER_NAME = 'spider:news:www_hanjumi_net'
 START_URLS = ['http://www.hanjumi.net/hanjuxinwen/', ]
 CRAWL_SOURCE = u'韩剧迷'
-DOMAIN = 'hanjumi.com'
+DOMAIN = 'hanjumi.net'
 
 ITEMS_XPATH = '//ul[@class="lists"]/li'
 TITLE_XPATH = './a/text()'
