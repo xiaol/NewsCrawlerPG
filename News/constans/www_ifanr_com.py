@@ -24,15 +24,20 @@ URL_XPATH = "./@href"
 
 TITLE_PARAM = {
     "method": "find_all",
-    "params": {"name": "h1", "attrs": {"class": "entry-name"}},
+    "params": {"name": "h1"},
 }
 POST_DATE_PARAM = {
     "method": "find_all",
-    "params": {"name": "meta", "attrs": {"name": "weibo: article:create_at"}},
+    "params": {"name": "meta", "attrs": {"property": "article:published_time"}},
 }
 CONTENT_PARAM = {
     "method": "find_all",
-    "params": {"name": "div", "attrs": {"itemprop": "articleBody"}},
+    "params": {"name": "article"},
+}
+
+CLEAN_CONTENT_BEFORE_PARAM = {
+    'method': 'find_all',
+    'params': {'name': 'img', 'attrs': {'alt': 'zaodu'}}
 }
 
 # EXTRACTOR_CLS = "News.extractor."
