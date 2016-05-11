@@ -33,7 +33,10 @@ CONTENT_PARAM = {
     "method": "find_all",
     "params": {"name": "div", "attrs": {"class": "texttit_m1"}},
 }
-
+CLEAN_CONTENT_BEFORE_PARAM = {
+    "method": "find_all",
+    "params": {"name": "p", "class_": "linknew"}
+}
 # EXTRACTOR_CLS = "News.extractor."
 
 # CUSTOM_SETTINGS = {
