@@ -21,7 +21,7 @@ THUMB_XPATH = "./a/img/@src"
 
 POST_DATE_PARAM = {
     "method": "find_all",
-    "params": {"name": "p", "attrs": {"class": "author-box clearfix"}},
+    "params": {"name": "p", "attrs": {"class": "signature"}},
 }
 SUMMARY_PARAM = {
     "method": "find_all",
@@ -29,7 +29,7 @@ SUMMARY_PARAM = {
 }
 CONTENT_PARAM = {
     "method": "find_all",
-    "params": {"name": "div", "attrs": {"class": "artile-bodycont clearfix"}},
+    "params": {"name": "div", "attrs": {"class": "content"}},
 }
 
 # EXTRACTOR_CLS = "News.extractor."
