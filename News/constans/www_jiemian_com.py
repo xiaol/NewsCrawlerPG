@@ -21,7 +21,7 @@ POST_DATE_PARAM = {
 
 CONTENT_PARAM = {
     'method': 'find_all',
-    'params': {'name': 'div', 'attrs': {'class': 'article-content'}}
+    'params': {'name': 'div', 'attrs': {'class': 'article-main'}}
 }
 
 CLEAN_CONTENT_AFTER_PARAM = {
@@ -68,7 +68,7 @@ CATEGORIES = {
     u'基金': ('http://www.jiemian.com/lists/87.html', 7, 120, 4),
     u'私募': ('http://www.jiemian.com/lists/88.html', 7, 120, 4),
     u'股票': ('http://www.jiemian.com/lists/89.html', 7, 120, 4),
-    u'银行': ('http://www.jiemian.com/lists/94.html', 30, 120, 4),
+    u'银行': ('http://www.jiemian.com/lists/94.html', 7, 120, 4),
     u'游戏要闻': ('http://www.jiemian.com/lists/100.html', 11, 120, 4),
     u'单品': ('http://www.jiemian.com/lists/119.html', 11, 120, 4),
     u'盘点': ('http://www.jiemian.com/lists/120.html', 11, 120, 4),
