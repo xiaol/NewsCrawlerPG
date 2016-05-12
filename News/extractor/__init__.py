@@ -387,7 +387,7 @@ class BaseExtractor(object):
             raise ValueError("param['method'] only support find_all and select")
 
     @staticmethod
-    def exct_find_tag_list(root, param):
+    def exact_find_tag_list(root, param):
         method = param["method"]
         params = param["params"]
         if method == "find_all":
