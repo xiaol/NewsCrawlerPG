@@ -26,8 +26,27 @@ CONTENT_PARAM = {
 
 CLEAN_CONTENT_AFTER_PARAM = {
     'method': 'find_all',
-    'params': {'name': 'div', 'attrs': {'class': 'share-view'}}
+    'params': {'name': 'div', 'attrs': {'class': 'article-btn'}}
 }
+
+CLEAN_LIST_PARAM = [
+    {
+        'method': 'find_all',
+        'params': {'name': 'div', 'attrs': {'class': 'share-view'}}
+    },
+    {
+        'method': 'find_all',
+        'params': {'name': 'div', 'attrs': {'id': 'ad-content'}}
+    },
+    {
+        'method': 'find_all',
+        'params': {'name': 'div', 'attrs': {'class': 'article-source'}}
+    },
+    {
+        'method': 'find_all',
+        'params': {'name': 'div', 'attrs': {'class': 'article-footer'}}
+    },
+]
 
 
 CATEGORIES = {
