@@ -24,6 +24,11 @@ CONTENT_PARAM = {
     'params': {'name': 'div', 'attrs': {'class': 'article-content'}}
 }
 
+CLEAN_CONTENT_AFTER_PARAM = {
+    'method': 'find_all',
+    'params': {'name': 'div', 'attrs': {'class': 'share-view'}}
+}
+
 
 CATEGORIES = {
     u'国际政治': ('http://www.jiemian.com/lists/35.html', 9, 240, 4),
