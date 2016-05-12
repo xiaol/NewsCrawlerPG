@@ -15,8 +15,8 @@ TITLE_PARAM = {
 }
 
 POST_DATE_PARAM = {
-    'method': 'find_all',
-    'params': {'name': 'div', 'attrs': {'class': 'article_title'}}
+    'method': 'select',
+    'params': {'selector': 'div.article_title > span'}
 }
 
 CONTENT_PARAM = {
