@@ -664,6 +664,8 @@ class GeneralExtractor(BaseExtractor):
                     if src:
                         content.append(get_content_item("image", src))
                 elif self.only_contain_tags(child, names=self.not_newline_names):
+                    if not child.get_text().strip():
+                        continue
                     string = unicode(child)
                     string = remove_tag_name(string, [child.name])
                     if string.strip():
@@ -711,12 +713,14 @@ class NewGeneralExtractor(BaseExtractor):
                 elif child.name in self.new_line_head_names:
                     self.store_string_content(content, strings)
                     strings = list()
-                    self.store_string_content(
-                        content,
-                        [unicode(child)]
-                    )
+                    if child.get_text().strip():
+                        self.store_string_content(
+                            content,
+                            [unicode(child)]
+                        )
                 else:
-                    strings.append(unicode(child))
+                    if child.get_text().strip():
+                        strings.append(unicode(child))
             else:
                 self.store_string_content(content, strings)
                 strings = list()
