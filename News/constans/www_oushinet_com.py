@@ -13,25 +13,25 @@ URL_XPATH = './a/@href'
 
 
 
-TITLE_PARAM = {
-    'method': 'find_all',
-    'params': {'name': 'h2',}
-}
-
-POST_DATE_PARAM = {
-    'method': 'find_all',
-    'params': {'name': 'div', 'attrs': {'class': 'gray2 f12'}}
-}
-
-CONTENT_PARAM = {
-    'method': 'find_all',
-    'params': {'name': 'div', 'attrs': {'id': 'artMain'}}
-}
-
-CLEAN_CONTENT_AFTER_PARAM = {
-    'method': 'find_all',
-    'params': {'name': 'div', 'attrs': {'class': 'mb-10 mt-10'}}
-}
+# TITLE_PARAM = {
+#     'method': 'find_all',
+#     'params': {'name': 'h2',}
+# }
+#
+# POST_DATE_PARAM = {
+#     'method': 'find_all',
+#     'params': {'name': 'div', 'attrs': {'class': 'gray2 f12'}}
+# }
+#
+# CONTENT_PARAM = {
+#     'method': 'find_all',
+#     'params': {'name': 'div', 'attrs': {'id': 'artMain'}}
+# }
+#
+# CLEAN_CONTENT_AFTER_PARAM = {
+#     'method': 'find_all',
+#     'params': {'name': 'div', 'attrs': {'class': 'mb-10 mt-10'}}
+# }
 
 CATEGORIES = {
     # u'欧洲': ('http://www.oushinet.com/news/europe/', 9, 120, 4),
