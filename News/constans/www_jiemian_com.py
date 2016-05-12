@@ -29,7 +29,7 @@ CLEAN_CONTENT_AFTER_PARAM = {
     'params': {'name': 'div', 'attrs': {'class': 'article-btn'}}
 }
 
-CLEAN_LIST_PARAM = [
+CLEAN_PARAM_LIST = [
     {
         'method': 'find_all',
         'params': {'name': 'div', 'attrs': {'class': 'share-view'}}

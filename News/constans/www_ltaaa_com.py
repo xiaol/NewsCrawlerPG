@@ -21,8 +21,33 @@ POST_DATE_PARAM = {
 
 CONTENT_PARAM = {
     'method': 'find_all',
-    'params': {'name': 'div', 'attrs': {'class': 'post-content'}}
+    'params': {'name': 'div', 'attrs': {'class': 'post-body'}}
 }
+
+CLEAN_CONTENT_BEFORE_PARAM = {
+    'method': 'find_all',
+    'params': {'name': 'div', 'attrs': {'class': 'post-param'}}
+}
+
+CLEAN_CONTENT_AFTER_PARAM = {
+    'method': 'find_all',
+    'params': {'name': 'div', 'attrs': {'class': 'post-keywords'}}
+}
+
+CLEAN_PARAM_LIST = [
+    {
+        'method': 'find_all',
+        'params': {'name': 'div', 'attrs': {'class': 'post-tip'}}
+    },
+    {
+        'method': 'find_all',
+        'params': {'name': 'div', 'attrs': {'class': 'post-url'}}
+    },
+    {
+        'method': 'find_all',
+        'params': {'name': 'div', 'attrs': {'class': 'post-description'}}
+    },
+]
 
 
 CATEGORIES = {
