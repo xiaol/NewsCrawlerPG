@@ -592,6 +592,7 @@ class BaseExtractor(object):
         if clean_param_list is not None:
             self.content_tag_clean(tag, clean_param_list)
         self.parse_content_tag(tag, content)
+        print 'ppppppppp'
         return self.clean_content(content)
 
     @staticmethod
@@ -792,6 +793,19 @@ class FTChinexeExtractor(GeneralExtractor):
             self.content_tag_clean(tag, clean_param_list)
         self.parse_content_tag(tag, content)
         return self.clean_content(content)
+
+
+class WumaowExtractor(GeneralExtractor):
+
+    @staticmethod
+    def clean_content(content):
+        print 'qqqqqqqqq'
+        for i in content:
+            if 'text' not in i:
+                continue
+            if u'转载【自五毛网】 www.wumaow.com' in i['text']:
+                i['text'] = i['text'].replace(u'转载【自五毛网】 www.wumaow.com', '')
+        return content
 
 
 class NikkeiExtractor(GeneralExtractor):

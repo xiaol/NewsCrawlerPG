@@ -24,6 +24,7 @@ CONTENT_PARAM = {
     'params': {'name': 'div', 'attrs': {'id': 'text'}}
 }
 
+EXTRACTOR_CLS = 'News.extractor.WumaowExtractor'
 
 CATEGORIES = {
     u'首页新闻': ('http://www.wumaow.com/', 29, 120, 3),
