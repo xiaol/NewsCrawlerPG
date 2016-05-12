@@ -656,6 +656,7 @@ class GeneralExtractor(BaseExtractor):
         for child in tag.children:
             if isinstance(child, NavigableString):
                 string = unicode(child).strip()
+                string = string.replace(u"\u200d", "")
                 if string:
                     content.append(get_content_item("text", string))
             elif isinstance(child, Tag):
@@ -667,6 +668,7 @@ class GeneralExtractor(BaseExtractor):
                     if not child.get_text().strip():
                         continue
                     string = unicode(child)
+                    string = string.replace(u"\u200d", "")
                     string = remove_tag_name(string, [child.name])
                     if string.strip():
                         content.append(get_content_item("text", string))
@@ -674,6 +676,7 @@ class GeneralExtractor(BaseExtractor):
                     self.parse_content_tag(child, content)
                 elif child.get_text().strip():
                     string = unicode(child)
+                    string = string.replace(u"\u200d", "")
                     string = remove_tag_name(string, [child.name])
                     if string.strip():
                         content.append(get_content_item("text", string))
