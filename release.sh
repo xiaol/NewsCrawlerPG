@@ -50,7 +50,7 @@ curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:w
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_oushinet_com
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_ettoday_net
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:cn_nikkei_com
-curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_itaaa_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_ltaaa_com
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_wumaow_com
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_ftchinese_com
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_hanjucc_com

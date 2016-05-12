@@ -1,8 +1,8 @@
 # coding: utf-8
-SPIDER_NAME = 'spider:news:www_itaaa_com'
-START_URLS = ['http://www.itaaa.com/wtfy.html', ]
+SPIDER_NAME = 'spider:news:www_ltaaa_com'
+START_URLS = ['http://www.ltaaa.com/wtfy.html', ]
 CRAWL_SOURCE = u'龙腾网'
-DOMAIN = 'itaaa.com'
+DOMAIN = 'ltaaa.com'
 
 ITEMS_XPATH = '//ul[@class="wlist"]/li'
 TITLE_XPATH = './div[@class="dtop"]/a/text()'
@@ -26,5 +26,5 @@ CONTENT_PARAM = {
 
 
 CATEGORIES = {
-    u'网帖翻译': ('http://www.itaaa.com/wtfy.html', 29, 120, 4),
+    u'网帖翻译': ('http://www.ltaaa.com/wtfy.html', 29, 120, 4),
 }
