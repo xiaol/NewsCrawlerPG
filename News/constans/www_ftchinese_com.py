@@ -11,7 +11,7 @@ URL_XPATH = './@href'
 
 TITLE_PARAM = {
     'method': 'find_all',
-    'params': {'name': 'h1', 'attrs': {'class': 'topictitle'}}
+    'params': {'name': 'h1', 'attrs': {'id': 'topictitle'}}
 }
 
 POST_DATE_PARAM = {

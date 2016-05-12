@@ -592,7 +592,6 @@ class BaseExtractor(object):
         if clean_param_list is not None:
             self.content_tag_clean(tag, clean_param_list)
         self.parse_content_tag(tag, content)
-        print 'ppppppppp'
         return self.clean_content(content)
 
     @staticmethod
@@ -802,7 +801,6 @@ class WumaowExtractor(GeneralExtractor):
 
     @staticmethod
     def clean_content(content):
-        print 'qqqqqqqqq'
         for i in content:
             if 'text' not in i:
                 continue

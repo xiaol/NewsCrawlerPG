@@ -15,10 +15,10 @@ CRAWL_SOURCE = u"前瞻网"
 DOMAIN = "qianzhan.com"
 
 # AJAX = True
-ITEMS_XPATH = "//ul[@id='ul_list_news']/li[@class='open']"
-TITLE_XPATH = "./p[@class='tit']/a/text()"  # 解析有问题
-URL_XPATH = "./p[@class='tit']/a/@href"  # 解析有问题
-SUMMARY_XPATH = "./div[@class='con']/p/text()"
+ITEMS_XPATH = "//ul[@id='ul_list_news']/li[@class='open'] | //p[@class='f22']/a"
+TITLE_XPATH = "./p[@class='tit']/a/text() | ./text()"  # 解析有问题
+URL_XPATH = "./p[@class='tit']/a/@href | ./@href"  # 解析有问题
+# SUMMARY_XPATH = "./div[@class='con']/p/text()"
 # THUMB_XPATH = ""
 
 TITLE_PARAM = {
