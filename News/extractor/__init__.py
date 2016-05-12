@@ -387,6 +387,19 @@ class BaseExtractor(object):
             raise ValueError("param['method'] only support find_all and select")
 
     @staticmethod
+    def exct_find_tag_list(root, param):
+        method = param["method"]
+        params = param["params"]
+        if method == "find_all":
+            tags = root.find_all(**params)
+            return tags
+        elif method == "select":
+            tags = root.select(**params)
+            return tags
+        else:
+            raise ValueError("param['method'] only support find_all and select")
+
+    @staticmethod
     def extract_tag_text(tag):
         if tag is None:
             return ""
@@ -546,9 +559,10 @@ class BaseExtractor(object):
     @classmethod
     def content_tag_clean(cls, root, clean_param_list):
         for param in clean_param_list:
-            tag = cls.exact_find_tag(root, param)
-            if tag is not None:
-                tag.extract()
+            tags = cls.exact_find_tag_list(root, param)
+            if tags:
+                for tag in tags:
+                    tag.extract()
 
     @classmethod
     def content_tag_clean_before(cls, root, param):
