@@ -43,6 +43,7 @@ class Oushinet(NewsSpider):
             title=article['title'],
             docid=docid,
             start_meta_info=meta,
+            crawl_source=CRAWL_SOURCE
         )
         return news
 

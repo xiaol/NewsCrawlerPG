@@ -24,6 +24,11 @@ CONTENT_PARAM = {
     'params': {'name': 'div', 'attrs': {'class': 'article-content'}}
 }
 
+CLEAN_CONTENT_AFTER_PARAM = {
+    'method': 'find_all',
+    'params': {'name': 'div', 'attrs': {'class': 'share-view'}}
+}
+
 
 CATEGORIES = {
     u'国际政治': ('http://www.jiemian.com/lists/35.html', 9, 240, 4),
@@ -34,7 +39,7 @@ CATEGORIES = {
     u'大牌': ('http://www.jiemian.com/lists/25.html', 3, 240, 4),
     u'娱乐圈': ('http://www.jiemian.com/lists/76.html', 3, 240, 4),
     u'视听': ('http://www.jiemian.com/lists/77.html', 30, 240, 4),
-    u'八卦': ('http://www.jiemian.com/lists/88.html', 3, 240, 4),
+    u'八卦': ('http://www.jiemian.com/lists/81.html', 3, 240, 4),
     u'巨星': ('http://www.jiemian.com/lists/11.html', 6, 240, 4),
     u'体育市场': ('http://www.jiemian.com/lists/78.html', 6, 240, 4),
     u'篮球': ('http://www.jiemian.com/lists/80.html', 6, 120, 4),
