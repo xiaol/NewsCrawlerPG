@@ -747,7 +747,7 @@ class NewGeneralExtractor(BaseExtractor):
     def store_string_content(content, strings):
         string = "".join(strings).strip()
         if string:
-            content.append(get_content_item("text"))
+            content.append(get_content_item("text", string))
 
     @staticmethod
     def store_image_content(content, src):
