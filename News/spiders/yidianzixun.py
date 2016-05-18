@@ -8,6 +8,8 @@ from News.constans.yidianzixun import COMMENT_SPIDER_NAME
 from News.constans.yidianzixun import ARTICLE_URL_TEMPLATE
 from News.constans.yidianzixun import CRAWL_SOURCE
 from News.extractor import YiDianZiXunExtractor
+from newsextractor import extract
+from newsextractor.exceptions import DomainNotSupportNow
 
 
 class YiDianZiXun(NewsSpider):
@@ -63,18 +65,29 @@ class YiDianZiXun(NewsSpider):
                 news["crawl_url"] = response.url
                 news["key"] = g_cache_key(news["crawl_url"])
             body = response.body_as_unicode().encode("utf-8")
-            extractor = YiDianZiXunExtractor(body, response.url)
-            title, post_date, post_user, summary, content = extractor()
-            news["content"] = content
-            news["content_html"] = response.body
-            yield news
+            if news["crawl_url"].startswith("http://www.yidianzixun.com/"):
+                extractor = YiDianZiXunExtractor(body, response.url)
+                title, post_date, post_user, summary, content = extractor()
+            else:
+                try:
+                    title, post_date, post_user, summary, tags, content = extract(news["crawl_url"], document=body)
+                except DomainNotSupportNow as e:
+                    self.logger.warning(e.message + " outer link: %s" % news["crawl_url"])
+                    return
+            if content:
+                news["content"] = content
+                news["content_html"] = response.body
+                yield news
+            else:
+                self.logger.warning("outer link: %s" % news["crawl_url"])
 
     def _g_article_url(self, url, docid):
-        if not url or url.startswith("http://www.yidianzixun.com"):
-            return ARTICLE_URL_TEMPLATE.format(docid=docid)
-        else:
-            self.logger.warning("outer link: %s" % url)
-            return ""
+        return ARTICLE_URL_TEMPLATE.format(docid=docid)
+        # if not url or url.startswith("http://www.yidianzixun.com"):
+        #     return ARTICLE_URL_TEMPLATE.format(docid=docid)
+        # else:
+        #     self.logger.warning("outer link: %s" % url)
+        #     return ""
 
     @staticmethod
     def _g_comment_url(docid):
