@@ -9,7 +9,6 @@ from News.constans.yidianzixun import ARTICLE_URL_TEMPLATE
 from News.constans.yidianzixun import CRAWL_SOURCE
 from News.extractor import YiDianZiXunExtractor
 from newsextractor import extract
-from newsextractor.exceptions import DomainNotSupportNow
 
 
 class YiDianZiXun(NewsSpider):
@@ -71,7 +70,7 @@ class YiDianZiXun(NewsSpider):
             else:
                 try:
                     title, post_date, post_user, summary, tags, content = extract(news["crawl_url"], document=body)
-                except DomainNotSupportNow as e:
+                except Exception as e:
                     self.logger.warning(e.message + " outer link: %s" % news["crawl_url"])
                     return
             if content:
@@ -79,7 +78,7 @@ class YiDianZiXun(NewsSpider):
                 news["content_html"] = response.body
                 yield news
             else:
-                self.logger.warning("outer link: %s" % news["crawl_url"])
+                self.logger.warning("content empty: %s" % news["crawl_url"])
 
     def _g_article_url(self, url, docid):
         return ARTICLE_URL_TEMPLATE.format(docid=docid)
