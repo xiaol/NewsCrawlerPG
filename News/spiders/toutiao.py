@@ -9,6 +9,7 @@ from News.constans.toutiao import COMMENT_SPIDER_NAME
 from News.constans.toutiao import DOMAIN
 from News.constans.toutiao import CRAWL_SOURCE
 from News.extractor import TouTiaoExtractor
+from newsextractor import extract
 
 
 class TouTiao(NewsSpider):
@@ -57,15 +58,22 @@ class TouTiao(NewsSpider):
         redirects = response.request.meta.get("redirect_urls")
         if redirects:
             news["crawl_url"] = response.url
-            if not news["crawl_url"].startswith(DOMAIN):
-                self.logger.warning("outer link: %s" % news["crawl_url"])
-                return
         body = response.body_as_unicode().encode("utf-8")
-        extractor = TouTiaoExtractor(body, response.url)
-        title, post_date, post_user, summary, content = extractor()
-        news["content"] = content
-        news["content_html"] = response.body
-        yield news
+        if news["crawl_url"].startswith(DOMAIN):
+            extractor = TouTiaoExtractor(body, news["crawl_url"])
+            title, post_date, post_user, summary, content = extractor()
+        else:
+            try:
+                title, post_date, post_user, summary, tags, content = extract(news["crawl_url"], document=body)
+            except Exception as e:
+                self.logger.warning(e.message + " outer link: %s" % news["crawl_url"])
+                return
+        if content:
+            news["content"] = content
+            news["content_html"] = response.body
+            yield news
+        else:
+            self.logger.warning("content empty: %s" % news["crawl_url"])
 
     def _g_crawl_url(self, article):
         return DOMAIN + article["source_url"]
