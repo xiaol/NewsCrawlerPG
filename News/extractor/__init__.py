@@ -823,6 +823,33 @@ class WumaowExtractor(GeneralExtractor):
         return content
 
 
+class ZaobaoExtractor(GeneralExtractor):
+    def extract_content(self, param=None, clean_param_list=None,
+                        clean_content_before_param=None,
+                        clean_content_after_param=None,
+                        default_score_content=None):
+
+        content = list()
+        if self.soup.find_all('div', class_='smart-paging-pager'):
+            return content
+        if param is None:
+            tag = find_content_tag(self.soup.body) if default_score_content else None
+        else:
+            tag = self.exact_find_tag(self.soup, param)
+            if tag is None and default_score_content:
+                tag = find_content_tag(self.soup.body)
+        if tag is None:
+            return content
+        if clean_content_before_param is not None:
+            self.content_tag_clean_before(tag, clean_content_before_param)
+        if clean_content_after_param is not None:
+            self.content_tag_clean_after(tag, clean_content_after_param)
+        if clean_param_list is not None:
+            self.content_tag_clean(tag, clean_param_list)
+        self.parse_content_tag(tag, content)
+        return self.clean_content(content)
+
+
 class NikkeiExtractor(GeneralExtractor):
     def extract_content(self, param=None, clean_param_list=None,
                         clean_content_before_param=None,

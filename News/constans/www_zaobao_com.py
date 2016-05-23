@@ -29,6 +29,8 @@ CLEAN_CONTENT_AFTER_PARAM = {
     'params': {'name': 'div', 'attrs': {'class': 'two_column_div'}}
 }
 
+EXTRACTOR_CLS = 'News.extractor.ZaobaoExtractor'
+
 CATEGORIES = {
     u'中国新闻': ('http://www.zaobao.com/news/china', 29, 120, 3),
     u'中国财经': ('http://www.zaobao.com/finance/china', 29, 120, 3),
