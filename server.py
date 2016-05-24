@@ -88,7 +88,7 @@ class ItemHandler(RequestHandler):
     def get(self, *args, **kwargs):
         r = Redis()
         new_keys = r.keys('news*')
-        new_keys = new_keys[:10]
+        new_keys = new_keys[:20]
         news = [r.hgetall(i) for i in new_keys]
         html_code_list = list()
         for i in news:
