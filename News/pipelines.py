@@ -12,7 +12,6 @@ from News.items import NewsItem, CommentItem
 from News.utils.cache import Cache
 from News.utils.util import clean_date_time, replace_a_href_to_ours
 from News.constans import NEWS_STORE_API, COMMENT_STORE_API
-from News.constans import wechat
 from News.monitor import monitor_news_in_pipeline
 from News.monitor import monitor_news_store_success
 from News.service import image
@@ -67,7 +66,7 @@ class CleanPipeline(object):
                 raise cleaned_time
             else:
                 item["publish_time"] = cleaned_time
-            cleaned_content = self.clean_content(item["content"], item["image_number"], spider)
+            cleaned_content = self.clean_content(item["content"], item["image_number"], item["crawl_url"])
             if isinstance(cleaned_content, DropItem):
                 raise cleaned_content
             else:
@@ -91,11 +90,11 @@ class CleanPipeline(object):
         else:
             return time
 
-    def clean_content(self, content, image_number, spider):
+    def clean_content(self, content, image_number, url):
         cleaned = list()
         index = 1
         length = len(content)
-        if spider.name == wechat.SPIDER_NAME:
+        if url.startswith("http://mp.weixin.qq.com/"):
             for item in content:
                 k, v = item.items()[0]
                 if k == "txt":
@@ -131,6 +130,12 @@ class CleanPipeline(object):
 
     @staticmethod
     def is_dirty_image(url):
+        ad_set = {
+            "http://mmbiz.qpic.cn/mmbiz/dyDu14T9ZVDQ5KyxY3BN9hDQVrne3BIeKz3l5AiaebgdkrO1YFFibYViaGbxzvZgKghLQo4yjkdEVF4licfOkMj8Aw/0?wx_fmt=png",
+            "http://mmbiz.qpic.cn/mmbiz/dyDu14T9ZVDQ5KyxY3BN9hDQVrne3BIeKz3l5AiaebgdkrO1YFFibYViaGbxzvZgKghLQo4yjkdEVF4licfOkMj8Aw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1",
+        }
+        if url in ad_set:
+            return True
         return image.is_dirty_image(url)
 
 
