@@ -42,6 +42,8 @@ class CompatiblePipeline(object):
                 if key == "text":
                     value = replace_a_href_to_ours(value)
                     changed.append({"txt": value})
+                elif key == "iframe":
+                    changed.append({"vid": value})
                 else:
                     changed.append({key: value})
         return changed
