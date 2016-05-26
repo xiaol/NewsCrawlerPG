@@ -13,6 +13,7 @@ from News.constans.wechat import COMMENT_SPIDER_NAME
 from News.constans.wechat import CRAWL_SOURCE
 from News.extractor import WechatExtractor
 from News.scheduler import wechat
+from newsextractor import extract
 
 
 class Wechat(NewsSpider):
@@ -132,8 +133,9 @@ class Wechat(NewsSpider):
         if redirects:
             news["crawl_url"] = response.url
         body = response.body_as_unicode().encode("utf-8")
-        extractor = WechatExtractor(body, response.url)
-        title, post_date, post_user, summary, content = extractor()
+        title, post_date, post_user, summary, tags, content = extract(news["crawl_url"], document=body)
+        # extractor = WechatExtractor(body, response.url)
+        # title, post_date, post_user, summary, content = extractor()
         news["title"] = title
         news["publish_time"] = post_date
         news["original_source"] = post_user
