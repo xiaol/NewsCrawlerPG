@@ -93,4 +93,5 @@ SPIDER_CONFIG_NAMES = [
     'News.constans.www_thepaper_cn',
     # 'News.constans.www_wenweipo_com',
     # 'News.constans.www_oushinet_com',
+    'News.constans.www_chinatimes_com',
 ]

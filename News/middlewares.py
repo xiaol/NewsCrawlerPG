@@ -1,4 +1,6 @@
 import random
+import base64
+
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 from News.constans.useragent import WEB_USER_AGENT
 from News.constans import yidianzixun
@@ -24,8 +26,10 @@ class WechatUserAgentMiddleware(UserAgentMiddleware):
         request.meta["browser"] = browser
 
 
+class ProxyMiddleware(object):
 
-
+    def process_request(self, request, spider):
+        request.meta['proxy'] = 'http://47.88.1.21:3999'
 
 
 
