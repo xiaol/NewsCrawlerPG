@@ -57,3 +57,4 @@ curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:w
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_hanjumi_net
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_jiemian_com
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_thepaper_cn
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_chinatimes_com
