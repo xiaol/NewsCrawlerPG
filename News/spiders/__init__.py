@@ -248,7 +248,13 @@ class ConfigNewsSpider(NewsSpider):
         news["publish_time"] = post_date
         news["content"] = content
         # test code
-        if self.name == 'spider:news:www_people_com_cn' or self.name == 'spider:news:www_zaobao_com':
+        title_spider_names = {
+            'spider:news:www_people_com_cn',
+            'spider:news:www_zaobao_com',
+            'spider:news:www_chinatimes_com',
+        }
+
+        if self.name in title_spider_names:
             news['title'] = title
         # end test code
         news["content_html"] = response.body
