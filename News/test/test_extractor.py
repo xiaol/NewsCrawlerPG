@@ -1,13 +1,13 @@
 # coding: utf-8
 
 from urlparse import urlparse
-import requests
 from lxml import etree
 from lxml import html
 from lxml.html.clean import Cleaner
 import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.drawing.nx_agraph import graphviz_layout
+from News.utils import http
 
 __author__ = "Sven Lee"
 __copyright__ = "Copyright 2016-2019, ShangHai Lie Ying"
@@ -22,7 +22,9 @@ def get_document(url):
     netloc = urlparse(url).netloc
     headers = {"user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36",
                "host": netloc}
-    r = requests.get(url, headers=headers)
+    r = http.get(url, headers=headers)
+    if not r:
+        return ''
     if r.status_code == 200:
         encoding = r.apparent_encoding
         if encoding.lower() == "gb2312":

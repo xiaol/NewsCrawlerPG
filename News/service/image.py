@@ -1,13 +1,13 @@
 # coding: utf-8
 
 import hashlib
-import requests
 from StringIO import StringIO
 from PIL import Image
 import logging
 import zbarlight
 
 from News.utils.cache import Cache
+from News.utils import http
 
 _logger = logging.getLogger(__file__)
 
@@ -28,7 +28,9 @@ image_service_key = "service:news:image:md5"
 
 
 def download_image(url):
-    r = requests.get(url, headers=headers)
+    r = http.get(url, headers=headers)
+    if not r:
+        return None
     if r.status_code >= 400:
         _logger.warn("download image error: %s" % r.status_code)
         return None

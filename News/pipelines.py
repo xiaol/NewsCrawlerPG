@@ -4,7 +4,6 @@ import base64
 from datetime import datetime, timedelta
 import pymongo
 import json
-import requests
 import logging
 from scrapy.exceptions import DropItem
 
@@ -15,6 +14,7 @@ from News.constans import NEWS_STORE_API, COMMENT_STORE_API
 from News.monitor import monitor_news_in_pipeline
 from News.monitor import monitor_news_store_success
 from News.service import image
+from News.utils import http
 _logger = logging.getLogger(__name__)
 
 
@@ -232,7 +232,9 @@ class StorePipeline(object):
         """
         key = base64.encodestring(item["key"]).replace("=", "")
         url = NEWS_STORE_API.format(key=key)
-        r = requests.get(url)
+        r = http.get(url)
+        if not r:
+            return
         if r.status_code <= 300:
             content = json.loads(r.content)
             if content["key"] == "succes":
@@ -259,7 +261,9 @@ class StorePipeline(object):
         comment["profile"] = item["profile"]
         comment["docid"] = item["docid"]
         url = COMMENT_STORE_API
-        r = requests.post(url, json=comment)
+        r = http.post(url, json=comment)
+        if not r:
+            return r
         if r.status_code <= 300:
             _logger.debug("store %s success" % comment["comment_id"])
         else:

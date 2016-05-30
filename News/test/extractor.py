@@ -4,18 +4,20 @@ import sys
 from datetime import datetime
 import json
 from urlparse import urlparse
-import requests
 from News.constans.useragent import WEB_USER_AGENT
 from News.extractor import GeneralExtractor
 from News.extractor import WechatExtractor
 from News.extractor import YiDianZiXunExtractor
+from News.utils import http
 
 
 def get_document(url):
     netloc = urlparse(url).netloc
     headers = {"user-agent": WEB_USER_AGENT[0],
                "host": netloc}
-    r = requests.get(url, headers=headers)
+    r = http.get(url, headers=headers)
+    if not r:
+        return ''
     if r.status_code == 200:
         encoding = r.apparent_encoding
         if encoding.lower() == "gb2312":

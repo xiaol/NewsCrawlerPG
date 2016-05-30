@@ -2,10 +2,10 @@
 
 import time
 import random
-import requests
 from bs4 import BeautifulSoup
 
 from News.constans.useragent import WEB_USER_AGENT
+from News.utils import http
 
 
 def query(keyword, page=1):
@@ -15,7 +15,9 @@ def query(keyword, page=1):
     }
     url = "http://weixin.sogou.com/weixin"
     params = {"type": 1, "query": keyword, "ie": "utf8", "page": page}
-    r = requests.get(url, params=params, headers=headers)
+    r = http.get(url, params=params, headers=headers)
+    if not r:
+        return []
     return parse(r.content)
 
 

@@ -14,7 +14,7 @@ __date__ = "2016-04-11 11:39"
 
 def get(url, params=None):
     try:
-        r = requests.get(url, params=params)
+        r = requests.get(url, timeout=30, params=params)
     except Exception as e:
         pass
     else:
@@ -23,7 +23,7 @@ def get(url, params=None):
 
 def post(url, data=None):
     try:
-        r = requests.post(url, data=data)
+        r = requests.post(url, timeout=30, data=data)
     except Exception as e:
         pass
     else:
