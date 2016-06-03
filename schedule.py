@@ -64,13 +64,13 @@ def get_schedule_queue():
     schedule_queue = list()
     for source in SOURCE:
         request = dict()
-        request["source_id"] = source[0]
-        request["source_url"] = source[6]
+        request["sid"] = source[0]
+        request["surl"] = source[6]
         meta = dict()
-        meta["channel_id"] = source[2]
-        meta["channel_name"] = source[1]
-        meta["source_name"] = source[3]
-        meta["task_conf"] = {}
+        meta["cid"] = source[2]
+        # meta["channel_name"] = source[1]
+        meta["sname"] = source[3]
+        meta["pconf"] = {}
         request["meta"] = meta
         r = json.dumps(request)
         queue_name = source[4]
