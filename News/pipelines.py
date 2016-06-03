@@ -253,19 +253,26 @@ class StorePipeline(object):
     def store_comment(item):
         """调用远端的存储服务，存储 post 过去的评论数据"""
         comment = dict()
-        comment["comment_id"] = str(item["comment_id"])
+        comment["cid"] = str(item["comment_id"])
         comment["content"] = item["content"]
-        comment["nickname"] = item["nickname"]
-        comment["love"] = int(item["love"])
-        comment["create_time"] = item["create_time"]
-        comment["profile"] = item["profile"]
+        if comment['content'] == "":
+            return
+        comment["uname"] = item["nickname"]
+        comment["commend"] = int(item["love"])
+        comment["ctime"] = item["create_time"]
+        comment["avatar"] = item["profile"]
         comment["docid"] = item["docid"]
         url = COMMENT_STORE_API
         r = http.post(url, json=comment)
         if not r:
             return r
         if r.status_code <= 300:
-            _logger.debug("store %s success" % comment["comment_id"])
+            ret = json.loads(r.content)
+            if ret['code'] == 2000:
+                _logger.debug("store %s success" % item["comment_id"])
+            else:
+                _logger.warn("store %s failed code: %s" % (item["comment_id"],
+                                                   ret['code']))
         else:
             _logger.warn("store %s failed code: %s" % (item["comment_id"],
                                                        r.status_code))

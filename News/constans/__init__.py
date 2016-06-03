@@ -2,7 +2,7 @@
 
 CACHE_SOURCE_KEY = "spider_source:hashtable"
 NEWS_STORE_API = "http://api.deeporiginalx.com/bdp/spider/pipeline/task/{key}"
-COMMENT_STORE_API = "http://api.deeporiginalx.com/bdp/news/comment/ydzx"
+COMMENT_STORE_API = 'http://bdp.deeporiginalx.com/v2/sps/coms'
 
 CHANNELS_MAP = {
     1: {"name": u"热点", "online": 1},
