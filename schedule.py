@@ -71,6 +71,7 @@ def get_schedule_queue():
         # meta["channel_name"] = source[1]
         meta["sname"] = source[3]
         meta["pconf"] = {}
+        meta["state"] = source[7]
         request["meta"] = meta
         r = json.dumps(request)
         queue_name = source[4]
