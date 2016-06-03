@@ -10,7 +10,7 @@ from scrapy.exceptions import DropItem
 from News.items import NewsItem, CommentItem
 from News.utils.cache import Cache
 from News.utils.util import clean_date_time, replace_a_href_to_ours
-from News.constans import NEWS_STORE_API, COMMENT_STORE_API
+from News.constans import NEWS_STORE_API_OLD, NEWS_STORE_API_NEW, COMMENT_STORE_API
 from News.monitor import monitor_news_in_pipeline
 from News.monitor import monitor_news_store_success
 from News.service import image
@@ -152,18 +152,22 @@ class CachePipeline(object):
             "url": item["crawl_url"],
             "title": item["title"],
             "keywords": ",".join(item["tags"]),
-            "author": "",
+            # "author": "",
             "pub_time": item["publish_time"],
             "pub_name": item["original_source"] or item["crawl_source"],
             "pub_url": item["original_url"] or item["crawl_url"],
-            "content_html": item.get("content_html", ""),
-            "synopsis": item["summary"],
+            # "content_html": item.get("content_html", ""),
+            # "synopsis": item["summary"],
             "img_num": item["image_number"],
             "up": item["up"],
             "love": item["love"],
             "docid": item["docid"],
             "content": json.dumps(item["content"]),
         }
+        if item.get("content_html"):
+            obj["content_html"] = item["content_html"]
+        if item.get("summary"):
+            obj["synopsis"] = item["summary"]
         if item.get("comment_queue") and item.get("comment_url"):
             obj["comment_queue"] = item["comment_queue"]
             obj["comment_task"] = item["comment_url"]
@@ -231,8 +235,9 @@ class StorePipeline(object):
         注意： 传递给服务端的参数是缓存中的 key, 需要通过 base64 编码后传递
         """
         key = base64.encodestring(item["key"]).replace("=", "")
-        url = NEWS_STORE_API.format(key=key)
-        r = http.get(url)
+        store_old_url = NEWS_STORE_API_OLD.format(key=key)
+        store_new_url = NEWS_STORE_API_NEW.format(key=key)
+        r = http.get(store_old_url)
         if not r:
             return
         if r.status_code <= 300:
@@ -248,6 +253,15 @@ class StorePipeline(object):
         else:
             _logger.error("store %s failed code: %s" % (item["key"],
                                                         r.status_code))
+        r = http.post(store_new_url)
+        if r.status_code <= 300:
+            content = json.loads(r.content)
+            if content["code"] == 2000:
+                _logger.info("new store api store success: %s" % item["key"])
+            else:
+                _logger.error("new store api store failed: %s" % item["key"])
+        else:
+            _logger.error("new store api store %s failed code %s" % item["key"], r.status_code)
 
     @staticmethod
     def store_comment(item):
