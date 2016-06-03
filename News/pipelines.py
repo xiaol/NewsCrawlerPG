@@ -151,7 +151,7 @@ class CachePipeline(object):
             "key": item["key"],
             "url": item["crawl_url"],
             "title": item["title"],
-            "keywords": ",".join(item["tags"]),
+            # "keywords": ",".join(item["tags"]),
             # "author": "",
             "pub_time": item["publish_time"],
             "pub_name": item["original_source"] or item["crawl_source"],
@@ -164,6 +164,8 @@ class CachePipeline(object):
             "docid": item["docid"],
             "content": json.dumps(item["content"]),
         }
+        if item.get("tags"):
+            obj["keywords"] = ",".join(item["tags"])
         if item.get("content_html"):
             obj["content_html"] = item["content_html"]
         if item.get("summary"):
