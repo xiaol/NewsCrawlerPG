@@ -273,10 +273,13 @@ class StorePipeline(object):
         comment["content"] = item["content"]
         if comment['content'] == "":
             return
+        if not item['nickname']:
+            return
         comment["uname"] = item["nickname"]
         comment["commend"] = int(item["love"])
         comment["ctime"] = item["create_time"]
-        comment["avatar"] = item["profile"]
+        if item['profile']:
+            comment["avatar"] = item["profile"]
         comment["docid"] = item["docid"]
         url = COMMENT_STORE_API
         r = http.post(url, json=comment)
