@@ -50,7 +50,7 @@ class RedisMetaSpider(RedisSpider):
             assert isinstance(config, dict)
             l_config = dict()
             l_config["source_id"] = config["sid"]
-            l_config["source_url"] = config["surl"]
+            l_config["source_url"] = config.get("surl", "")
             l_config["meta"] = dict()
             l_config["meta"]["channel_id"] = config["meta"]["cid"]
             l_config["meta"]["source_id"] = config["sid"]
