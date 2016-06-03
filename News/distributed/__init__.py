@@ -49,14 +49,16 @@ class RedisMetaSpider(RedisSpider):
         else:
             assert isinstance(config, dict)
             l_config = dict()
-            l_config["source_id"] = config["sid"]
+            l_config["source_id"] = config.get("sid", None)
+            if l_config["source_id"] is None:
+                return None
             l_config["source_url"] = config.get("surl", "")
             l_config["meta"] = dict()
             l_config["meta"]["channel_id"] = config["meta"]["cid"]
             l_config["meta"]["source_id"] = config["sid"]
             l_config["meta"]["source_name"] = config["meta"]["sname"]
             l_config["meta"]["source_online"] = config["meta"]["state"]
-            l_config["meta"]["task_conf"] = config["meta"]["pconf"]
+            l_config["meta"]["task_conf"] = config["meta"].get("pconf", {})
             return l_config
         return None
 
