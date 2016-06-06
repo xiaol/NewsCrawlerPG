@@ -2,6 +2,7 @@
 
 import json
 import logging
+import time
 
 from scrapy.http import Request
 from scrapy_redis.spiders import RedisSpider
@@ -22,7 +23,7 @@ class RedisMetaSpider(RedisSpider):
 
     def next_request(self):
         """Returns a request to be scheduled or none."""
-        config = self.parse_schedule_config()
+        config, old = self.parse_schedule_config()
         if config is None:
             return
         url = self.g_url_from_config(config)
@@ -31,6 +32,9 @@ class RedisMetaSpider(RedisSpider):
             return self.make_requests_from_url_meta(url, meta)
         else:
             _logger.error("generate start url error: %s" % meta["source_name"])
+        if url is None:
+            self.server.rpush(self.redis_key, old)
+            time.sleep(3600)
 
     def g_url_from_config(self, config):
         return config["source_url"]
@@ -39,11 +43,11 @@ class RedisMetaSpider(RedisSpider):
         return config["meta"]
 
     def parse_schedule_config(self):
-        config = self.server.lpop(self.redis_key)
-        if not config:
-            return None
+        old = self.server.lpop(self.redis_key)
+        if not old:
+            return None, old
         try:
-            config = json.loads(config)
+            config = json.loads(old)
         except Exception as e:
             self.log("json load error from %s" % self.redis_key)
         else:
@@ -51,7 +55,7 @@ class RedisMetaSpider(RedisSpider):
             l_config = dict()
             l_config["source_id"] = config.get("sid", None)
             if l_config["source_id"] is None:
-                return None
+                return None, old
             l_config["source_url"] = config.get("surl", "")
             l_config["meta"] = dict()
             l_config["meta"]["channel_id"] = config["meta"]["cid"]
@@ -59,6 +63,6 @@ class RedisMetaSpider(RedisSpider):
             l_config["meta"]["source_name"] = config["meta"]["sname"]
             l_config["meta"]["source_online"] = config["meta"]["state"]
             l_config["meta"]["task_conf"] = config["meta"].get("pconf", {})
-            return l_config
-        return None
+            return l_config, old
+        return None, old
 
