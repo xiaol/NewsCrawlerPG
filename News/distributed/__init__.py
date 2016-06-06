@@ -3,6 +3,7 @@
 import json
 import logging
 import time
+import random
 
 from scrapy.http import Request
 from scrapy_redis.spiders import RedisSpider
@@ -34,7 +35,7 @@ class RedisMetaSpider(RedisSpider):
             _logger.error("generate start url error: %s" % meta["source_name"])
         if url is None:
             self.server.rpush(self.redis_key, old)
-            time.sleep(600)
+            time.sleep(random.randint(10, 60))
 
     def g_url_from_config(self, config):
         return config["source_url"]
