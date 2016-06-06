@@ -34,7 +34,7 @@ class RedisMetaSpider(RedisSpider):
         else:
             _logger.error("generate start url error: %s" % meta["source_name"])
         if url is None:
-            self.server.rpush(self.redis_key, old)
+            # self.server.rpush(self.redis_key, old)
             time.sleep(random.randint(600, 1800))
 
     def g_url_from_config(self, config):
