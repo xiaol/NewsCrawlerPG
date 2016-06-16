@@ -86,7 +86,7 @@ SPIDER_CONFIG_NAMES = [
     "News.constans.www_pingwest_com",
     "News.constans.www_qianzhan_com",
     "News.constans.www_shejipi_com",
-    "News.constans.sina_com_cn",
+    # "News.constans.sina_com_cn",  # 目前没有使用该配置文件
     'News.constans.www_zaobao_com',
     'News.constans.cn_nikkei_com',
     'News.constans.www_ltaaa_com',
@@ -98,6 +98,7 @@ SPIDER_CONFIG_NAMES = [
     'News.constans.www_thepaper_cn',
     # 'News.constans.www_wenweipo_com',
     # 'News.constans.www_oushinet_com',
+
     'News.constans.www_chinatimes_com',
     'News.constans.www_stnn_cc',
     'News.constans.www_cankaoxiaoxi_com',
@@ -105,17 +106,17 @@ SPIDER_CONFIG_NAMES = [
     'News.constans.mil_news_sina_com_cn',
     'News.constans.tech_news_sina_com_cn_zl',
     'News.constans.fashion_sina_cn',
-    'News.constans.xueqiu_com',
+    # 'News.constans.xueqiu_com',   # 列表页解析有问题
     'News.constans.www_yicai_com',
     'News.constans.www_bjd_com_cn',
-    'News.constans.www_mtime_com',
+    'News.constans.www_mtime_com',  # 改版
     'News.constans.sohu.news_sohu_com',
     'News.constans.sohu.www_sohu_com',
     'News.constans.news_17173_com',
     'News.constans.www_meizitu_com',
-    'News.constans.www_7y7_com',
-    'News.constans.22mm_xiuna_com',
-    'News.constans.www_mmonly_cc',
+    'News.constans.www_7y7_com',    # 改版
+    # 'News.constans.22mm_xiuna_com',   # 图片翻页太多，没解析
+    # 'News.constans.www_mmonly_cc',  # 图片翻页太多，没解析
     'News.constans.tecent.news_qq_com',
     'News.constans.app_myzaker_com',
     'News.constans.toutiaohao',
