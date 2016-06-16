@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-echo 'update project from git'
 cd ..
+pwd
+echo 'update project from git'
 git pull
-echo 'pull finished'
+echo 'pull finished\n'
