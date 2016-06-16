@@ -21,7 +21,7 @@ curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:c
 # 新浪
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:roll_news_sina_com_cn
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:mil_news_sina_com_cn
-curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:tech_news_sina_com_cn
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:tech_news_sina_com_cn_zl
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:fashion_sina_cn
 
 # 搜狐
