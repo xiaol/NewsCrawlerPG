@@ -41,6 +41,6 @@ def parse(html):
 def get_start_url(name, oid):
     results = query(oid, 1)
     for item in results:
-        if item["name"] == name and item["oid"] == oid:
+        if item["oid"] == oid:
             return item["href"]
     return None
