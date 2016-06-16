@@ -21,18 +21,18 @@ URL_XPATH = "./div/h3/a/@href"
 # SUMMARY_XPATH = ""
 # THUMB_XPATH = ""
 
-TITLE_PARAM = {
-    "method": "find_all",
-    "params": {"name": "h1"}
-}
-POST_DATE_PARAM = {
-    "method": "find_all",
-    "params": {"name": "div", "attrs": {"class": "time-source"}}
-}
-CONTENT_PARAM = {
-    "method": "find_all",
-    "params": {"name": "div", "attrs": {"id": "contentText"}}
-}
+# TITLE_PARAM = {
+#     "method": "find_all",
+#     "params": {"name": "h1"}
+# }
+# POST_DATE_PARAM = {
+#     "method": "find_all",
+#     "params": {"name": "div", "attrs": {"class": "time-source"}}
+# }
+# CONTENT_PARAM = {
+#     "method": "find_all",
+#     "params": {"name": "div", "attrs": {"id": "contentText"}}
+# }
 
 # EXTRACTOR_CLS = "News.extractor."
 
@@ -42,9 +42,14 @@ CONTENT_PARAM = {
 
 
 CATEGORIES = {
-    u"民调": {
-        u"国内": ("http://news.sohu.com/guoneixinwen.shtml", None),
-        u"国际": ("http://news.sohu.com/guojixinwen.shtml", None),
-    }
+    u"国内": ("http://news.sohu.com/guoneixinwen.shtml", None),
+    u"国际": ("http://news.sohu.com/guojixinwen.shtml", 9, 60, 4),
+    u"社会": ("http://news.sohu.com/shehuixinwen.shtml", 2, 60, 4),
+    u"我军动态": ("http://http://mil.sohu.com/wohjun.shtml", 8, 60, 4),
+    u"外军新闻": ("http://http://mil.sohu.com/waihjun.shtml", 8, 60, 4),
+    u"传奇人物": ("http://http://mil.sohu.com/renwu.shtml", 8, 60, 4),
+    u"航空航天": ("http://mil.sohu.com/s2008/air/", 8, 60, 4),
+    u"军工科技": ("http://mil.sohu.com/s2009/jungongkeji/", 8, 60, 4),
+    u"防务快讯": ("http://mil.sohu.com/s2011/fangwukuaixun/", 8, 60, 4),
 }
 

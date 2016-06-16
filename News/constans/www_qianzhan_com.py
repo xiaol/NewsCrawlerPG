@@ -15,24 +15,24 @@ CRAWL_SOURCE = u"前瞻网"
 DOMAIN = "qianzhan.com"
 
 # AJAX = True
-ITEMS_XPATH = "//ul[@id='ul_list_news']/li[@class='open'] | //p[@class='f22']/a"
-TITLE_XPATH = "./p[@class='tit']/a/text() | ./text()"  # 解析有问题
-URL_XPATH = "./p[@class='tit']/a/@href | ./@href"  # 解析有问题
+ITEMS_XPATH = "//ul[@id='ul_list_news']/li[@class='open']/p[@class='tit'] | //p[@class='f22'] | //ul[@id='ulNewsList']/li/h2"
+TITLE_XPATH = "./a/text()"  # 解析有问题
+URL_XPATH = "./a/@href"  # 解析有问题
 # SUMMARY_XPATH = "./div[@class='con']/p/text()"
 # THUMB_XPATH = ""
-
-TITLE_PARAM = {
-    "method": "find_all",
-    "params": {"name": "h1", "attrs": {"id": "h_title"}},
-}
-POST_DATE_PARAM = {
-    "method": "find_all",
-    "params": {"name": "span", "attrs": {"class": "f14 blue_lighten mr10"}},
-}
-CONTENT_PARAM = {
-    "method": "find_all",
-    "params": {"name": "div", "attrs": {"class": "art"}},
-}
+#
+# TITLE_PARAM = {
+#     "method": "find_all",
+#     "params": {"name": "h1", "attrs": {"id": "h_title"}},
+# }
+# POST_DATE_PARAM = {
+#     "method": "find_all",
+#     "params": {"name": "span", "attrs": {"class": "f14 blue_lighten mr10"}},
+# }
+# CONTENT_PARAM = {
+#     "method": "find_all",
+#     "params": {"name": "div", "attrs": {"class": "art"}},
+# }
 
 # EXTRACTOR_CLS = "News.extractor."
 
@@ -52,5 +52,12 @@ CATEGORIES = {
     u"科技/汽车": ("http://t.qianzhan.com/car/", 5, 120, 4),
     u"科技/智能硬件": ("http://t.qianzhan.com/sma/", None),
     u"大杂会": ("http://t.qianzhan.com/dazahui/", None),
+
+    u"明星": ('http://ent.qianzhan.com/yc/495.html', 3, 120, 4),
+    u"电影": ('http://ent.qianzhan.com/yc/512.html', 30, 120, 4),
+    u"电视": ('http://ent.qianzhan.com/yc/513.html', 30, 120, 4),
+    u"综艺": ('http://ent.qianzhan.com/yc/515.html', 30, 120, 4),
+    u"热闻": ('http://ent.qianzhan.com/list/499.html', 2, 120, 4),
+    u"发现": ('http://ent.qianzhan.com/list/500.html', 31, 120, 4),
 }
 
