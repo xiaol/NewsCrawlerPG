@@ -58,3 +58,23 @@ curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:w
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_jiemian_com
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_thepaper_cn
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_chinatimes_com
+
+# add sources v2
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_stnn_cc
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_cankaoxiaoxi_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:roll_news_sina_com_cn
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:mil_news_sina_com_cn
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:tech_news_sina_com_cn
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:fashion_sina_cn
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_yicai_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_bjd_com_cn
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_mtime_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:sohu.news_sohu_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:sohu.www_sohu_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:news_17173_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_meizitu_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_7y7_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:tecent.news_qq_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:app_myzaker_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:toutiaohao
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_4908_cn
