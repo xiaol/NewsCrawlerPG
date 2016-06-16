@@ -20,6 +20,8 @@ from News.items import get_default_news
 from News.utils.util import g_cache_key, news_already_exists, load_json_data
 from News.extractor import GeneralExtractor
 from News.utils import load_object
+from News.utils.util import get_date_time_now
+from newsextractor import extract
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -230,6 +232,23 @@ class ConfigNewsSpider(NewsSpider):
         clean_param_list = self.clean_param_list if hasattr(self, "clean_param_list") else None
         clean_content_before_param = self.clean_content_before_param if hasattr(self, "clean_content_before_param") else None
         clean_content_after_param = self.clean_content_after_param if hasattr(self, "clean_content_after_param") else None
+        news["content_html"] = body
+        if content_param is None:   # 使用新闻解析包来解析
+            try:
+                title, post_date, post_user, summary, tags, content = extract(news["crawl_url"], document=body)
+            except Exception as e:
+                self.logger.warning(e.message + " newsextract error: %s" % news["crawl_url"])
+            else:
+                if content:
+                    if not post_date:
+                        post_date = get_date_time_now()
+                    news["publish_time"] = post_date
+                    news["content"] = content
+                    yield news
+                else:
+                    self.logger.warning("publish_time or content empty: %s" % news["crawl_url"])
+            return
+
         if hasattr(self, "extractor_cls"):
             extractor_cls = load_object(path=self.extractor_cls)
         else:
@@ -257,7 +276,6 @@ class ConfigNewsSpider(NewsSpider):
         if self.name in title_spider_names:
             news['title'] = title
         # end test code
-        news["content_html"] = response.body
         yield news
 
 
