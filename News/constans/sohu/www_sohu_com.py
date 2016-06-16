@@ -11,7 +11,7 @@ __date__ = "2016-04-07 11:07"
 SPIDER_NAME = "spider:news:www_sohu_com"
 # START_URLS = [""]
 # CLASS_NAME = ""
-CRAWL_SOURCE = u"搜狐体育新闻"
+CRAWL_SOURCE = u"搜狐网"
 DOMAIN = "news.sohu.com"
 
 # AJAX = True
@@ -40,7 +40,7 @@ CATEGORIES = {
     u"电视": ("http://sports.sohu.com/tv.shtml", 3, 120, 4),
     u"好莱坞": ("http://sports.sohu.com/52hollywood", 30, 120, 4),
     u"旧闻新播": ("http://history.sohu.com/jiuwenxinbo/index.shtml", 13, 120, 4),
-    u"财经": ("http://it.sohu.com/yejie.shtml", 7, 120, 4),
+    u"财经": ("http://it.sohu.com/business_scrollnews.shtml", 7, 120, 4),
     u"互联网": ("http://it.sohu.com/internet.shtml", 22, 120, 4),
     u"通信": ("http://it.sohu.com/tele.shtml", 4, 120, 4),
     u"智能硬件": ("http://it.sohu.com/techchanpin/index.shtml", 4, 120, 4),

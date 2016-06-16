@@ -1,7 +1,7 @@
 # coding: utf-8
 SPIDER_NAME = 'spider:news:tech_news_sina_com_cn_zl'
 # START_URLS = ['http://t.qianzhan.com/kuaixun/', ]
-CRAWL_SOURCE = u'新浪tech新闻'
+CRAWL_SOURCE = u'新浪网'
 DOMAIN = 'www.sina.com.cn'
 
 ITEMS_XPATH = "//div[@class='top_new clearfix']/h2 | //div[@class='feed-card-item']/h2" #| //h3 | //div[@class="top_new clearfix"]/h2'

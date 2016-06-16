@@ -1,7 +1,7 @@
 # coding: utf-8
 SPIDER_NAME = 'spider:news:mil_news_sina_com_cn'
 # START_URLS = ['http://t.qianzhan.com/kuaixun/', ]
-CRAWL_SOURCE = u'新浪mil新闻'
+CRAWL_SOURCE = u'新浪网'
 DOMAIN = 'www.sina.com.cn'
 
 AJAX = True

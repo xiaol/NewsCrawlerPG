@@ -1,7 +1,7 @@
 # coding: utf-8
 SPIDER_NAME = 'spider:news:toutiaohao'
 # START_URLS = ['http://t.qianzhan.com/kuaixun/', ]
-CRAWL_SOURCE = u'头条号'
+CRAWL_SOURCE = u'今日头条'
 DOMAIN = 'toutiao.com'
 
 ITEMS_XPATH = "//h3" #| //h3 | //div[@class="top_new clearfix"]/h2'

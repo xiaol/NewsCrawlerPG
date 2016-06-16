@@ -2,7 +2,7 @@
 SPIDER_NAME = "spider:news:app_myzaker_com"
 # START_URLS = [""]
 # CLASS_NAME = ""
-CRAWL_SOURCE = u"zakker"
+CRAWL_SOURCE = u"zaker"
 DOMAIN = "app.myzaker.com"
 
 # AJAX = True

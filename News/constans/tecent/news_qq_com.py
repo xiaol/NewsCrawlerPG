@@ -2,7 +2,7 @@
 SPIDER_NAME = "spider:news:news_qq_com"
 # START_URLS = [""]
 # CLASS_NAME = ""
-CRAWL_SOURCE = u"腾讯"
+CRAWL_SOURCE = u"腾讯网"
 DOMAIN = "news.qq.com"
 
 # AJAX = True

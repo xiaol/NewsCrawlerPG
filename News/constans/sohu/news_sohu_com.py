@@ -11,7 +11,7 @@ __date__ = "2016-04-07 11:07"
 SPIDER_NAME = "spider:news:news_sohu_com"
 # START_URLS = [""]
 # CLASS_NAME = ""
-CRAWL_SOURCE = u"搜狐新闻"
+CRAWL_SOURCE = u"搜狐网"
 DOMAIN = "news.sohu.com"
 
 # AJAX = True

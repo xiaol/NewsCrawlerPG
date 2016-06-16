@@ -1,7 +1,7 @@
 # coding: utf-8
 SPIDER_NAME = 'spider:news:roll_news_sina_com_cn'
 # START_URLS = ['http://t.qianzhan.com/kuaixun/', ]
-CRAWL_SOURCE = u'新浪roll新闻'
+CRAWL_SOURCE = u'新浪新闻'
 DOMAIN = 'www.sina.com.cn'
 
 ITEMS_XPATH = "//ul[@class='list_009']/li | //ul[@class='linkNews']/li | //ul[@class='list_02']/li" #| //h3 | //div[@class="top_new clearfix"]/h2'
