@@ -111,6 +111,10 @@ def clean_date_time(string):
     return date_time_string
 
 
+def get_date_time_now():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
 def get_document(url):
     netloc = urlparse(url).netloc
     headers = {"user-agent": WEB_USER_AGENT[0],
