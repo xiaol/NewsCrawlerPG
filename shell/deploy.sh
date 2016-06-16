@@ -4,4 +4,4 @@ cd ..
 pwd
 echo 'deploy project News'
 scrapyd-deploy local
-echo 'deploy finished\n'
+echo 'deploy finished'

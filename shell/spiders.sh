@@ -25,11 +25,11 @@ curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:t
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:fashion_sina_cn
 
 # 搜狐
-curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:sohu.news_sohu_com
-curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:sohu.www_sohu_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:news_sohu_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_sohu_com
 
 # 腾讯
-curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:tecent.news_qq_com
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:news_qq_com
 
 # zaker
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:app_myzaker_com

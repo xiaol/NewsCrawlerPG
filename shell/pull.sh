@@ -4,4 +4,4 @@ cd ..
 pwd
 echo 'update project from git'
 git pull
-echo 'pull finished\n'
+echo 'pull finished'
