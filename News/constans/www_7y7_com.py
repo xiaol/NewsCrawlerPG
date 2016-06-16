@@ -30,7 +30,7 @@ URL_XPATH = "./a/@href"
 
 
 CATEGORIES = {
-    u"时尚大片": ("http://www.7y7.com/dapian", 26, 120, 4),
-    u"清纯美女": ("http://www.7y7.com/meinv", 26, 120, 4),
+    u"时尚大片": ("http://www.7y7.com/pic/dapian", 26, 120, 4),
+    u"清纯美女": ("http://www.7y7.com/pic/meinv", 26, 120, 4),
 }
 
