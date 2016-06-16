@@ -6,7 +6,7 @@ CRAWL_SOURCE = u"腾讯网"
 DOMAIN = "news.qq.com"
 
 # AJAX = True
-ITEMS_XPATH = "//div[@class='list first']/div/div/em | //div[@class='Q-tpWrap']/em"
+ITEMS_XPATH = "//div[@class='list first']/div/div/div/em | //div[@class='Q-tpWrap']/em"
 TITLE_XPATH = "./a/text()"
 URL_XPATH = "./a/@href"
 # SUMMARY_XPATH = ""
