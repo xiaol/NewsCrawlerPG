@@ -4,7 +4,7 @@ SPIDER_NAME = 'spider:news:www_mtime_com'
 CRAWL_SOURCE = u'时光网'
 DOMAIN = 'www.mtime.com'
 
-ITEMS_XPATH = "//ul/li/h4" #| //h3 | //div[@class="top_new clearfix"]/h2'
+ITEMS_XPATH = "//ul[@id='newslist']/li/div/h4" #| //h3 | //div[@class="top_new clearfix"]/h2'
 TITLE_XPATH = './a/text()'
 URL_XPATH = './a/@href'
 # SUMMARY_XPATH = ''
