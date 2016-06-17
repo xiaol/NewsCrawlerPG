@@ -46,6 +46,8 @@ CATEGORIES = {
     u"养生": ("http://toutiao.com/api/article/recent/?source=2&count=20&category=news_regimen&utm_source=toutiao&offset=0", 17),
     u"故事": ("http://toutiao.com/api/article/recent/?source=2&count=20&category=news_story&utm_source=toutiao&offset=0", 18),
     u"美文": ("http://toutiao.com/api/article/recent/?source=2&count=20&category=news_essay&utm_source=toutiao&offset=0", 19),
+
+    u"星座": ("http://toutiao.com/api/article/recent/?source=2&count=20&category=news_astrology&utm_source=toutiao&offset=0", 37, 120, 3)
 }
 
 
