@@ -21,8 +21,8 @@ URL_XPATH = "./a/@href"
 
 
 CATEGORIES = {
-    u"国际": ("http://news.qq.com/world_index.shtml", 26, 120, 4),
-    u"社会": ("http://news.qq.com/society_index.shtml", 26, 120, 4),
-    u"军事": ("http://mil.qq.com/mil_index.htm", 26, 120, 4),
+    u"国际": ("http://news.qq.com/world_index.shtml", 9, 120, 4),
+    u"社会": ("http://news.qq.com/society_index.shtml", 2, 120, 4),
+    u"军事": ("http://mil.qq.com/mil_index.htm", 8, 120, 4),
 }
 

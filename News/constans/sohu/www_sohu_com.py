@@ -45,7 +45,7 @@ CATEGORIES = {
     u"通信": ("http://it.sohu.com/tele.shtml", 4, 120, 4),
     u"智能硬件": ("http://it.sohu.com/techchanpin/index.shtml", 4, 120, 4),
     u"生活服务": ("http://it.sohu.com/shenghuo/index.shtml", 22, 120, 4),
-    u"科技": ("http://it.sohu.com/yejie.shtml", 22, 120, 3),
+    u"科技": ("http://it.sohu.com/yejie.shtml", 4, 120, 3),
     u"时装": ("http://fashion.sohu.com/fuzhuangs.shtml", 10, 120, 4),
     u"配饰": ("http://fashion.sohu.com/peishis.shtml", 10, 120, 4),
     u"鞋包": ("http://fashion.sohu.com/xiebaos.shtml", 10, 120, 4),
