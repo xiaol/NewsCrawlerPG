@@ -244,7 +244,7 @@ class ConfigNewsSpider(NewsSpider):
                         post_date = get_date_time_default()
                     news["publish_time"] = post_date
                     news["content"] = content
-                    if self.name == "spider:news:app_myzaker_com" and post_user:
+                    if post_user:
                         news["original_source"] = post_user
                     yield news
                 else:
