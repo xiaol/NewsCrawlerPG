@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 from urlparse import urlparse, parse_qs
 from time import strftime, localtime
@@ -113,6 +113,11 @@ def clean_date_time(string):
 
 def get_date_time_now():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
+def get_date_time_default():
+    default = datetime.now() - timedelta(hours=2)
+    return default.strftime("%Y-%m-%d %H:%M:%S")
 
 
 def get_document(url):
