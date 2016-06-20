@@ -32,4 +32,9 @@ class ProxyMiddleware(object):
         request.meta['proxy'] = 'http://47.88.1.21:3999'
 
 
+class ProxyBanMiddleware(object):
+
+    def process_request(self, request, spider):
+        request.meta['proxy'] = 'http://127.0.0.1:3333'
+
 
