@@ -20,7 +20,7 @@ from News.items import get_default_news
 from News.utils.util import g_cache_key, news_already_exists, load_json_data
 from News.extractor import GeneralExtractor
 from News.utils import load_object
-from News.utils.util import get_date_time_now
+from News.utils.util import get_date_time_default
 from newsextractor import extract
 
 
@@ -241,9 +241,11 @@ class ConfigNewsSpider(NewsSpider):
             else:
                 if content:
                     if not post_date:
-                        post_date = get_date_time_now()
+                        post_date = get_date_time_default()
                     news["publish_time"] = post_date
                     news["content"] = content
+                    if post_user:
+                        news["original_source"] = post_user
                     yield news
                 else:
                     self.logger.warning("publish_time or content empty: %s" % news["crawl_url"])
