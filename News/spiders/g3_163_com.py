@@ -28,6 +28,7 @@ class G3News163(NewsSpider):
         if articles is None:
             self.logger.error("spider has been banned for %s" % response.request.url)
             return []
+
         else:
             return articles
 

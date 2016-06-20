@@ -18,3 +18,4 @@ curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:n
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_meizitu_com
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_7y7_com
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:www_4908_cn
+curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:3g_163_com
