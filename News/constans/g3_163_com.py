@@ -7,6 +7,6 @@ DOMAIN = "3g.163.com"
 
 
 CATEGORIES = {
-    u"美女": ("http://www.meizitu.com/", 26, 120, 4),
+    u"健康": ("http://c.3g.163.com/nc/article/list/T1414389941036/0-40.html", 24, 120, 4),
 }
 
