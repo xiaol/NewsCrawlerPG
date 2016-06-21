@@ -14,8 +14,7 @@ curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:t
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:news163
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:comment:news163
 
-# 微信
-curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:wechat
+# 微信评论
 curl http://localhost:6888/schedule.json -d project=News -d spider=spider:news:comment:wechat
 
 # 新浪
