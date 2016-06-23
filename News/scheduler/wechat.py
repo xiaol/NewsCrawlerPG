@@ -20,7 +20,7 @@ def query(keyword, page=1):
     url = "http://weixin.sogou.com/weixin"
     params = {"type": 1, "query": keyword, "ie": "utf8", "page": page}
     r = None
-    for i in range(3):
+    for i in range(5):
         r = http.get(url, params=params, headers=headers, proxies=proxies)
         if r.status_code < 300:
             break
