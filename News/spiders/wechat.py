@@ -26,7 +26,7 @@ class Wechat(NewsSpider):
             "scrapy.downloadermiddlewares.useragent.UserAgentMiddleware": None,
             "News.middlewares.RotateUserAgentMiddleware": None,
             "News.middlewares.WechatUserAgentMiddleware": 405,
-            'News.middlewares.ProxyBanMiddleware': 100,
+            # 'News.middlewares.ProxyBanMiddleware': 100,
         },
     }
 
