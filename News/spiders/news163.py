@@ -53,7 +53,7 @@ class News163(NewsSpider):
         news["category"] = article.get("category", "")
         news["crawl_source"] = CRAWL_SOURCE
         news["original_source"] = article.get("source", "")
-        if news['original_source'] == '糗事百科':
+        if news['original_source'] == u'糗事百科':
             return None
 
         news["comment_url"] = self._g_comment_url(docid=news["docid"])
