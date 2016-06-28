@@ -80,7 +80,7 @@ class Wechat(NewsSpider):
         for item in data_list:
             comm_msg_info = item["comm_msg_info"]
             publish_time = str_from_timestamp(comm_msg_info["datetime"])
-            today = datetime.now() - timedelta(days=1)
+            today = datetime.now() - timedelta(days=2)
             today_string = today.strftime("%Y-%m-%d %H:%M:%S")
             if publish_time < today_string:
                 self.logger.info("%s < %s" % (publish_time, today_string))
