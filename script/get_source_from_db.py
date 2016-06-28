@@ -37,7 +37,10 @@ def store(string):
 
 
 if __name__ == '__main__':
-    sql = "select id, channel_name, channel_id, source_name, queue_name, frequency, source_url, online from spidersourcelist where status=1"
+    sql = '''
+             select id, channel_name, channel_id, source_name, queue_name, frequency, source_url, online from spidersourcelist
+             where status=1 and queue_name!='spider:news:wechat:start_urls'
+         '''
     rows = query(sql)
     store(rows.__repr__())
 
