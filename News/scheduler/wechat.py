@@ -22,6 +22,8 @@ def query(keyword, page=1):
     r = None
     for i in range(3):
         r = http.get(url, params=params, headers=headers, proxies=proxies)
+        if not r:
+            break
         if not (r.is_redirect or r.is_permanent_redirect):
             break
         time.sleep(random.randint(2, 20) * 0.1)
