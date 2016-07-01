@@ -165,7 +165,9 @@ class CachePipeline(object):
             "content": json.dumps(item["content"]),
         }
         if item.get("tags"):
-            obj["keywords"] = ",".join(item["tags"])
+            keywords = ','.join(item['tags'])
+            if keywords:
+                obj["keywords"] = keywords
         if item.get("content_html"):
             obj["content_html"] = item["content_html"]
         if item.get("summary"):
