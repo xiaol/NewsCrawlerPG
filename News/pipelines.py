@@ -247,7 +247,7 @@ class StorePipeline(object):
             if content["code"] == 2000:
                 _logger.info("new store api store success: %s" % item["key"])
             else:
-                _logger.error("new store api store failed: %s" % item["key"])
+                _logger.error("new store api store failed: %s message %s" % (item["key"], r.content))
         else:
             _logger.error("new store api store %s failed code %s" % item["key"], r.status_code)
 
@@ -276,8 +276,8 @@ class StorePipeline(object):
             if ret['code'] == 2000:
                 _logger.debug("store %s success" % item["comment_id"])
             else:
-                _logger.warn("store %s failed code: %s" % (item["comment_id"],
-                                                   ret['code']))
+                _logger.warn("store %s failed code: %s message: %s" % (item["comment_id"],
+                                                   ret['code'], r.content))
         else:
             _logger.warn("store %s failed code: %s" % (item["comment_id"],
                                                        r.status_code))
