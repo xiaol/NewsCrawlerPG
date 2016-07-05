@@ -47,6 +47,7 @@ CHANNELS_MAP = {
     36: {"name": u"自媒体", "online": 0},
     37: {"name": u"风水玄学", "online": 0},
     38: {"name": u"天气", "online": 0},
+    39: {'name': u'帅哥', 'online': 0},
 
     "0": {"name": u"今日焦点", "online": 1},    # 热点
     "1": {"name": u"热门专题", "online": 1},    # 精选

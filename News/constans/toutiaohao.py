@@ -22,4 +22,7 @@ CATEGORIES = {
     u'风水内参': ('http://www.toutiao.com/m3744976456/', 37, 30, 3),
     u'迷人推理': ('http://www.toutiao.com/m5834836226/', 37, 30, 3),
     u'风水居': ('http://toutiao.com/m5893721036/', 37, 30, 3),
+    u'小鲜肉食坊': ('http://toutiao.com/m5937683746/', 39, 330, 4),
+    u'小鲜肉时代': ('http://toutiao.com/m6505513431/', 39, 330, 4),
+    u'型男训练营': ('http://toutiao.com/m6466107717/', 39, 330, 4),
 }

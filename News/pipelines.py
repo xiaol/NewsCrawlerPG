@@ -239,24 +239,8 @@ class StorePipeline(object):
         注意： 传递给服务端的参数是缓存中的 key, 需要通过 base64 编码后传递
         """
         key = base64.encodestring(item["key"]).replace("=", "")
-        store_old_url = NEWS_STORE_API_OLD.format(key=key)
         store_new_url = NEWS_STORE_API_NEW.format(key=key)
-        r = http.get(store_old_url)
-        if not r:
-            return
-        if r.status_code <= 300:
-            content = json.loads(r.content)
-            if content["key"] == "succes":
-                info = item.get("start_meta_info")
-                if info and info.get("source_id"):
-                    sid = info["source_id"]
-                    monitor_news_store_success(sid)
-                _logger.info("store %s success" % item["key"])
-            else:
-                _logger.error("store failed: %s" % content["key"])
-        else:
-            _logger.error("store %s failed code: %s" % (item["key"],
-                                                        r.status_code))
+
         r = http.post(store_new_url)
         if r.status_code <= 300:
             content = json.loads(r.content)
