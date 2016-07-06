@@ -15,6 +15,7 @@ from News.monitor import monitor_news_in_pipeline
 from News.monitor import monitor_news_store_success
 from News.service import image
 from News.utils import http
+from News.shielding_vocabulary import words
 _logger = logging.getLogger(__name__)
 
 
@@ -122,12 +123,25 @@ class CleanPipeline(object):
                 index += 1
             else:
                 cleaned.append({k: v})
+
+        last = True
+        if cleaned and 'txt' in cleaned[-1]:
+            for i in words:
+                if i in cleaned[-1]['txt'].encode('utf8'):
+                    last = False
+        if not last:
+            cleaned = cleaned[:-1]
+
         if len(cleaned) == 0:
             return DropItem("content empty")
         return cleaned
 
     @staticmethod
     def is_dirty_text(string):
+        # flag = False
+        # for i in words:
+        #     if i in string:
+        #         flag = True
         return False
 
     @staticmethod

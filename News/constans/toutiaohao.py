@@ -25,4 +25,7 @@ CATEGORIES = {
     u'小鲜肉食坊': ('http://toutiao.com/m5937683746/', 39, 330, 4),
     u'小鲜肉时代': ('http://toutiao.com/m6505513431/', 39, 330, 4),
     u'型男训练营': ('http://toutiao.com/m6466107717/', 39, 330, 4),
+    u'内涵段子': ('http://toutiao.com/m2773452475/', 21, 330, 4),
+    u'幽默时刻': ('http://toutiao.com/m6623117551/', 21, 330, 4),
+    u'历史八卦讲堂': ('http://toutiao.com/m6174945947/', 3, 330, 4),
 }
