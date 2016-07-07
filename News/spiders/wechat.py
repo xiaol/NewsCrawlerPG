@@ -26,7 +26,7 @@ class Wechat(NewsSpider):
             "scrapy.downloadermiddlewares.useragent.UserAgentMiddleware": None,
             "News.middlewares.RotateUserAgentMiddleware": None,
             "News.middlewares.WechatUserAgentMiddleware": 405,
-            # 'News.middlewares.ProxyBanMiddleware': 100,
+            'News.middlewares.ProxyBanMiddleware': 100,
         },
     }
 
@@ -35,7 +35,9 @@ class Wechat(NewsSpider):
         source_name = meta["source_name"].split(";")
         name = source_name[0]
         oid = source_name[1]
-        return wechat.get_start_url(name, oid)
+        url = wechat.get_start_url(name, oid)
+        self.logger.info('crawling %s' % url)
+        return url
 
     def clean_script_data(self, string):
         mapping = [

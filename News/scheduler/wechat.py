@@ -3,10 +3,12 @@
 import time
 import random
 from bs4 import BeautifulSoup
+import logging
 
 from News.constans.useragent import WEB_USER_AGENT
 from News.utils import http
 
+_logger = logging.getLogger(__file__)
 
 def query(keyword, page=1):
     headers = {
@@ -23,6 +25,10 @@ def query(keyword, page=1):
     for i in range(3):
         r = http.get(url, params=params, headers=headers, proxies=proxies)
         if r and not (r.is_redirect or r.is_permanent_redirect):
+            if r:
+                _logger.warning('sogou ban')
+            else:
+                _logger.warning('download exception')
             break
         time.sleep(random.randint(2, 20) * 0.1)
     if not r:
