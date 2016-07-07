@@ -25,12 +25,13 @@ def query(keyword, page=1):
     for i in range(3):
         r = http.get(url, params=params, headers=headers, proxies=proxies)
         if r and not (r.is_redirect or r.is_permanent_redirect):
-            if r:
-                _logger.warning('sogou ban')
-            else:
-                _logger.warning('download exception')
             break
         time.sleep(random.randint(2, 20) * 0.1)
+    else:
+        if r:
+            _logger.warning('sogou ban')
+        else:
+            _logger.warning('download exception')
     if not r:
         return []
     return parse(r.content)
