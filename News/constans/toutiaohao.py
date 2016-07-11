@@ -4,7 +4,7 @@ SPIDER_NAME = 'spider:news:toutiaohao'
 CRAWL_SOURCE = u'今日头条'
 DOMAIN = 'toutiao.com'
 
-ITEMS_XPATH = "//h3" #| //h3 | //div[@class="top_new clearfix"]/h2'
+ITEMS_XPATH = '//ul[@class="article-list"]/li[@class="article-item"]/div[@class="y-box item-inner"]' #| //h3 | //div[@class="top_new clearfix"]/h2'
 TITLE_XPATH = './a/text() | ./span/a/text()'
 URL_XPATH = './a/@href | ./span/a/@href'
 # SUMMARY_XPATH = ''
