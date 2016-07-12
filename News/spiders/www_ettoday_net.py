@@ -37,7 +37,7 @@ class Ettoday(NewsSpider):
     def g_url_from_config(self, config):
         source_url = config['source_url'].split('/')[-1]
         url = ARTICLE_URL_TEMPLATE.format(**{'date': str(datetime.today()) + '-' + source_url})
-        return url
+        return url, ""
 
     def g_news_meta_list(self, response):
         soup = BeautifulSoup(response.body, 'lxml')

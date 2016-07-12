@@ -10,6 +10,7 @@ from News.utils import http
 
 _logger = logging.getLogger(__file__)
 
+
 def query(keyword, page=1):
     headers = {
         "Host": "weixin.sogou.com",
@@ -33,8 +34,8 @@ def query(keyword, page=1):
         else:
             _logger.warning('download exception')
     if not r:
-        return []
-    return parse(r.content)
+        return [], ""
+    return parse(r.content), r.url
 
 
 def parse(html):
@@ -55,8 +56,8 @@ def parse(html):
 
 
 def get_start_url(name, oid):
-    results = query(oid, 1)
+    results, url = query(oid, 1)
     for item in results:
         if item["oid"] == oid:
-            return item["href"]
-    return None
+            return item["href"], url
+    return None, ""

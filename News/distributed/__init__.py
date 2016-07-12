@@ -27,8 +27,10 @@ class RedisMetaSpider(RedisSpider):
         config, old = self.parse_schedule_config()
         if config is None:
             return
-        url = self.g_url_from_config(config)
+        url, referer = self.g_url_from_config(config)
         meta = self.g_meta_from_config(config)
+        if referer:
+            meta["referer"] = referer
         if url:
             return self.make_requests_from_url_meta(url, meta)
         else:
@@ -38,7 +40,7 @@ class RedisMetaSpider(RedisSpider):
             time.sleep(random.randint(120, 300))
 
     def g_url_from_config(self, config):
-        return config["source_url"]
+        return config["source_url"], ""
 
     def g_meta_from_config(self, config):
         return config["meta"]

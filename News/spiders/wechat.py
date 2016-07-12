@@ -35,9 +35,9 @@ class Wechat(NewsSpider):
         source_name = meta["source_name"].split(";")
         name = source_name[0]
         oid = source_name[1]
-        url = wechat.get_start_url(name, oid)
+        url, referer = wechat.get_start_url(name, oid)
         self.logger.info('crawling %s' % url)
-        return url
+        return url, referer
 
     def clean_script_data(self, string):
         mapping = [

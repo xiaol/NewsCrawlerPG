@@ -22,6 +22,11 @@ class WechatUserAgentMiddleware(UserAgentMiddleware):
         if not browser:
             # browser = random.choice(WEB_USER_AGENT)
             browser = WEB_USER_AGENT[0]
+        meta = request.meta.get("start_meta")
+        if meta:
+            referer = meta.get("referer")
+            if referer:
+                request.headers.setdefault("Referer", referer)
         request.headers.setdefault("User-Agent", browser)
         request.meta["browser"] = browser
 
