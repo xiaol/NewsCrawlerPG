@@ -1,9 +1,11 @@
 import random
-import base64
+import logging
 
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 from News.constans.useragent import WEB_USER_AGENT
 from News.constans import yidianzixun
+
+_logger = logging.getLogger(__file__)
 
 
 class RotateUserAgentMiddleware(UserAgentMiddleware):
@@ -27,6 +29,7 @@ class WechatUserAgentMiddleware(UserAgentMiddleware):
             referer = meta.get("referer")
             if referer:
                 request.headers.setdefault("Referer", referer)
+                _logger.info("set referer: %s for url: %s" % (referer, request.url))
         request.headers.setdefault("User-Agent", browser)
         request.meta["browser"] = browser
 
