@@ -43,11 +43,11 @@ CHANNELS_MAP = {
     32: {"name": u"萌宠", "online": 1},
     33: {"name": u"图片", "online": 0},
     34: {"name": u"专题", "online": 0},
-    35: {"name": u"点集", "online": 0},
-    36: {"name": u"自媒体", "online": 0},
-    37: {"name": u"风水玄学", "online": 0},
-    38: {"name": u"天气", "online": 0},
-    39: {'name': u'帅哥', 'online': 0},
+    35: {"name": u"点集", "online": 1},
+    36: {"name": u"自媒体", "online": 1},
+    37: {"name": u"风水玄学", "online": 1},
+    38: {"name": u"天气", "online": 1},
+    39: {'name': u'帅哥', 'online': 1},
 
     "0": {"name": u"今日焦点", "online": 1},    # 热点
     "1": {"name": u"热门专题", "online": 1},    # 精选

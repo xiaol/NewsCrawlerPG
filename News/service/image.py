@@ -57,7 +57,13 @@ def is_ad_image(raw):
     return Cache.sismember(image_service_key, value)
 
 
+def is_ad_image_url(url):
+    return Cache.sismember(image_service_key, url)
+
+
 def is_dirty_image(url):
+    if is_ad_image_url(url):
+        return True
     raw = download_image(url)
     if raw is None:
         return False
