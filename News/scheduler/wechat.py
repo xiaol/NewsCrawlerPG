@@ -7,6 +7,7 @@ import logging
 
 from News.constans.useragent import WEB_USER_AGENT
 from News.utils import http
+from utils.util import get_proxy_url
 
 _logger = logging.getLogger(__file__)
 
@@ -16,9 +17,10 @@ def query(keyword, page=1):
         "Host": "weixin.sogou.com",
         "User-Agent": random.choice(WEB_USER_AGENT),
     }
+    proxy = get_proxy_url()
     proxies = {
-        "http": "127.0.0.1:3333",
-        "https": "127.0.0.1:3333",
+        'http': proxy,
+        'https': proxy,
     }
     url = "http://weixin.sogou.com/weixin"
     params = {"type": 1, "query": keyword, "ie": "utf8", "page": page}

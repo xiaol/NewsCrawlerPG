@@ -4,6 +4,7 @@ import logging
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 from News.constans.useragent import WEB_USER_AGENT
 from News.constans import yidianzixun
+from utils.util import get_proxy_url
 
 _logger = logging.getLogger(__file__)
 
@@ -43,6 +44,6 @@ class ProxyMiddleware(object):
 class ProxyBanMiddleware(object):
 
     def process_request(self, request, spider):
-        request.meta['proxy'] = 'http://127.0.0.1:3333'
-
-
+        proxy = get_proxy_url()
+        if proxy:
+            request.meta['proxy'] = 'http://' + proxy

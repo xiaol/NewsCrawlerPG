@@ -6,9 +6,13 @@ import re
 from urlparse import urlparse, parse_qs
 from time import strftime, localtime
 import base64
+
+from requests.auth import HTTPBasicAuth
+
 from News.utils import http
 from News.utils.cache import Cache
 from News.constans.useragent import WEB_USER_AGENT
+from News.utils.http import get
 
 
 def load_json_data(data):
@@ -137,6 +141,19 @@ def get_document(url):
     else:
         print("get document error: %s" % r.status_code)
         return ""
+
+
+def get_proxy_url():
+    url = 'http://10.25.60.218:8080/proxy/random'
+    # url = 'http://114.55.142.40:8080/proxy/random'
+    user = 'leesven'
+    pwd = 'YingLie@Sven!'
+    req = get(url, auth=HTTPBasicAuth(user, pwd))
+    if req and req.status_code==200:
+        ret = json.loads(req.content)
+        return ret['data'].strip()
+    else:
+        return None
 
 
 _A_PATTERN = r'<a href="([^<]*)">([^<]*)</a>'
