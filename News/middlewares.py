@@ -4,7 +4,7 @@ import logging
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 from News.constans.useragent import WEB_USER_AGENT
 from News.constans import yidianzixun
-from utils.util import get_proxy_url
+from News.utils.util import get_proxy_url
 
 _logger = logging.getLogger(__file__)
 

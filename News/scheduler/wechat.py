@@ -7,7 +7,7 @@ import logging
 
 from News.constans.useragent import WEB_USER_AGENT
 from News.utils import http
-from utils.util import get_proxy_url
+from News.utils.util import get_proxy_url
 
 _logger = logging.getLogger(__file__)
 
