@@ -28,7 +28,9 @@ class TouTiao(NewsSpider):
         if article.get("has_video"):
             return None
         docid = article["source_url"]
-        crawl_url = self._g_crawl_url(article)
+        crawl_url = article('display_url')
+        if not crawl_url or '?_as_=' in crawl_url:
+            return None
         key = g_cache_key(crawl_url)
         if news_already_exists(key):
             return None
