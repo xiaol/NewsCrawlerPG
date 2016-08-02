@@ -91,7 +91,8 @@ if DEBUG:
     ITEM_PIPELINES = {
         "News.pipelines.CompatiblePipeline": 300,
         "News.pipelines.CleanPipeline": 301,
-        "News.pipelines.CachePipeline": 302,
+        "News.pipelines.GetTagsPipeline": 302,
+        "News.pipelines.CachePipeline": 303,
         "News.pipelines.StartMetaPipeline": 313,
         "News.pipelines.MonitorPipeline": 314,
         "News.pipelines.PrintPipeline": 315,
@@ -106,7 +107,8 @@ else:
     ITEM_PIPELINES = {
         "News.pipelines.CompatiblePipeline": 300,
         "News.pipelines.CleanPipeline": 301,
-        "News.pipelines.CachePipeline": 302,
+        "News.pipelines.GetTagsPipeline": 302,
+        "News.pipelines.CachePipeline": 303,
         "News.pipelines.StartMetaPipeline": 313,
         "News.pipelines.MonitorPipeline": 314,
         'News.pipelines.StorePipeline': 315,

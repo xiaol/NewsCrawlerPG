@@ -156,6 +156,15 @@ def get_proxy_url():
         return None
 
 
+def get_game_name_by_title(title):
+    pattern = u'《([^》]*)》'
+    res = re.findall(pattern, title)
+    if not res:
+        return None
+    # ret = res.group(1)
+    return ','.join(res)
+
+
 _A_PATTERN = r'<a href="([^<]*)">([^<]*)</a>'
 _P_A_PATTERN = re.compile(_A_PATTERN)
 

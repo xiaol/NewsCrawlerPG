@@ -9,7 +9,7 @@ from scrapy.exceptions import DropItem
 
 from News.items import NewsItem, CommentItem
 from News.utils.cache import Cache
-from News.utils.util import clean_date_time, replace_a_href_to_ours
+from News.utils.util import clean_date_time, replace_a_href_to_ours, get_game_name_by_title
 from News.constans import NEWS_STORE_API_OLD, NEWS_STORE_API_NEW, COMMENT_STORE_API
 from News.monitor import monitor_news_in_pipeline
 from News.monitor import monitor_news_store_success
@@ -357,6 +357,28 @@ class MongoPipeline(object):
         return old
 
 
+class GetTagsPipeline(object):
+
+    def process_item(self, item, spider):
+        if not isinstance(item, NewsItem):
+            return item
+        info = item.get("start_meta_info")
+        cid = None
+        if info:
+            if isinstance(info.get("task_conf"), dict):
+                info["task_conf"] = json.dumps(info["task_conf"])
+            else:
+                info["task_conf"] = json.dumps({})
+            cid = info.get('channel_id')
+        else:
+            raise DropItem("no start meta info")
+        if cid == 11 or cid == '11':
+            tags = get_game_name_by_title(item['title'])
+            if tags:
+                item['tags'] = tags.split(',')
+        return item
+
+
 class PrintPipeline(object):
 
     def process_item(self, item, spider):
@@ -366,6 +388,7 @@ class PrintPipeline(object):
             print("url: %s" % item["crawl_url"])
             print("date: %s" % item["publish_time"])
             print("user: %s" % item["original_source"])
+            print("tags: %s "% item['tags'])
             meta = item.get("start_meta_info")
             if meta:
                 print("source name: %s" % meta.get("source_name"))
