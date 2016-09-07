@@ -3,7 +3,8 @@
 CACHE_SOURCE_KEY = "spider_source:hashtable"
 
 NEWS_STORE_API_OLD = "http://api.deeporiginalx.com/bdp/spider/pipeline/task/{key}"
-NEWS_STORE_API_NEW = "http://bdp.deeporiginalx.com/v2/sps/ns/{key}"
+# NEWS_STORE_API_NEW = "http://bdp.deeporiginalx.com/v2/sps/ns/{key}"
+NEWS_STORE_API_NEW = "http://bdp.deeporiginalx.com/v2/sps/ns"
 COMMENT_STORE_API = 'http://bdp.deeporiginalx.com/v2/sps/coms'
 
 CHANNELS_MAP = {

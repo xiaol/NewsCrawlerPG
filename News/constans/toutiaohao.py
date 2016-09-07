@@ -28,4 +28,7 @@ CATEGORIES = {
     u'内涵段子': ('http://toutiao.com/m2773452475/', 21, 330, 4),
     u'幽默时刻': ('http://toutiao.com/m6623117551/', 21, 330, 4),
     u'历史八卦讲堂': ('http://toutiao.com/m6174945947/', 3, 330, 4),
+    u'仨瓜俩枣': ('http://toutiao.com/m6133198516/', 21, 330, 4),
+    u'笑语茶馆': ('http://toutiao.com/m6602993950/', 21, 330, 4),
+    u'笑傲浆糊': ('http://toutiao.com/m5543616881/', 21, 330, 4),
 }

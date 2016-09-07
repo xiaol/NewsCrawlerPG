@@ -253,9 +253,11 @@ class StorePipeline(object):
         注意： 传递给服务端的参数是缓存中的 key, 需要通过 base64 编码后传递
         """
         key = base64.encodestring(item["key"]).replace("=", "")
-        store_new_url = NEWS_STORE_API_NEW.format(key=key)
-
-        r = http.post(store_new_url)
+        # store_new_url = NEWS_STORE_API_NEW.format(key=key)
+        store_new_url = NEWS_STORE_API_NEW
+        params = dict()
+        params['key'] = key
+        r = http.post(store_new_url, json=params)
         if r.status_code <= 300:
             content = json.loads(r.content)
             if content["code"] == 2000:
